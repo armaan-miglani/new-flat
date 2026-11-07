@@ -786,19 +786,22 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     const uv = geo.attributes.uv; for (let i = 0; i < uv.count; i++) uv.setXY(i, uv.getX(i) / (w * 1.2) + 0.5, uv.getY(i) / (w * 1.2) + 0.5);
     const mesh = new THREE.Mesh(geo, m); g.add(mesh); return mesh;
   }
-  function recliner(g, o) { // closed recliner, local back at z = -D/2 facing +z; a faint floor outline shows the reclined reach
-    const W = IN(o.W), D = IN(o.D), Hh = IN(o.H), aw = IN(o.armW || 7), fab = o.fab;
+  function recliner(g, o) { // shown reclined: back tilted, footrest out; local back at z = -D/2, facing +z
+    const W = IN(o.W), D = IN(o.D), Hh = IN(o.H), aw = IN(o.armW || 7), fab = o.fab, dark = mat(0x151515);
     prbox(g, W, IN(13), D, 0, IN(2) + IN(6.5), 0, fab, IN(2));
     for (const sx of [-1, 1]) prbox(g, aw, IN(o.armH || 24) - IN(2), D - IN(1), sx * (W / 2 - aw / 2), IN(2) + (IN(o.armH || 24) - IN(2)) / 2, IN(0.5), fab, IN(o.square ? 1.5 : 4));
     prbox(g, W - 2 * aw, IN(6), D - IN(9), 0, IN(18), IN(3), fab, IN(2.5));
+    const bk = new THREE.Group(); bk.position.set(0, IN(19), -D / 2 + IN(5)); bk.rotation.x = -0.7; g.add(bk); // backrest tipped back about 40°
     const segs = o.square ? 1 : 3, bh = Hh - IN(19);
-    for (let i = 0; i < segs; i++) { const b = prbox(g, W - 2 * aw - IN(0.5), bh / segs, IN(8), 0, IN(19) + bh / segs * (i + 0.5), -D / 2 + IN(5), fab, IN(3)); b.rotation.x = -0.12; }
-    if (o.square) prbox(g, W - 2 * aw - IN(2), IN(8), IN(6), 0, Hh - IN(3), -D / 2 + IN(6), fab, IN(2.5));
+    for (let i = 0; i < segs; i++) prbox(bk, W - 2 * aw - IN(0.5), bh / segs, IN(8), 0, bh / segs * (i + 0.5), 0, fab, IN(3));
+    if (o.square) prbox(bk, W - 2 * aw - IN(2), IN(8), IN(6), 0, bh - IN(3), IN(1), fab, IN(2.5));
+    const fl = Math.max(IN(14), IN(o.reach || 62) - D - IN(8)), ft = new THREE.Group(); // footrest flipped out in front, front edge slightly raised
+    ft.position.set(0, IN(15), D / 2 - IN(1)); ft.rotation.x = -0.12; g.add(ft);
+    prbox(ft, W - 2 * aw - IN(1), IN(4), fl, 0, 0, fl / 2, fab, IN(2));
+    for (const sx of [-1, 1]) prbox(g, IN(1), IN(6), IN(9), sx * (W / 2 - aw - IN(3)), IN(11), D / 2 + IN(3), dark, 0); // linkage under the footrest
     if (o.stitch) for (const sx of [-1, 1]) prbox(g, IN(0.2), IN(0.2), D - IN(2), sx * (W / 2 - aw / 2), IN(o.armH || 24) + IN(0.05), IN(0.5), mat(0xd9c9b0), 0);
-    for (const sx of [-1, 1]) for (const sz of [-1, 1]) prbox(g, IN(1.5), IN(2), IN(1.5), sx * (W / 2 - IN(2)), IN(1), sz * (D / 2 - IN(2)), mat(0x151515), IN(0.2));
-    const reach = new THREE.Mesh(new THREE.PlaneGeometry(W, IN(o.reach || 62)), new THREE.MeshBasicMaterial({ color: 0xd2541f, transparent: true, opacity: 0.35, depthWrite: false }));
-    reach.rotation.x = -Math.PI / 2; reach.userData.noBB = true; reach.position.set(0, 0.02, -D / 2 + IN(o.reach || 62) / 2 - IN(4)); g.add(reach); // reclined footprint
-    pblob(g, W, D, 0.4);
+    for (const sx of [-1, 1]) for (const sz of [-1, 1]) prbox(g, IN(1.5), IN(2), IN(1.5), sx * (W / 2 - IN(2)), IN(1), sz * (D / 2 - IN(2)), dark, IN(0.2));
+    pblob(g, W, D + fl, 0.4);
   }
   const P = {
     aara: { name: 'Aara, walnut + green quilted headboard, cot only', site: 'Furlenco', price: 1249, url: FLU + 'aara-solid-wood-upholstered-queen-bed-5414-rent', size: 'queen, mattress up to 78 × 60 in',
@@ -1181,8 +1184,6 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     // side table + lamp at the balcony end of the sofa, keeping the main-door end clear
     const et = place('endtable', 0, 0, Math.PI, 42.05); nudgeX(et, sofaP.bb.min.x - 0.15 - et.bb.max.x);
     F('sofa-lamp', 'Table lamp on the side table', null, () => { tableLamp((et.bb.min.x + et.bb.max.x) / 2, (et.bb.min.z + et.bb.max.z) / 2, et.top, 0.8); });
-    // with the desk on the north wall and no guests, the recliner lives in the open dining corner as a lounge seat; with guests it comes back beside the sofa
-    const reclinerAway = !!cornerP.recliner && useDesk && deskNorth && !guests, reclinerHere = !!cornerP.recliner && !reclinerAway;
     const cx = sofaProd.chaise ? 11.6 : 10.7; // with a recliner by the glass, the table shifts toward the corridor to keep the way to the balcony door open
     const cof = place('coffee', cx, 0, 0, sofaFront - 1.4, 'maxZ'); // 1.4 ft of legroom in front of the seats
     if (guests && extraSeat === 'bean') { // two bean bags for the evening, in the open spot by the desk and turned to the TV; day to day they are put away
@@ -1192,8 +1193,7 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
         const back = new THREE.Mesh(new THREE.SphereGeometry(0.95, 24, 16), m); back.scale.set(1.1, 0.95, 0.7); back.position.set(x - Math.sin(face) * 0.75, 1.35, z - Math.cos(face) * 0.75); decor.add(back); colliders.push([x - 1.35, z - 1.35, x + 1.35, z + 1.35]);
       }, 'Rent · Rentickle'));
     }
-    if (reclinerHere) { const rc = place('corner', 0, 0, 1.876, sofaFront - 0.1, 'maxZ'); nudgeX(rc, 4.45 - rc.bb.min.x); } // in front of the stacked balcony glass, beside the sofa's balcony end, angled about 45° to the TV so the open half of the door keeps about 2.5 ft
-    else if (reclinerAway) { const rc = place('corner', 0, 0, Math.atan2(9.5 - 24.4, 31.5 - 39.6), 41.3, 'maxZ'); nudgeX(rc, 26.0 - rc.bb.max.x); } // dining corner, a foot out from the corner so it can recline, facing the TV
+    if (cornerP.recliner) { const rc = place('corner', 0, 0, 1.876, sofaFront - 0.1, 'maxZ'); nudgeX(rc, 4.45 - rc.bb.min.x); const need = rc.bb.max.x + 0.3 - cof.bb.min.x; if (need > 0) nudgeX(cof, need); } // the coffee table steps aside for the footrest // in front of the stacked balcony glass, beside the sofa's balcony end, angled to the TV; drawn reclined
     else if (!cornerP.none) { const ot = place('corner', 0, 0, 0, sofaFront - 0.6, 'maxZ'); nudgeX(ot, Math.min(sofaP.bb.min.x + 0.2, cof.bb.min.x - 0.4 - (ot.bb.max.x - ot.bb.min.x)) - ot.bb.min.x); } // in front of the sofa's balcony end
     F('plant-door', 'Snake plant by the main door', null, () => { plant(14.25, 41.5, 1.0, null, 'snake'); });
     F('plants-tv', 'Monstera and areca palm either side of the TV', null, () => { plant(13.7, 31.3, 1.3, null, 'monstera'); plant(5, 31.5, 1.5, null, 'areca'); });
@@ -1218,9 +1218,8 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
         B(x1 + 1.4, z1 + 0.3, x2 - 1.4, z1 + 0.4, 3.1, 4.5, 0x111316, false, 0.3); C(mx, z1 + 0.4, 0.06, 2.52, 3.1, S.metal);
         chair(mx, z2 + 0.9, 'n', S.dark); F('flat-lamp', 'Desk lamp on the flatmate\'s desk', null, () => { deskLamp(x2 - 0.5, z1 + 0.5, 2.52, 0.7); });
         F('flat-shelf', 'Wall shelf with books over the flatmate\'s desk', null, () => { B(x1, z1, x2, z1 + 0.95, 5.6, 5.7, S.wood); books(x1 + 0.4, z1 + 0.05, x2 - 0.4, 5.7, 0.7, false); });
-        if (useDesk) { // no dining table: art, a plant and a floor lamp; the recliner lounges in this corner on ordinary days
+        if (useDesk) { // no dining table: art and a plant on the long east wall
           F('east-art', 'Art on the long east wall', null, () => { art(26.72, 34.9, 26.8, 38.1, 4, 6.3); });
-          F('east-lamp', 'Floor lamp by the lounge corner', 'Reading light for the recliner when it sits in this corner.', () => { floorLamp(26.15, 38.7, 0.9); });
           F('flat-plants', 'Plant on the long east wall', null, () => { plant(26.2, 34.0, 1.1, null, 'rubber'); });
         }
       }
@@ -1570,7 +1569,7 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     const stools = guests && tp.stools ? Math.min(STOOLS_OUT, tp.stools) : 0, tableSeats = tp.seats || 0;
     const chairs = guests ? (useDesk ? 1 : 5) : 0, extra = guests && extraSeat !== 'none' ? 2 : 0;
     const tv = sofa + corner + stools + extra, total = tv + tableSeats + chairs;
-    const parts = [`sofa ${sofa}`]; if (corner) parts.push(`${cp.recliner ? (useDesk && deskNorth && !guests ? 'recliner 1 (in the dining corner)' : 'recliner 1') : 'ottoman 1'}`); if (stools) parts.push(`stools ${stools}`);
+    const parts = [`sofa ${sofa}`]; if (corner) parts.push(`${cp.recliner ? 'recliner 1' : 'ottoman 1'}`); if (stools) parts.push(`stools ${stools}`);
     if (extra) parts.push('bean bags 2');
     const other = []; if (tableSeats) other.push(`table seats ${tableSeats} (side-on)`); if (chairs) other.push(useDesk ? 'desk chair 1' : 'desk chair 1 + dining chairs 4');
     const tucked = tp.stools ? ` · ${tp.stools - stools} stool${tp.stools - stools === 1 ? '' : 's'} tucked under` : '';
@@ -1625,7 +1624,7 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     hud.hidden = m !== 'walk';
     document.getElementById('pad').hidden = m !== 'walk';
     document.getElementById('help').textContent = m === 'walk'
-      ? 'Drag to look around. Move with W A S D or the arrow keys, or hold the pad buttons. Tap any rented piece (sofa, corner seat, tables, beds, bedside tables, desk) to swap it for the second choice. Tap anything else (lamps, plants, rugs, curtains, art) to see that it is only a filler and hide it. A recliner shows a faint orange patch where its footrest reaches.'
+      ? 'Drag to look around. Move with W A S D or the arrow keys, or hold the pad buttons. Tap any rented piece (sofa, corner seat, tables, beds, bedside tables, desk) to swap it for the second choice. Tap anything else (lamps, plants, rugs, curtains, art) to see that it is only a filler and hide it. Recliners are shown reclined, footrest out.'
       : 'Drag to spin the house, scroll or pinch to zoom. Tap a room name to walk into it. Tap a filler to hide it, or use Fillers above to label or hide them all.';
   }
   function jump(x, z, yaw) { stopTour(); me.x = x; me.z = z; me.yaw = yaw; me.pitch = -0.25; setMode('walk'); }
@@ -1711,6 +1710,7 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   // Guided tour: [x, z, yaw, caption]; walks through doorways at eye height, pausing where there is a caption
   const TOUR_LIVING = [
     [16.5, 40.6, 0.75, 'Main door. The living room opens up on your left'],
+    [16.3, 35.4, 0.6, ''],
     [14.8, 34.4, 2.4, 'Living room: the sofa against the main-door wall, facing the TV'],
     [14.8, 34.4, 0.95, 'TV wall, with plants either side'],
   ];
