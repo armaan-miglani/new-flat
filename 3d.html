@@ -770,13 +770,13 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     sofa: { label: 'Sofa', calm: ['leoLounger', 'ellaSand'], moody: ['rex', 'pebble2'], boho: ['henry', 'brooklynCinn'], japandi: ['oliver', 'brooklynBeige'] },
     coffee: { label: 'Coffee table', calm: ['josef', 'zen', 'perk'], moody: ['josef', 'zen', 'perk'], boho: ['venti', 'caramel4'], japandi: ['jenson', 'dvita'] },
     corner: { label: 'Corner seat', calm: ['noCorner', 'romaSand'], moody: ['zest', 'leoOttoman'], boho: ['flexRust', 'stretch'], japandi: ['henryOtto', 'romaSand'] },
-    tvunit: { label: 'TV unit', all: ['leonard', 'pearl'] },
+    tvunit: { label: 'TV unit', all: ['leonard', 'pearl', 'hugoEnt'] },
     bed1: { label: 'Your bed', moody: ['aara', 'aaraStorage'], calm: ['dune', 'auroraGrey'], boho: ['bohoQueen', 'marley'], japandi: ['kipper', 'poiseOak'] },
     bed2: { label: 'Bedroom 2 bed', moody: ['bohoQueen', 'miliDvi'], calm: ['auroraGrey', 'bohoQueen'], boho: ['bohoQueen', 'auroraLow'], japandi: ['mysa', 'kipper'] },
     bedside: { label: 'Bedside tables (3)', moody: ['setWingMinion', 'setFloralMinion'], calm: ['setHugo', 'setWingman'], boho: ['setJasper', 'setRay'], japandi: ['setWatson', 'setStooge'] },
     desk: { label: 'Workstation', moody: ['floralDesk', 'bianca'], calm: ['bianca', 'moreno'], boho: ['bohoEarth', 'caramelCrest'], japandi: ['elvi', 'caramelCrest'] },
     endtable: { label: 'Side table', all: ['vienna'] },
-    bookshelf: { label: 'Bookshelf or cabinet', moody: ['rowlingL', 'hugoBook', 'rowlingMW', 'hugoEnt'], calm: ['hugoBook', 'rowlingL', 'hugoChest', 'hugoEnt'], boho: ['ladderOak', 'rowlingM', 'rianOak'], japandi: ['ladderOak', 'rianOak', 'rowlingM'] },
+    bookshelf: { label: 'Bookshelf or cabinet', moody: ['rowlingL', 'hugoBook', 'rowlingMW'], calm: ['hugoBook', 'rowlingL', 'hugoChest'], boho: ['ladderOak', 'rowlingM', 'rianOak'], japandi: ['ladderOak', 'rianOak', 'rowlingM'] },
   };
   function roundSlab(g, w, d, t, r, y, m, x, z) { // rounded-rectangle top with a soft bevelled edge
     const s = new THREE.Shape(), a = w / 2, b = d / 2;
@@ -815,10 +815,10 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
         if (kind === 1 && gap > 7) { pcyl(g, IN(1.9), IN(1.5), IN(3.4), cx, IN(y0 + 1.7), cz, pmat('paint', 0xe9e4da), 20); const lv = new THREE.Mesh(new THREE.SphereGeometry(IN(2.4), 12, 10), mat(0x56794a, 0.9)); lv.scale.set(1, 0.85, 1); lv.position.set(cx, IN(y0 + 5.4), cz); g.add(lv); }
         else if (kind === 2) { for (let k = 0; k < 3; k++) prbox(g, IN(6 - k * 0.6), IN(0.9), IN(o.D * 0.6 - k), cx, IN(y0 + 0.45 + k * 0.92), cz, mat(BK[(k + n) % BK.length], 0.85), 0); if (gap > 6) pcyl(g, IN(1.2), IN(1.5), IN(4.2), cx, IN(y0 + 2.75 + 2.1), cz, pmat('paint', 0xb8a68a), 18); }
         else if (gap > 8 && w > 9) prbox(g, IN(4), IN(5), IN(0.5), x + IN(r - 2.6), IN(y0 + 2.5), IN(-0.5), pmat('wood', 0x3a2418), 0); } }
-    if (o.H < 45) { pcyl(g, IN(1.6), IN(2), IN(6), x + IN(o.W / 2 - 4), Hh + IN(3), 0, pmat('paint', 0xd9cfbf), 20); for (let k = 0; k < 2; k++) prbox(g, IN(7), IN(1), IN(5), x - IN(o.W / 2 - 6), Hh + IN(0.5 + k), 0, mat(BK[k + 1], 0.85), 0); } // low pieces get a vase and a book stack on top
+    if (o.H < 45 && !o.bare) { pcyl(g, IN(1.6), IN(2), IN(6), x + IN(o.W / 2 - 4), Hh + IN(3), 0, pmat('paint', 0xd9cfbf), 20); for (let k = 0; k < 2; k++) prbox(g, IN(7), IN(1), IN(5), x - IN(o.W / 2 - 6), Hh + IN(0.5 + k), 0, mat(BK[k + 1], 0.85), 0); } // low pieces get a vase and a book stack on top
   }
   function mediaUnit(g, o) { // low unit: closed middle, open cubbies either side
-    bookcase(g, { W: o.W, D: o.D, H: o.H, frame: o.frame, paint: true, door: o.door, shelves: [o.H / 2], divs: [-o.mid / 2, o.mid / 2], doors: [o.plinth ?? 2, o.H - 0.7], doorX: [-o.mid / 2, o.mid / 2], plinth: o.plinth });
+    bookcase(g, { W: o.W, D: o.D, H: o.H, frame: o.frame, paint: true, door: o.door, shelves: [o.H / 2], divs: [-o.mid / 2, o.mid / 2], doors: [o.plinth ?? 2, o.H - 0.7], doorX: [-o.mid / 2, o.mid / 2], plinth: o.plinth, bare: true }); // top left clear for the TV
   }
   function recliner(g, o) { // shown reclined: back tilted, footrest out; local back at z = -D/2, facing +z
     const W = IN(o.W), D = IN(o.D), Hh = IN(o.H), aw = IN(o.armW || 7), fab = o.fab, dark = mat(0x151515);
@@ -956,7 +956,7 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
       build: g => bookcase(g, { W: 24, D: 12, H: 36, frame: 0x2e231c, backHex: 0x241b15, shelves: [12.5, 24] }) },
     hugoChest: { name: 'Hugo chest of drawers, walnut on taupe', site: 'Furlenco', price: 439, url: FLU + 'hugo-chest-of-drawer-5641-rent', size: '63 × 40 × 91 cm',
       build: g => bookcase(g, { W: 25, D: 16, H: 36, frame: 0x625a52, paint: true, door: 0x6e4529, shelves: [], drawers: [[2.5, 12], [12, 21.5], [21.5, 35.3]], handleHex: 0x6b6258 }) },
-    hugoEnt: { name: 'Hugo low storage unit, walnut doors with open cubbies', site: 'Furlenco', price: 439, url: FLU + 'hugo-entertainment-unit-5642-rent', size: '126 × 40 × 51 cm',
+    hugoEnt: { name: 'Hugo TV unit, walnut doors with open cubbies (tight for a 55" TV)', site: 'Furlenco', price: 439, url: FLU + 'hugo-entertainment-unit-5642-rent', size: '126 × 40 × 51 cm', top: IN(20),
       build: g => mediaUnit(g, { W: 49.6, D: 15.7, H: 20, mid: 24, frame: 0x625a52, door: 0x6e4529, plinth: 3 }) },
     perk: { name: 'Perk table with 4 stools, dark chocolate', site: 'RentoMojo', price: 644, url: RMU + 'furniture/rent-perk-coffee-table/1971', size: '37 × 37 × 14 in, stools 17 in', stools: 4,
       build: g => { const w = pmat('wood', 0x3a2418), c = pmat('fabric', 0xa88a68);
