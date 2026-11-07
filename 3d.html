@@ -738,10 +738,14 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
   // desks: local back at -z, facing +z (the chair side)
   const DK = {
-    floral: g => { const w = pmat('wood', 0x3a2418), v = pmat('velvetQuilt', 0x3f6a5a), br = pmat('metal', 0xb8893d); roundSlab(g, IN(41), IN(23.6), IN(1.2), IN(1.5), IN(29.2), w); prbox(g, IN(38), IN(3.5), IN(20), 0, IN(27.5), IN(1), w, IN(0.3));
-      prbox(g, IN(41), IN(8), IN(1.6), 0, IN(34.4), -IN(11), v, IN(0.8)); for (const sx of [-1, 1]) { const s = prbox(g, IN(1.6), IN(8), IN(12), sx * IN(19.7), IN(34.4), -IN(5.5), v, IN(0.8)); }
-      for (const sx of [-1, 1]) for (const sz of [-1, 1]) { pleg(g, sx * IN(17), sz * IN(8.5), IN(26), IN(0.85), IN(0.55), w, sx * IN(2.2), sz * IN(1.2)); pcyl(g, IN(0.58), IN(0.55), IN(2), sx * IN(17) + sx * IN(2.1), IN(1), sz * IN(8.5) + sz * IN(1.15), br, 10); }
-      return IN(30.4); },
+    floral: g => { // listing: 104 x 60 x 83 cm overall; desktop about 74 cm, the green quilted wrap rises ~9 cm above it and drops below it at the sides (listing photos)
+      const w = pmat('wood', 0x3a2418), v = pmat('velvetQuilt', 0x3f6a5a), br = pmat('metal', 0xb8893d);
+      roundSlab(g, IN(41), IN(23.6), IN(1.1), IN(1.5), IN(28), w); prbox(g, IN(38), IN(3), IN(20), 0, IN(26.5), IN(1), w, IN(0.3)); // top + drawer apron
+      prbox(g, IN(37), IN(0.5), IN(0.6), 0, IN(26.5), IN(11.1), pmat('metal', 0xb8893d), IN(0.2)); // brass drawer pull line
+      prbox(g, IN(41.4), IN(6.5), IN(1.4), 0, IN(29.4), -IN(11.4), v, IN(0.6)); // back rail: 26.2 to 32.7 in
+      for (const sx of [-1, 1]) prbox(g, IN(1.4), IN(6.5), IN(11), sx * IN(20.0), IN(29.4), -IN(6.2), v, IN(0.6)); // side wings
+      for (const sx of [-1, 1]) for (const sz of [-1, 1]) { pleg(g, sx * IN(17), sz * IN(8.5), IN(25), IN(0.85), IN(0.55), w, sx * IN(2.2), sz * IN(1.2)); pcyl(g, IN(0.58), IN(0.55), IN(2), sx * IN(17) + sx * IN(2.1), IN(1), sz * IN(8.5) + sz * IN(1.15), br, 10); }
+      return IN(29.1); },
     bianca: g => { const w = pmat('wood', 0x8a5230), m = pmat('metal', 0x1a1a1a); roundSlab(g, IN(47.2), IN(23.6), IN(1), IN(2), IN(28.3), w);
       for (const sx of [-1, 1]) { prbox(g, IN(2.4), IN(27.3), IN(1.6), sx * IN(19), IN(14.6), 0, m, IN(0.2)); prbox(g, IN(2.6), IN(1.4), IN(23), sx * IN(19), IN(0.9), 0, m, IN(0.3)); prbox(g, IN(2), IN(1), IN(20), sx * IN(19), IN(27.8), 0, m, 0); }
       prbox(g, IN(38), IN(1.2), IN(1.6), 0, IN(27.5), 0, m, 0); prbox(g, IN(3.5), IN(0.8), IN(1.6), IN(16), IN(27.9), IN(11.6), mat(0x222222), 0); return IN(29.3); },
