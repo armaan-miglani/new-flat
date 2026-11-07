@@ -1238,12 +1238,13 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
       } else {
         const x1 = 21.6, x2 = 26.6, z1 = 30.7, z2 = 33.1, mx = (x1 + x2) / 2;
         B(x1, z1, x2, z2, 2.4, 2.52, S.wood, true);
-        const bs = place('bookshelf', 0, 0, 0, 30.7); nudgeX(bs, 18.35 - bs.bb.min.x); // freestanding bookshelf on the north wall, just left of the desk
+        if (useDesk) place('bookshelf', 0, 36.6, -Math.PI / 2, 26.8, 'maxX'); // no dining table: the bookshelf stands on the long east wall behind the desk chair, facing into the room
+        else { const bs = place('bookshelf', 0, 0, 0, 30.7); nudgeX(bs, 18.35 - bs.bb.min.x); } // with the dining table: on the north wall, just left of the desk
         for (const [x, z] of [[x1 + 0.2, z1 + 0.2], [x2 - 0.2, z1 + 0.2], [x1 + 0.2, z2 - 0.2], [x2 - 0.2, z2 - 0.2]]) C(x, z, 0.05, 0, 2.4, S.metal);
         B(x1 + 1.4, z1 + 0.3, x2 - 1.4, z1 + 0.4, 3.1, 4.5, 0x111316, false, 0.3); C(mx, z1 + 0.4, 0.06, 2.52, 3.1, S.metal);
         chair(mx, z2 + 0.9, 'n', S.dark); F('flat-lamp', 'Desk lamp on the flatmate\'s desk', null, () => { deskLamp(x2 - 0.5, z1 + 0.5, 2.52, 0.7); });
-        if (useDesk) { // no dining table: art and a plant on the long east wall
-          F('east-art', 'Art on the long east wall', null, () => { art(26.72, 34.9, 26.8, 38.1, 4, 6.3); });
+        if (useDesk) { // no dining table: bookshelf (placed above), art and a plant on the long east wall
+          F('east-art', 'Art on the long east wall, beside the bookshelf', null, () => { art(26.72, 38.9, 26.8, 41.5, 4, 6.2); });
           F('flat-plants', 'Plant on the long east wall', null, () => { plant(26.2, 34.0, 1.1, null, 'rubber'); });
         }
       }
@@ -1459,7 +1460,7 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
         <li>Side table with a lamp at the sofa's end, and a shoe cabinet with a plant on top right beside the main door.</li></ul></div>
       <div class="room"><h3>${useDesk ? 'Flatmate workstation' : 'Workstation + dining'}</h3><ul>${useDesk
         ? (deskNorth
-          ? '<li>One 5 ft desk and an ergonomic chair on the north wall (the corridor end), pushed towards the corner, with a monitor and a desk lamp, and a freestanding bookshelf with a cabinet just to its left (no drilling).</li><li>On video calls the camera looks at the dining area and the main-door wall, so the sofa and TV stay out of the frame. Balcony daylight falls from the side: no screen glare, face evenly lit.</li><li>The long east wall stays free for plants and art.</li>'
+          ? '<li>One 5 ft desk and an ergonomic chair on the north wall (the corridor end), pushed towards the corner, with a monitor and a desk lamp, and a freestanding bookshelf with a cabinet on the long east wall behind the chair (no drilling); it shows at the side of the frame on video calls.</li><li>On video calls the camera looks at the dining area and the main-door wall, so the sofa and TV stay out of the frame. Balcony daylight falls from the side: no screen glare, face evenly lit.</li><li>The long east wall stays free for plants and art.</li>'
           : '<li>One 5 ft desk and an ergonomic chair against the long east wall, with a monitor and a desk lamp, and a freestanding bookshelf with a cabinet in the corner beside it (no drilling).</li><li>On video calls the camera looks back across the living room, TV and balcony glass. Try Workstation · north wall above to compare.</li>')
         : '<li>The flatmate desk sits on the north wall (the corridor end), towards the corner, so video calls show the dining area, not the living room.</li><li>A round 3 ft table for four fills the main-door end, with a low pendant over it. Round keeps the corners free, so the path from the main door to the corridor stays clear.</li><li>About 2 ft between the desk chair and the nearest dining chair, so both can be used at once.</li>'}</ul></div>
       <div class="room"><h3>Balcony</h3><ul><li>No seating: a balcony garden. A long planter trough along the grille, big potted plants in both corners, and hanging planters from the top rail, with a clear path down the middle.</li><li>Warm string lights along the top of the grille. It faces west, so this is the sunset spot.</li></ul></div>
