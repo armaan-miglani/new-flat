@@ -1333,7 +1333,7 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
     // Mirrors, utility and the small things
     // Bedroom 2 has no mirror in its cabinets: a full-length leaning mirror in the free bit of wall by the window
-    F('bed2-mirror', 'Leaning mirror in Bedroom 2', 'Not in the rent list. Bedroom 2 has no mirror, so it is worth buying one.', () => { B(5.4, 18.12, 6.7, 18.28, 0, 5.8, S.wood2); addBox(decor, 5.5, 18.1, 6.6, 18.12, 0.12, 5.68, mirrorMat); });
+    F('bed2-mirror', 'Leaning mirror in Bedroom 2', 'Not in the rent list. Bedroom 2 has no mirror, so it is worth buying one.', () => { B(5.0, 8.22, 6.3, 8.38, 0, 5.8, S.wood2); addBox(decor, 5.1, 8.38, 6.2, 8.4, 0.12, 5.68, mirrorMat); });
     // entry: round mirror over the shoe cabinet, wall hooks beside the door
     F('entry-mirror', 'Round mirror by the main door', null, () => { const fr = new THREE.Mesh(new THREE.CylinderGeometry(1.05, 1.05, 0.08, 40), mat(S.metal)); fr.rotation.x = Math.PI / 2; fr.position.set(20.2, 5.2, 42.26); decor.add(fr);
       const mi = new THREE.Mesh(new THREE.CylinderGeometry(0.95, 0.95, 0.04, 40), mirrorMat); mi.rotation.x = Math.PI / 2; mi.position.set(20.2, 5.2, 42.2); decor.add(mi); });
@@ -1357,7 +1357,7 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
     // Kitchen and passage
     F('kitchen-strips', 'LED strips under the kitchen cabinets', null, () => { strip(6.3, 24.4, 12, 24.5, 5.1, 0.6); strip(6.3, 29.0, 13.8, 29.1, 5.1, 0.4); });
-    F('passage-art', 'Art in the corridor', null, () => { art(14.22, 14, 14.3, 17.5, 4, 6.4); art(17.7, 22.8, 17.78, 24.6, 4.2, 6); });
+    F('passage-art', 'Art in the corridor', null, () => { art(14.22, 19.2, 14.3, 22.4, 4, 6.4); art(17.7, 19.6, 17.78, 21.6, 4.2, 6); /* clear of Bedroom 2's door (15.25-18.25) and the 2nd bathroom door (24-27) */ });
     F('passage-pendants', 'Pendant lights in the corridor', null, () => { pendant(16, 18, 8.2, 0.55, 0.6); pendant(16, 26, 8.2, 0.55, 0.5); });
 
     // My Bedroom: bed centred on the back wall, walkway to the cabinets
@@ -1384,13 +1384,13 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     F('nook-plant', 'Plant in the corner by the glass door', null, () => { plant(12.9, 0.7, 1.0, NOOK_POT, 'rubber'); });
 
     // Bedroom 2: built-in cabinets on the passage wall, bed headboard on the kitchen-side wall
-    F('bed2-rug', 'Rug in Bedroom 2', null, () => { rug(5.0, 14.8, 10.4, 17.8); });
-    const b2 = place('bed2', 7.3, 0, 0, 8.22); // headboard on the wall shared with the separate area, as in the video
-    { const t = beside('bedside', b2, 1, 8.22, 0, bset[1]); F('bed2-lamp', 'Bedside lamp, Bedroom 2', null, () => { tableLamp((t.bb.min.x + t.bb.max.x) / 2, (t.bb.min.z + t.bb.max.z) / 2, t.bb.max.y, 0.75); }); }
-    F('bed2-strip', 'LED strip above the Bedroom 2 bed', null, () => { strip(4.8, 8.22, 9.8, 8.26, 7.4, 0.4); });
-    F('bed2-pendant', 'Pendant light in Bedroom 2', null, () => { pendant(7.3, 13.4, 7.4, 0.8, 0.8); });
-    F('bed2-plant', 'Peace lily in Bedroom 2', null, () => { plant(4.75, 17.75, 1.1, null, 'lily'); });
-    F('bed2-floorlamp', 'Floor lamp in Bedroom 2', null, () => { floorLamp(10.6, 17.75, 0.8); });
+    F('bed2-rug', 'Rug in Bedroom 2', null, () => { rug(5.0, 8.7, 10.4, 11.7); });
+    const b2 = place('bed2', 7.3, 0, Math.PI, 18.28); // headboard on the wall opposite the frosted window, so the wardrobe doors stay clear
+    { const t = beside('bedside', b2, 1, 18.28, Math.PI, bset[1]); F('bed2-lamp', 'Bedside lamp, Bedroom 2', null, () => { tableLamp((t.bb.min.x + t.bb.max.x) / 2, (t.bb.min.z + t.bb.max.z) / 2, t.bb.max.y, 0.75); }); }
+    F('bed2-strip', 'LED strip above the Bedroom 2 bed', null, () => { strip(4.8, 18.24, 9.8, 18.28, 7.4, 0.4); });
+    F('bed2-pendant', 'Pendant light in Bedroom 2', null, () => { pendant(7.3, 10.3, 7.4, 0.8, 0.8); });
+    F('bed2-plant', 'Peace lily in Bedroom 2', null, () => { plant(7.4, 8.75, 1.0, null, 'lily'); });
+    F('bed2-floorlamp', 'Floor lamp in Bedroom 2', null, () => { floorLamp(4.7, 11.0, 0.8); });
 
     // Bathrooms: warm mirror lights
     F('bath-lights', 'Warm lights over the bathroom mirrors', null, () => { strip(20.3, 17.68, 22.1, 17.74, 6.15, 0.5); strip(19.2, 23.26, 20.6, 23.32, 6.15, 0.5); });
