@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta charset="utf-8">
+<title>New Flat Move-in Checklist</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one reading column; three tick-off lists (rent, buy, skip) with a running monthly total up top */
+:root {
+  --bg: #f6f7f5; --paper: #ffffff; --ink: #1f2a2e; --muted: #5d6b70; --line: #d5dcdc;
+  --rent: #2f6f9e; --buy: #3f7f4a; --skip: #b5562a; --chip: #eef1ef;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #13191b; --paper: #1a2225; --ink: #e4ebec; --muted: #98a7ab; --line: #34454a;
+  --rent: #7fb3da; --buy: #86c38f; --skip: #e08a5c; --chip: #232d30; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #13191b; --paper: #1a2225; --ink: #e4ebec; --muted: #98a7ab; --line: #34454a;
+  --rent: #7fb3da; --buy: #86c38f; --skip: #e08a5c; --chip: #232d30; color-scheme: dark }
+body { background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 15px; line-height: 1.5; }
+.wrap { max-width: 860px; margin: 0 auto; padding-block: 28px 56px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 26px; }
+header { display: grid; gap: 6px; }
+.eyebrow { font: 500 12px var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+h1 { font-size: 28px; line-height: 1.15; margin: 0; font-weight: 600; text-wrap: balance; }
+h2 { font-size: 19px; margin: 0; display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+h2 small { font: 400 13px var(--sans); color: var(--muted); }
+p { margin: 0; max-width: 68ch; }
+.muted { color: var(--muted); }
+.sum { display: flex; flex-wrap: wrap; gap: 10px 28px; background: var(--paper); border: 1px solid var(--line); border-radius: 6px; padding: 14px 16px; }
+.sum div { display: grid; }
+.sum b { font: 600 22px var(--mono); font-variant-numeric: tabular-nums; }
+.sum span { font-size: 12.5px; color: var(--muted); }
+section { display: grid; gap: 10px; }
+.tag { font: 600 11px var(--mono); letter-spacing: .06em; text-transform: uppercase; padding: 2px 8px; border-radius: 999px; border: 1px solid currentColor; }
+.rent .tag { color: var(--rent); } .have .tag { color: var(--muted); } .buy .tag { color: var(--buy); } .skip .tag { color: var(--skip); }
+.list { display: grid; gap: 8px; }
+.item { background: var(--paper); border: 1px solid var(--line); border-radius: 6px; padding: 12px 14px; display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; align-items: start; }
+.item input { width: 18px; height: 18px; margin-top: 3px; accent-color: var(--buy); }
+.item .body { display: grid; gap: 4px; min-width: 0; }
+.item .top { display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: baseline; justify-content: space-between; }
+.item .name { font-weight: 600; }
+.item .price { font: 500 13.5px var(--mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.item .pick { font-size: 14px; }
+.item .alt { font-size: 13px; color: var(--muted); }
+.item a { color: var(--rent); text-underline-offset: 2px; }
+.item.done { opacity: .55; }
+.item.done .name { text-decoration: line-through; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chips span { font: 500 11.5px var(--mono); background: var(--chip); border-radius: 4px; padding: 2px 7px; color: var(--muted); }
+.note { border-left: 3px solid var(--skip); padding: 4px 0 4px 14px; display: grid; gap: 6px; }
+.note ul { margin: 0; padding-left: 18px; color: var(--muted); display: grid; gap: 4px; }
+.tw { overflow-x: auto; background: var(--paper); border: 1px solid var(--line); border-radius: 6px; }
+table { border-collapse: collapse; width: 100%; font-size: 13.5px; min-width: 620px; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font: 600 11.5px var(--mono); letter-spacing: .05em; text-transform: uppercase; color: var(--muted); }
+td.n, th.n { text-align: right; font-family: var(--mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+tfoot td { font-weight: 600; border-bottom: 0; }
+td a { color: var(--rent); text-underline-offset: 2px; }
+.themes { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+@media (max-width: 560px) { .themes { grid-template-columns: repeat(2, 1fr); } }
+.themes button { display: grid; gap: 2px; text-align: left; border: 1px solid var(--line); background: var(--paper); color: var(--ink); border-radius: 6px; padding: 10px 12px; font: 600 15px var(--sans); cursor: pointer; }
+.themes button b { font: 500 13px var(--mono); color: var(--muted); font-variant-numeric: tabular-nums; }
+.themes button[aria-selected="true"] { border-color: var(--rent); box-shadow: inset 0 0 0 1px var(--rent); }
+tr.themed td { background: var(--chip); }
+button.reset { justify-self: start; border: 1px solid var(--line); background: var(--chip); color: var(--ink); border-radius: 6px; padding: 6px 12px; font: 500 13px var(--sans); cursor: pointer; }
+:focus-visible { outline: 2px solid var(--rent); outline-offset: 2px; }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Bangalore · photos and sizes checked 3 Nov</div>
+    <h1>New Flat Move-in Checklist</h1>
+    <p class="muted">What to rent, what to buy and what to skip, picked from what Furlenco and RentoMojo had in stock for our area, delivering within your 10 to 15 day window. Rents and stock change daily, so confirm each item at checkout.</p>
+  </header>
+
+  <div class="sum" aria-live="polite">
+    <div><b id="total">₹0</b><span>picked rentals per month, 11-month plan, selected theme</span></div>
+    <div><b id="deposit">₹0</b><span>RentoMojo refundable deposits (Furlenco: zero deposit)</span></div>
+    <div><b id="count">0 / 0</b><span>items ticked off</span></div>
+  </div>
+
+  <section class="glance">
+    <h2>Pick a theme</h2>
+    <div class="themes" id="themes" role="tablist" aria-label="Theme"></div>
+    <p class="muted" id="themeblurb"></p>
+    <h2>At a glance: pick vs second choice <small>shaded rows change with the theme; the rest are shared</small></h2>
+    <div class="tw"><table><thead><tr><th>Item</th><th>Our pick</th><th class="n">₹/mo</th><th>Second choice</th><th class="n">₹/mo</th></tr></thead><tbody id="glance"></tbody>
+    <tfoot><tr><td colspan="2">Total with picks</td><td class="n" id="gt1"></td><td>Total with every second choice</td><td class="n" id="gt2"></td></tr></tfoot></table></div>
+  </section>
+
+  <section class="rent">
+    <h2><span class="tag">Rent</span> Details for the selected theme, second choice under each <small>tick when ordered</small></h2>
+    <div class="list" id="rent"></div>
+  </section>
+
+  <section class="buy">
+    <h2><span class="tag">Buy</span> Portable, works in any home <small>tick when bought</small></h2>
+    <div class="list" id="buy"></div>
+  </section>
+
+  <section class="have">
+    <h2><span class="tag">Have</span> Already yours, nothing to order</h2>
+    <div class="list" id="have"></div>
+  </section>
+
+  <section class="skip">
+    <h2><span class="tag">Skip</span> Made for this flat only</h2>
+    <div class="list" id="skip"></div>
+  </section>
+
+  <div class="note">
+    <h2>Where buying beats renting</h2>
+    <ul>
+      <li>Lamps, rugs, mats, curtains and plants: neither site offers them, so these have to be bought anyway.</li>
+      <li>Small pieces (shoe cabinet, bookshelf, side table): ₹150–250/mo adds up to the cost of buying a similar piece in roughly 12–18 months. If you expect to stay longer than that, buying works out cheaper.</li>
+      <li>Fridge and RO: at ₹1,499 and ₹1,194/mo, renting passes the cost of buying in roughly 2 years (rough estimate, prices vary). Renting includes free service and filter changes, which matters for the RO.</li>
+      <li>Bed, sofa, coffee table, desk, bedside tables: rent. They are big, style-specific and costly to move.</li>
+    </ul>
+  </div>
+
+  <div class="note">
+    <h2>Before you order</h2>
+    <ul>
+      <li>How these were picked: I went through every in-stock sofa (121), bed, coffee table, TV unit, bedside table and desk on RentoMojo with delivery set to our address, looked at each photo, and checked the size of every finalist against the floor plan. On Furlenco I scanned the full living-room and bed catalogues at our pincode, but most product photos would not load, so only the Mili Dvi bed is a photo-checked Furlenco pick.</li>
+      <li>Corner seat (4 Nov): I went through all 27 ottomans and 9 recliners on both sites (every photo). Two listings are named wrongly: Furlenco's Flex "Magic Beige" is rust, and RentoMojo's Henry "Sylvan Green" is cream; picks go by the photos. Every recliner is bulky when reclined and, in this living room, reaches into the path to the balcony door, so each theme's pick is an ottoman and the recliner is the second choice.</li>
+      <li>Calm theme (4 Nov): picked from both sites' full sofa, bed, bedside, coffee-table and desk ranges; every photo and listing video of each pick and second choice was checked, and Furlenco stock was read live for our pincode.</li>
+      <li>Themes (4 Nov): the sofa, both beds, coffee table, bedside tables and workstation change with the theme; the TV unit, side table, shoe cabinet, fridge and RO stay the same in all three. Boho and Japandi picks are mostly RentoMojo because Furlenco's product photos would not load for checking; Furlenco's Boho Earth desk and Bianca desk were checked from their listing photos.</li>
+      <li>How the theme decides: the walls are cream, the doors teak-walnut and the kitchen pistachio, so every rented piece is walnut or dark wood, with sage/green and caramel as the colours. Where a cheaper piece matched the theme just as well, it is the pick (coffee table, bedside tables). Furlenco often shows "Out of stock" for an add-on (like a mattress) while the item itself is in stock; I checked the Add to cart button on each pick.</li>
+      <li>Several RentoMojo "Walnut" names are wrong: the Leonard TV unit, Minion bedside and Stuart desk are honey oak in their photos. The picks above go by the photo, not the name.</li>
+      <li>Bookshelf dropped for now (4 Nov). If you want one later, RentoMojo Rian (₹255/mo, 23 in wide) fits the short wall beside the bedroom door.</li>
+      <li>Plan length: RentoMojo prices are the 11-month rates (checked 4 Nov). The 12-month plan is about 2% cheaper per month (Rex sofa ₹960 vs ₹984), so if you are fairly sure of a year, pick 12. Furlenco shows one price with no plan picker; it is zero deposit and lets you return after 3 months, so confirm the monthly rent at checkout.</li>
+      <li>Furlenco was checked at our pincode (delivery 5–8 Nov). RentoMojo was checked at city level; enter our address at checkout to confirm delivery. Its nearest store is close by.</li>
+      <li>Both need online KYC after ordering, so order 3 to 4 days before you want delivery.</li>
+      <li>Rented pieces use the full Modern Moody colours (olive, walnut, sage headboard) because they go back when you move. Bought things (lamps, rugs, curtains) stay neutral so they work in the next flat.</li>
+      <li>Furlenco's L-sofas are 8.6 ft long and mostly blue or yellow, too long for your living-room wall. A 3-seater plus a matching ottoman gives the same L shape and fits.</li>
+      <li>Order the Furlenco bed first: only 1 was left on 3 Nov.</li>
+      <li>The RO and fridge in the video belong to the current tenant, so both are on the rent list.</li>
+    </ul>
+  </div>
+
+  <button class="reset" id="reset">Clear all ticks</button>
+</div>
+
+<script>
+(function () {
+  const RM = 'https://www.rentomojo.com/bangalore/', FL = 'https://www.furlenco.com/bengaluru/';
+  const ITEMS = {
+    rent: [
+      { id: 'sofa', short: 'Rex 3-seater, warm caramel (RentoMojo)', second: ['Pebble 2-seater, beige bouclé (RentoMojo)', 1537, RM + 'furniture/rent-pebble-two-seater-sofa/153294'], name: 'Sofa', price: 984, dep: 984, pick: 'RentoMojo · Rex 3-Seater Sofa (Warm Caramel), ₹984/mo, 74 in long (6.2 ft, fits the sofa wall). All photos checked: cognac leather-look, rolled flared arms, panel-stitched back cushions, short dark legs. Caramel + sage + walnut is the Moody palette. Delivery 3–5 days.', url: RM + 'furniture/rent-rex-3-seater-sofa-warm-caramel/153069', url2: '', alt: 'Softer, lighter: Pebble 2 Seater (beige bouclé, 175 × 81 cm) ₹1,537/mo. All-sage option: Leo 3-Seater (Sage Green) ₹736/mo. Too long for the wall: Pebble 3-seater (8 ft) and Sama (8.2 ft).', alts: [['Pebble 2-seater', RM + 'furniture/rent-pebble-two-seater-sofa/153294'], ['Leo sage 3-seater', RM + 'furniture/rent-leo-3-seater-fabric-sofa-saga-green/118527']], chips: ['theme match', 'photo + size checked'] },
+      { id: 'corner', short: 'Leo ottoman, sage (RentoMojo)', second: ['Zest recliner, brown leatherette (Furlenco)', 599, 'https://www.furlenco.com/rent/products/recliner-zest-leatherette-brown-183-rent'], name: 'Corner seat at the balcony end: ottoman or recliner', price: 142, dep: 142, pick: 'RentoMojo · Leo Fabric Ottoman (Sage Green), ₹142/mo, 17-in cube in sage linen with piped edges on small black feet (all 5 photos checked). Sits in front of the sofa\'s balcony end so the sofa reads as an L, and moves out of the way when you need the path. Delivery 1–3 days.', url: RM + 'furniture/rent-leo-fabric-ottoman-sage-green/118773', url2: '', alt: 'Recliner instead: Furlenco Zest Leatherette Recliner (Brown) ₹599/mo, 86 × 79 × 84 cm, slim square arms and a modern headrest (all 12 photos checked, 47 in stock). It goes in the corner by the balcony door; reclined, the footrest reaches into the path to the balcony, so it works only if you keep it closed when not in use. Also sage: Casper ottoman (half-round) ₹112/mo.', alts: [['Zest recliner', 'https://www.furlenco.com/rent/products/recliner-zest-leatherette-brown-183-rent'], ['Casper sage ottoman', RM + 'furniture/rent-casper-fabric-ottoman-sage-green/118256']], chips: ['theme match', 'all photos checked', 'L feel'] },
+      { id: 'bed1', short: 'Aara queen, walnut + green headboard, cot only (Furlenco)', second: ['Aara with hydraulic storage, same look (Furlenco)', 1799, 'https://www.furlenco.com/rent/products/aara-solid-wood-upholstered-queen-hydraulic-storage-bed-5424-rent'], name: 'My bedroom: walnut bed, green quilted headboard', price: 1249, dep: 0, pick: 'Furlenco · Aara Solid Wood Upholstered Queen Bed, ₹1,249/mo, 171 × 207 cm. Dark walnut frame with a deep-green quilted headboard, the walnut frame and green headboard are exactly the bedroom colours in the 3D plan. In stock, zero deposit, delivery 6–8 Nov. Choose the "Only Cot" option: ₹1,249 is the bed alone, no mattress add-on. Takes your queen mattress up to 78 × 60 in.', url: 'https://www.furlenco.com/rent/products/aara-solid-wood-upholstered-queen-bed-5414-rent', alt: 'Same bed with hydraulic storage under it: ₹1,799/mo. Lighter look: RentoMojo Boho Queen ₹943/mo (dark wood, cream channel headboard). Also walnut + green: Furlenco Mili Dvi ₹1,009/mo.', alts: [['Aara storage', 'https://www.furlenco.com/rent/products/aara-solid-wood-upholstered-queen-hydraulic-storage-bed-5424-rent'], ['Boho queen', RM + 'furniture/rent-boho-queen-bed-solid-wood/153581']], chips: ['theme match', 'photo + size checked'] },
+      { id: 'coffee', short: 'Josef, oval walnut (RentoMojo)', second: ['Zen, oval walnut on fluted bases (Furlenco)', 829, 'https://www.furlenco.com/rent/products/zen-solid-wood-coffee-table-6176-rent'], name: 'Coffee table', price: 245, dep: 245, pick: 'RentoMojo · Josef Center Table, ₹245/mo. Photo checked: oval walnut top on splayed legs. Matches the walnut doors and the walnut bed frame, sits well with the caramel sofa. Delivery 3–5 days.', url: RM + 'furniture/rent-josef-center-table/127519', alt: 'Same colours, more sculpted: Furlenco Zen (walnut top on two fluted pedestals, 110 × 75 cm) ₹829/mo. Only worth it if you both like that shape.', alts: [['Zen', 'https://www.furlenco.com/rent/products/zen-solid-wood-coffee-table-6176-rent']], chips: ['theme match', 'photo checked'] },
+      { id: 'tvunit', short: 'Leonard, 70 in (RentoMojo)', second: ['Pearl, white + walnut, 60 in (RentoMojo)', 292, RM + 'furniture/rent-pearl-tv-unit-walnut/115978'], name: 'TV unit (for your 55 in+ TV)', price: 286, dep: 286, pick: 'RentoMojo · Leonard TV Unit, ₹286/mo, 70 in wide (5.8 ft), so a 55 in TV (about 49 in wide) sits with room either side. Low, with open shelves and drawers. Photo shows a warm honey-oak finish despite "Walnut" in the name; it sits next to the teak doors. Delivery 3–5 days.', url: RM + 'furniture/rent-leonard-tv-unit-walnut/115815', alt: 'Ruled out for a 55 in TV: Furlenco Hugo (126 cm, best looking but too narrow), Pixar (46 in), Marvel (36 in). Pearl (Walnut) ₹292/mo is 60 in wide, white with walnut, if you prefer a lighter look.', alts: [['Pearl', RM + 'furniture/rent-pearl-tv-unit-walnut/115978']], chips: ['photo + size checked', 'fits 55 in+'] },
+      { id: 'endtable', short: 'Vienna, dark walnut (RentoMojo)', name: 'Sofa side table', price: 173, dep: 173, pick: 'RentoMojo · Vienna End Table, ₹173/mo, 21 × 18 in, dark walnut, at the main-door end of the sofa with a lamp.', url: RM + 'furniture/rent-end-table-vienna/2921', chips: ['photo + size checked'] },
+      { id: 'bedside', short: 'Wingman ×2 + Minion ×1 (RentoMojo)', second: ['Floral Affair ×2, walnut with brass trim (Furlenco) + Minion', 1590, 'https://www.furlenco.com/rent/products/floral-affair-bedside-table-3562-rent'], name: 'Bedside tables: 2 for you, 1 for Bedroom 2', price: 458, dep: 458, pick: 'RentoMojo · Wingman Bedside Table × 2, ₹173/mo each. Photo checked: dark walnut with a drawer and an open shelf, same tone as the Aara bed frame. Bedroom 2: Minion (dark espresso, ₹112/mo) next to the dark-wood Boho bed.', url: RM + 'furniture/rent-bedside-table-with-storage-wingman/2738', url2: RM + 'furniture/rent-bedside-table-minion/1973', alt: 'Matching set with the desk: Furlenco Floral Affair ₹739/mo each (walnut acacia, brass-trimmed drawer, 45 × 45 × 55 cm).', alts: [['Floral Affair', 'https://www.furlenco.com/rent/products/floral-affair-bedside-table-3562-rent']], chips: ['theme match', 'photo checked'] },
+      { id: 'bed2', short: 'Boho Queen, frame only (RentoMojo)', second: ['Mili Dvi, walnut + sand green (Furlenco; if mattress is 75–78 in)', 1009, 'https://www.furlenco.com/rent/products/mili-dvi-solid-wood-queen-bed-in-deep-walnut-finish---sand-green-4282-rent'], name: 'Bedroom 2: queen bed (frame only)', price: 943, dep: 943, pick: 'RentoMojo · Boho Queen Bed, ₹943/mo, 75.6 × 63 in, solid wood with a cushioned bouclé headboard. Frame only, so your flatmate uses their own queen mattress (RentoMojo queens are built for a 72 × 60 in mattress). Fits Bedroom 2 with about 2.5 ft in front of the cabinets. Delivery 3–5 days.', url: RM + 'furniture/rent-boho-queen-bed-solid-wood/153581', alt: 'If their mattress is 75 or 78 in long, pick a Furlenco queen instead (built for 78 × 60): Mili Dvi ₹1,009/mo. Simpler: RentoMojo Aurora Low Height Queen ₹711/mo (72 × 60 mattress).', alts: [['Mili Dvi', 'https://www.furlenco.com/rent/products/mili-dvi-solid-wood-queen-bed-in-deep-walnut-finish---sand-green-4282-rent'], ['Aurora low', RM + 'furniture/rent-aurora-low-height-queen-bed-solid-wood/3272']], chips: ['photo + size checked', 'frame only'] },
+      { id: 'shoe', short: 'Saddle Large, espresso (RentoMojo)', second: ['Flip, low bench (RentoMojo)', 286, RM + 'furniture/rent-feetiesh-shoe-rack-live/1983'], name: 'Shoe cabinet by the main door', price: 234, dep: 234, pick: 'RentoMojo · Saddle Shoe Rack Large, ₹234/mo, 24 × 15 × 36 in, two doors, dark espresso (photo checked). Fits beside the main door with the round mirror above. Delivery 1–3 days.', url: RM + 'furniture/rent-footsie-shoe-rack-large/1970', alt: 'Low bench style: Flip ₹286/mo (32 × 16 × 21 in, dark). Note: "Saddle Large (Walnut)" is actually honey-coloured. Furlenco only has a white Bianca (₹479) in stock.', alts: [['Flip', RM + 'furniture/rent-feetiesh-shoe-rack-live/1983']], chips: ['photo + size checked'] },
+      { id: 'desk1', short: 'Floral Affair study table (Furlenco)', second: ['Bianca sit-stand desk, walnut top + black frame (Furlenco)', 999, 'https://www.furlenco.com/rent/products/bianca-height-adjustable-study-table-in-black---lyon-walnut-finish-6162-rent'], name: 'Separate area: your workstation', price: 1709, dep: 0, pick: 'Furlenco · Floral Affair Study Table, ₹1,709/mo, 104 × 60 cm, walnut acacia with a green velvet back panel and brass-tipped legs. With the green bed headboard it ties your bedroom and the separate area together. Only 2 left.', url: 'https://www.furlenco.com/rent/products/floral-affair-study-table-3567-rent', alt: 'Workstation alternative: Furlenco Bianca height-adjustable desk ₹999/mo, walnut top on a black sit-stand frame (photo checked; size not listed, looks about 120 cm). Same walnut tone, and you can stand while you work.', alts: [['Bianca sit-stand', 'https://www.furlenco.com/rent/products/bianca-height-adjustable-study-table-in-black---lyon-walnut-finish-6162-rent']], chips: ['theme match', 'photo + size checked'] },
+      { id: 'fridge', short: 'Haier 270 L, navy glass (Furlenco)', second: ['Double Door 328 L Graphite Black (Furlenco)', 2349, 'https://www.furlenco.com/rent/products/refrigerator-double-door-328l-5749-rent'], name: 'Fridge (double door)', price: 1499, dep: 0, pick: 'Furlenco · Haier Double Door Refrigerator 270 L, ₹1,499/mo, frost-free, toughened glass shelves, 62 W × 55 D × 169 H cm. Photo checked: deep navy glossy doors, which suit the Moody palette better than plain steel. Branded (Haier), zero deposit, delivery 6–8 Nov. Same width as the double-door the current tenant has in that slot.', url: 'https://www.furlenco.com/rent/products/refrigerator-double-door-268l-6112-rent', alt: 'Bigger: Furlenco Double Door 328 L Graphite Black ₹2,349/mo, convertible, 62 W × 66 D × 164 H cm (11 cm deeper; its photo would not load for me). Cheaper: RentoMojo Double Door 240 L ₹1,040/mo, steel, brand not fixed (Haier/Whirlpool or equivalent); Furlenco Double Door 235–253 L ₹1,249/mo, steel.', alts: [['328 L black', 'https://www.furlenco.com/rent/products/refrigerator-double-door-328l-5749-rent'], ['RentoMojo 240 L', RM + 'appliances/rent-double-door-fridge-240-litre/95989']], chips: ['theme match', 'photo + size checked'] },
+      { id: 'ro', short: 'DrinkPrime RO + UV + Copper (Furlenco)', second: ['DrinkPrime RO+ (RentoMojo)', 423, RM + 'appliances/rent-drinkprime-ro-plus/138385'], name: 'RO water purifier: DrinkPrime', price: 379, dep: 0, pick: 'Furlenco · Water Purifier, DrinkPrime RO + UV + Copper (unlimited water), ₹379/mo, zero deposit on Furlenco, servicing and filter changes included. Photo checked: white wall-mounted unit, 21 × 35 × 52 cm. Delivery 6–8 Nov. DrinkPrime has a 3-month lock-in, which suits a 6 to 9 month stay. Buy the Urban Company Native M2 later, once you know you are staying on.', url: 'https://www.furlenco.com/rent/products/fur---water-purifier---drinkprime-5451-rent', alt: 'Same purifier direct from DrinkPrime (₹300 to ₹420/mo + ₹1,500 refundable deposit) or RentoMojo DrinkPrime RO+ ₹423/mo.', alts: [['DrinkPrime direct', 'https://drinkprime.in/trust/drinkprime-pricing-cancellation'], ['RentoMojo RO+', RM + 'appliances/rent-drinkprime-ro-plus/138385']], chips: ['photo checked', '3-month lock-in'] },
+    ],
+    buy: [
+      { id: 'mattress', name: 'Mattresses: you already have them', pick: 'Each of you has a queen mattress, so every bed above is frame only. Measure the length: 72 in fits any pick; 75 or 78 in needs a Furlenco bed (built for 78 × 60).' },
+      { id: 'chair', name: 'Your ergonomic desk chair', pick: 'Worth owning; you will use it for years.' },
+      { id: 'lamps', name: 'Lamps (all plug-in)', pick: 'Not available to rent on Furlenco or RentoMojo (checked 3 Nov), so buy. Arc floor lamp over the sofa chaise, side-table lamp, two bedside lamps, Bedroom 2 bedside lamp, desk lamp, floor lamp in the separate area. Warm 2700K bulbs.' },
+      { id: 'pendants', name: 'Plug-in pendants (2 to 3)', pick: 'Over the coffee table and in the passage. Plug-in versions hang from a hook and run a cord to a socket; no electrician.' },
+      { id: 'strips', name: 'Stick-on LED strips', pick: 'Behind the TV console, above the bed headboard, under the kitchen wall cabinets, by the bathroom mirrors.' },
+      { id: 'string', name: 'Balcony string lights', pick: 'Battery or plug-in; tie them to the grille.' },
+      { id: 'rugs', name: 'Rugs in standard sizes', pick: 'Not available to rent: neither site rents rugs or mats (checked 4 Nov). Living 6 × 8 ft (or 5 × 8), bedroom 5 × 8 ft, Bedroom 2 and separate area 3 × 5 ft, passage runner 2.5 × 10 ft. Neutral colours.' },
+      { id: 'curtains', name: 'Ready-made curtain panels + extendable rods', pick: 'Balcony door: sheer + lined pair, 9 ft drop. Bedroom 2: blackout pair, 7 ft. Neutral taupe, sand or ivory.' },
+      { id: 'blinds', name: 'Standard-size blinds', pick: 'Separate area big window: two 4 ft white or ecru Roman/roller blinds. Bedroom 2 small window: one small roller blind.' },
+      { id: 'plants', name: 'Plants and pots', pick: 'Balcony trough plants, corner plants, two tall plants by the desk window, trailing plants on a tension rod, living-room corner plant. White pots in the separate area.' },
+      { id: 'soft', name: 'Cushions, throws, art', pick: 'This is where the style lives (olive and oatmeal for Moody). Swap later to change the look.' },
+      { id: 'mirror', name: 'Mirrors', pick: 'Leaning full-length mirror for Bedroom 2; small round mirror for the entry on an adhesive hook or existing nail.' },
+      { id: 'small', name: 'Small stuff', pick: 'Adhesive hooks by the door, folding drying stand, bath mats, towel rails (over-door or adhesive), bins.' },
+    ],
+    have: [
+      { id: 'h1', name: 'TV', pick: 'Already have. Stands on the rented TV unit.' },
+      { id: 'h2', name: 'Washing machine', pick: 'Already have. Goes in the utility area under the window.' },
+      { id: 'h3', name: 'Flatmate workstation', pick: 'Already have. Goes along the far wall of the dining area.' },
+    ],
+    skip: [
+      { id: 'x1', name: 'Made-to-measure curtains and blinds', pick: 'They only fit these windows. Standard panels and blinds instead.' },
+      { id: 'x2', name: 'Ceiling-wired pendants and fans', pick: 'Need an electrician and stay behind when you move.' },
+      { id: 'x3', name: 'Wall-mounted TV, drilled shelves, ceiling racks', pick: 'Holes often come out of the deposit.' },
+      { id: 'x4', name: 'A wardrobe for either bedroom', pick: 'Both bedrooms already have built-in cabinets.' },
+      { id: 'x5', name: 'Statement-coloured big items', pick: 'No olive, rust or blue sofa you own; keep colour on cushions and throws.' },
+    ],
+  };
+
+
+  // Six pieces change with the theme; everything else is shared. Moody uses ITEMS as written.
+  const FP = 'https://www.furlenco.com/rent/products/';
+  const THEMES = {
+    moody: { label: 'Moody', blurb: 'Walnut and dark wood, sage/green and caramel, brass. Best match for the teak doors and pistachio kitchen.', items: {} },
+    calm: { label: 'Calm', blurb: 'Warm neutrals: greige and oatmeal upholstery, cream headboards, walnut wood for contrast so it does not blend into the cream walls, texture from chenille and linen. Quiet and easy to live with; light fabric shows marks, so check each piece at delivery.', items: {
+      corner: { short: 'Not needed: the L-lounger\'s chaise is the corner', price: 0, dep: 0, pick: 'Nothing to rent here: the Leo L-lounger\'s chaise already fills the balcony end. A separate ottoman or recliner would crowd the path to the balcony door.', url: '', url2: '', alt: 'Only if you pick the Ella sofa (no chaise) instead: RentoMojo Roma Fabric Motorized Recliner (Sandstone) ₹1,136/mo, greige fabric, 36 × 30 × 40 in, button recline (all photos checked). Reclined, it reaches into the balcony-door path.', alts: [['Roma Sandstone recliner', RM + 'furniture/rent-roma-fabric-motorized-recliner-sandstone/115912']], second: ['Roma motorised recliner, sandstone greige (RentoMojo)', 1136, RM + 'furniture/rent-roma-fabric-motorized-recliner-sandstone/115912'], chips: ['built into the sofa'] },
+      sofa: { short: 'Leo L-lounger, greige chenille (RentoMojo)', price: 967, dep: 967, pick: 'RentoMojo · Leo Reversible Lounger Sofa (Grey), ₹967/mo, 79 in long, chaise 61.5 in deep, 25 in high back. All 6 photos checked: warm greige chenille, 3 loose back cushions, track arms, dark tapered legs; the chaise can go on either side, so it sits on the balcony end as an L. Delivery 1–3 days. The chaise takes the space the coffee table had, so the table moves toward the TV side.', url: RM + 'furniture/rent-leo-reversible-lounger-sofa-grey/132647', url2: '', alt: 'No chaise, wipeable: Furlenco Ella Leatherette 3 Seater (Sand Beige) ₹799/mo, 198 × 83 cm, taupe leatherette, curved arms, tapered legs (all 11 photos checked, 21 in stock).', alts: [['Ella sand beige', FP + 'ella-3-seater-couch-leatherette-sand-beige-225-rent']], second: ['Ella 3-seater, sand-beige leatherette (Furlenco)', 799, FP + 'ella-3-seater-couch-leatherette-sand-beige-225-rent'], chips: ['theme match', 'all photos checked', 'L-shape'] },
+      bed1: { short: 'Dune, cream quilted headboard + walnut, cot only (Furlenco)', price: 839, dep: 0, pick: 'Furlenco · Dune Upholstered Queen Bed, ₹839/mo, 159 × 202 cm, so it takes a queen mattress up to 78 × 60 in. All 10 photos and the video checked: rounded cream channel-quilted headboard on a walnut box frame and footboard. Choose "Queen bed (Only Cot)". 14 in stock, delivery 6–7 Nov.', url: FP + 'dune-upholstered-queen-bed-4918-rent', url2: '', alt: 'Slimmer and cheaper: RentoMojo Aurora with grey upholstery ₹675/mo (walnut frame, greige headboard panel, 72 × 60 in mattress).', alts: [['Aurora grey', RM + 'furniture/rent-aurora-wooden-queen-bed-with-grey-upholstery/151225']], second: ['Aurora, walnut + greige headboard (RentoMojo)', 675, RM + 'furniture/rent-aurora-wooden-queen-bed-with-grey-upholstery/151225'], chips: ['theme match', 'photos + video checked', 'frame only'] },
+      bed2: { short: 'Aurora, walnut + greige headboard (RentoMojo)', price: 675, dep: 675, pick: 'RentoMojo · Aurora Wooden Queen Bed with Grey Upholstery, ₹675/mo, for a 72 × 60 in mattress. All 4 photos checked: walnut frame with a framed greige linen headboard, slatted base. Delivery 3–5 days.', url: RM + 'furniture/rent-aurora-wooden-queen-bed-with-grey-upholstery/151225', url2: '', alt: 'Softer headboard: Boho Queen ₹943/mo (cream channel headboard, dark wood).', alts: [['Boho Queen', RM + 'furniture/rent-boho-queen-bed-solid-wood/153581']], second: ['Boho Queen, cream headboard (RentoMojo)', 943, RM + 'furniture/rent-boho-queen-bed-solid-wood/153581'], chips: ['theme match', 'all photos checked', 'frame only'] },
+      coffee: { short: 'Josef, oval walnut (RentoMojo)', price: 245, dep: 245, pick: 'RentoMojo · Josef Center Table, ₹245/mo, oval walnut top on two crossed trapezoid leg frames (all 6 photos checked). Walnut gives the contrast a calm room needs.', url: RM + 'furniture/rent-josef-center-table/127519', url2: '', alt: 'Calm-luxe: Furlenco Zen ₹829/mo, walnut pebble top on fluted taupe bases (110 × 75 cm, 1 left).', alts: [['Zen', FP + 'zen-solid-wood-coffee-table-6176-rent']], second: ['Zen, walnut on fluted taupe bases (Furlenco)', 829, FP + 'zen-solid-wood-coffee-table-6176-rent'], chips: ['theme match', 'all photos checked'] },
+      bedside: { short: 'Hugo ×3, walnut + taupe (Furlenco)', price: 717, dep: 0, pick: 'Furlenco · Hugo Bedside Table × 3, ₹239/mo each, 40 × 44 × 41 cm. All 12 photos and the video checked: walnut door on a soft taupe body with rounded corners and a tray top, shelf inside. Matches the Dune bed. 12 in stock.', url: FP + 'hugo-bedside-table-5646-rent', url2: '', alt: 'Plain walnut: RentoMojo Wingman ₹173/mo each.', alts: [['Wingman', RM + 'furniture/rent-bedside-table-with-storage-wingman/2738']], second: ['Wingman ×3, walnut (RentoMojo)', 519, RM + 'furniture/rent-bedside-table-with-storage-wingman/2738'], chips: ['theme match', 'photos + video checked'] },
+      desk1: { short: 'Bianca sit-stand, walnut + black (Furlenco)', price: 999, dep: 0, pick: 'Furlenco · Bianca Height Adjustable Study Table (Black & Lyon Walnut), ₹999/mo. Walnut top on a black sit-stand frame, a quiet workstation that matches the walnut pieces. 16 in stock. Size not listed; looks about 120 cm wide in the photos.', url: FP + 'bianca-height-adjustable-study-table-in-black---lyon-walnut-finish-6162-rent', url2: '', alt: 'Comes with a chair: Furlenco Moreno Workstation ₹599/mo (walnut desk with a monitor shelf, grey drawer and a mesh office chair; all 12 photos checked).', alts: [['Moreno workstation', FP + 'moreno-workstation-3824-rent']], second: ['Moreno workstation + chair, walnut (Furlenco)', 599, FP + 'moreno-workstation-3824-rent'], chips: ['theme match', 'photos checked'] },
+    } },
+    boho: { label: 'Boho', blurb: 'Warm teak and honey wood, terracotta/tan, cream and plants. Neither site rents real cane or rattan beds, so the cane comes from the desk and from bought baskets and lamps.', items: {
+      corner: { short: 'Flex ottoman, rust fabric on wooden legs (Furlenco)', price: 199, dep: 0, pick: 'Furlenco · Flex Fabric Ottoman, ₹199/mo, 73 × 60 × 40 cm. Listed as "Magic Beige", but all 7 photos show a rust-terracotta woven fabric on light wooden legs, which matches the Henry sofa. Big enough to put your feet up from the sofa\'s balcony end. 10 in stock.', url: FP + 'flex-ottoman-magic-beige-147-rent', url2: '', alt: 'Recliner instead: Furlenco Stretch Leatherette Recliner (Dark Brown) ₹589/mo, 77 × 78 × 94 cm, contrast stitching, 110 in stock (all 10 photos checked); reclined it reaches into the balcony-door path. Smaller ottoman: RentoMojo Roma (Safari Brown) ₹131/mo, 20-in tan cube.', alts: [['Stretch recliner', FP + 'reclinerstretch-3452-rent'], ['Roma ottoman', RM + 'furniture/rent-roma-fabric-ottoman-safari-brown/118370']], second: ['Stretch recliner, dark brown leatherette (Furlenco)', 589, FP + 'reclinerstretch-3452-rent'], chips: ['theme match', 'all photos checked', 'L feel'] },
+      sofa: { short: 'Henry 3-seater, tan/terracotta (RentoMojo)', price: 860, dep: 860, pick: 'RentoMojo · Henry 3 Seater Sofa (Tan), ₹860/mo, 77 in long (6.4 ft, fits the sofa wall). Photo checked: rust-terracotta fabric, button-tufted back, wooden legs. The main Boho colour.', url: RM + 'furniture/rent-henry-3-seater-sofa-tan/138913', url2: '', alt: 'Cleaner lines, same colour: Brooklyn 3 Seater (Cinnamon Brown) ₹911/mo, 79 in.', alts: [['Brooklyn cinnamon', RM + 'furniture/rent-brooklyn-3-seater-sofa-cinnamon-brown/138917']], second: ['Brooklyn 3-seater, cinnamon (RentoMojo)', 911, RM + 'furniture/rent-brooklyn-3-seater-sofa-cinnamon-brown/138917'], chips: ['theme match', 'photo + size checked'] },
+      bed1: { short: 'Boho Queen, dark wood + cream headboard (RentoMojo)', price: 943, dep: 943, pick: 'RentoMojo · Boho Queen Bed, ₹943/mo, 75.6 × 63 in, solid wood frame with a cream slatted/cushioned headboard. Frame only; takes a 72 × 60 in mattress.', url: RM + 'furniture/rent-boho-queen-bed-solid-wood/153581', url2: '', alt: 'Heavier carved look: Marley Solid Wood Queen ₹1,300/mo (74 × 62 in, walnut with woven-pattern panels).', alts: [['Marley', RM + 'furniture/rent-marley-solid-wood-queen-bed/3103']], second: ['Marley, carved walnut (RentoMojo)', 1300, RM + 'furniture/rent-marley-solid-wood-queen-bed/3103'], chips: ['theme match', 'photo + size checked', 'frame only'] },
+      bed2: { short: 'Boho Queen, same as your room (RentoMojo)', price: 943, dep: 943, pick: 'RentoMojo · Boho Queen Bed again, ₹943/mo, so both rooms match. Frame only; 72 × 60 in mattress.', url: RM + 'furniture/rent-boho-queen-bed-solid-wood/153581', url2: '', alt: 'Lighter and cheaper: Aurora Low Height Queen ₹711/mo.', alts: [['Aurora low', RM + 'furniture/rent-aurora-low-height-queen-bed-solid-wood/3272']], second: ['Aurora low queen (RentoMojo)', 711, RM + 'furniture/rent-aurora-low-height-queen-bed-solid-wood/3272'], chips: ['photo + size checked', 'frame only'] },
+      coffee: { short: 'Venti, warm teak with shelf (RentoMojo)', price: 347, dep: 347, pick: 'RentoMojo · Venti Centre Table, ₹347/mo, 48 × 24 in, low (16 in). Photo checked: warm orange-teak wood with an open shelf, splayed legs.', url: RM + 'furniture/rent-venti-centre-table/2027', url2: '', alt: 'More of a lounge feel: Caramel 4-Seater Coffee Table ₹624/mo (36 × 36 in, walnut with 4 cushioned stools tucked under).', alts: [['Caramel 4-seater', RM + 'furniture/rent-kahveh-coffee-table/2950']], second: ['Caramel table with 4 stools (RentoMojo)', 624, RM + 'furniture/rent-kahveh-coffee-table/2950'], chips: ['theme match', 'photo + size checked'] },
+      bedside: { short: 'Jasper ×3, light wood, open (RentoMojo)', price: 492, dep: 492, pick: 'RentoMojo · Jasper Bedside Table × 3 (2 for you, 1 for Bedroom 2), ₹164/mo each, 50 × 38 × 60 cm. Photo checked: natural light wood, splayed legs, open shelf, room for a basket.', url: RM + 'furniture/rent-jasper-bedside-table/127557', url2: '', alt: 'Rounder and more crafted: Ray ₹258/mo each (round slatted reddish wood, 40 × 46 cm).', alts: [['Ray', RM + 'furniture/rent-ray-bedside-table/153233']], second: ['Ray ×3, round slatted (RentoMojo)', 774, RM + 'furniture/rent-ray-bedside-table/153233'], chips: ['theme match', 'photo + size checked'] },
+      desk1: { short: 'Boho Earth cane desk with shelves (Furlenco)', price: 1949, dep: 0, pick: 'Furlenco · Boho Earth Solid Wood Study Table, ₹1,949/mo. Photo checked: natural wood with cane-front drawers and a two-tier shelf on top. The one real cane piece on either site. Size not listed and it looks compact (about 100 cm), so better as a study desk than a two-monitor workstation; confirm with Furlenco.', url: FP + 'boho-earth-solid-wood-study-table-5353-rent', url2: '', alt: 'Workstation size: RentoMojo Caramel Crest L-shape ₹388/mo (55 in, warm oak top on black metal, raised monitor shelf; fits the window corner).', alts: [['Caramel Crest L', RM + 'furniture/rent-caramel-crest-l-shape-study-table/135317']], second: ['Caramel Crest L-shape, oak + black (RentoMojo)', 388, RM + 'furniture/rent-caramel-crest-l-shape-study-table/135317'], chips: ['theme match', 'photo checked', 'size not listed'] },
+    } },
+    japandi: { label: 'Japandi', blurb: 'Light oak, cream and beige, black accents, low and simple. Weakest match: light oak next to the dark teak doors reads as two different woods, and beige can wash out on cream walls.', items: {
+      corner: { short: 'Henry ottoman, cream tufted on oak feet (RentoMojo)', price: 121, dep: 121, pick: 'RentoMojo · Henry Fabric Ottoman, ₹121/mo, 20 × 20 × 18 in. Listed as "Sylvan Green", but all 5 photos show a cream tufted cube on light oak feet, which matches the Oliver sofa. Delivery 1–3 days.', url: RM + 'furniture/rent-henry-fabric-ottoman-sylvan-green/118481', url2: '', alt: 'Recliner instead: RentoMojo Roma Fabric Motorized Recliner (Sandstone) ₹1,136/mo, greige fabric, 36 × 30 × 40 in; reclined it reaches into the balcony-door path. Plain cube with storage: Brooklyn ottoman (Beige) ₹112/mo, 18 in.', alts: [['Roma Sandstone recliner', RM + 'furniture/rent-roma-fabric-motorized-recliner-sandstone/115912'], ['Brooklyn beige ottoman', RM + 'furniture/rent-brooklyn-ottoman-with-storage-beige/118677']], second: ['Roma motorised recliner, sandstone greige (RentoMojo)', 1136, RM + 'furniture/rent-roma-fabric-motorized-recliner-sandstone/115912'], chips: ['theme match', 'all photos checked', 'L feel'] },
+      sofa: { short: 'Oliver 3-seater, cream on wood frame (RentoMojo)', price: 716, dep: 716, pick: 'RentoMojo · Oliver 3 Seater Sofa (Dusty Beige), ₹716/mo, 67 in long (5.6 ft). Photo checked: cream cushions in an exposed wooden frame, the classic Japandi sofa.', url: RM + 'furniture/rent-oliver-3-seater-sofa-dusty-beige/138916', url2: '', alt: 'Softer, fully upholstered: Brooklyn 3-Seater (Beige) ₹958/mo, 79 in.', alts: [['Brooklyn beige', RM + 'furniture/rent-brooklyn-fabric-3-seater-sofa-beige/119002']], second: ['Brooklyn 3-seater, beige (RentoMojo)', 958, RM + 'furniture/rent-brooklyn-fabric-3-seater-sofa-beige/119002'], chips: ['theme match', 'photo + size checked'] },
+      bed1: { short: 'Kipper, low light-oak slatted (RentoMojo)', price: 757, dep: 757, pick: 'RentoMojo · Kipper Solid Wood Queen Bed, ₹757/mo, 75 × 63 in, low (10 in rails). Photo checked: light oak with a slatted headboard on tapered legs. Frame only; 72 × 60 in mattress.', url: RM + 'furniture/rent-kipper-solid-wood-queen-bed/3256', url2: '', alt: 'Oak + black metal: Poise Queen (Light Oak) ₹696/mo.', alts: [['Poise light oak', RM + 'furniture/rent-poise-wooden-queen-bed-light-oak-solid-wood-and-metal/115777']], second: ['Poise queen, light oak + black (RentoMojo)', 696, RM + 'furniture/rent-poise-wooden-queen-bed-light-oak-solid-wood-and-metal/115777'], chips: ['theme match', 'photo + size checked', 'frame only'] },
+      bed2: { short: 'Mysa, oak headboard + sage frame (RentoMojo)', price: 665, dep: 665, pick: 'RentoMojo · Mysa Wood & Metal Queen Bed, ₹665/mo, 75 × 64 in. Photo checked: curved light-oak headboard on a slim sage-green metal frame. Frame only; 72 × 60 in mattress.', url: RM + 'furniture/rent-mysa-wood-and-metal-queen-bed/150001', url2: '', alt: 'Same as your room: Kipper ₹757/mo.', alts: [['Kipper', RM + 'furniture/rent-kipper-solid-wood-queen-bed/3256']], second: ['Kipper, light oak (RentoMojo)', 757, RM + 'furniture/rent-kipper-solid-wood-queen-bed/3256'], chips: ['theme match', 'photo + size checked', 'frame only'] },
+      coffee: { short: 'Jenson, oak top + black X base (RentoMojo)', price: 203, dep: 203, pick: 'RentoMojo · Jenson Center Table, ₹203/mo, about 86 × 60 cm. Photo checked: light oak top on a black metal X base.', url: RM + 'furniture/rent-jenson-center-table/127500', url2: '', alt: 'With seating: Dvita Centre Table with 2 low bouclé seats ₹783/mo (43 × 24 in).', alts: [['Dvita', RM + 'furniture/rent-dvita-centre-table-with-two-low-height-seats/159728']], second: ['Dvita table + 2 bouclé seats (RentoMojo)', 783, RM + 'furniture/rent-dvita-centre-table-with-two-low-height-seats/159728'], chips: ['theme match', 'photo + size checked'] },
+      bedside: { short: 'Watson ×3, light oak (RentoMojo)', price: 291, dep: 291, pick: 'RentoMojo · Watson Bedside Table × 3, ₹97/mo each, 15 × 15 × 15 in. Photo checked: pale oak, one drawer over an open shelf.', url: RM + 'furniture/rent-bedside-table-henchman/1977', url2: '', alt: 'Slightly taller, honey oak: Stooge ₹131/mo each (15 × 15 × 16 in).', alts: [['Stooge', RM + 'furniture/rent-stooge-bedside-table/1974']], second: ['Stooge ×3, honey oak (RentoMojo)', 393, RM + 'furniture/rent-stooge-bedside-table/1974'], chips: ['theme match', 'photo + size checked'] },
+      desk1: { short: 'Elvi motorised sit-stand, white (RentoMojo)', price: 901, dep: 901, pick: 'RentoMojo · Elvi Motorized Height Adjustable Table, ₹901/mo, 47 × 23 in, height 27–43 in. Photo checked: white top on a white frame, rounded corners. A proper workstation you can stand at.', url: RM + 'furniture/rent-elvi-motorized-height-adjustable-table/156233', url2: '', alt: 'Bigger and cheaper: Caramel Crest L-shape ₹388/mo (55 in, oak + black, raised monitor shelf).', alts: [['Caramel Crest L', RM + 'furniture/rent-caramel-crest-l-shape-study-table/135317']], second: ['Caramel Crest L-shape, oak + black (RentoMojo)', 388, RM + 'furniture/rent-caramel-crest-l-shape-study-table/135317'], chips: ['theme match', 'photo + size checked'] },
+    } },
+  };
+  const TKEY = 'purva-theme';
+  let theme = 'moody';
+  try { theme = THEMES[localStorage.getItem(TKEY)] ? localStorage.getItem(TKEY) : 'moody'; } catch (e) {}
+  const rentFor = t => ITEMS.rent.map(it => THEMES[t].items[it.id] ? { ...it, ...THEMES[t].items[it.id], themed: true } : it);
+  const sum = (arr, f) => arr.reduce((s, i) => s + f(i), 0);
+  const KEY = 'purva-checklist-v1';
+  let state = {};
+  try { state = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) { state = {}; }
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} };
+  const inr = n => '₹' + n.toLocaleString('en-IN');
+
+  const card = (it, key) => {
+    const el = document.createElement('label'); el.className = 'item'; el.htmlFor = 'c-' + key;
+    const price = it.price ? `<span class="price">${inr(it.price)}/mo</span>` : '';
+    el.innerHTML = `<input type="checkbox" id="c-${key}"><div class="body"><div class="top"><span class="name">${it.name}</span>${price}</div>
+      <div class="pick">${it.pick}${it.url ? ` <a href="${it.url}" target="_blank" rel="noopener">${it.url2 ? 'Open main item' : 'Open'}</a>` : ''}${it.url2 ? ` · <a href="${it.url2}" target="_blank" rel="noopener">Open second item</a>` : ''}</div>
+      ${it.alt ? `<div class="alt">${it.alt}${it.alts ? ' ' + it.alts.map(([n, u]) => `<a href="${u}" target="_blank" rel="noopener">${n}</a>`).join(' · ') : ''}</div>` : ''}${it.chips ? `<div class="chips">${it.chips.map(c => `<span>${c}</span>`).join('')}</div>` : ''}</div>`;
+    const cb = el.querySelector('input'); cb.checked = !!state[key]; el.classList.toggle('done', cb.checked);
+    cb.addEventListener('change', () => { state[key] = cb.checked; el.classList.toggle('done', cb.checked); save(); tally(); });
+    return el;
+  };
+  for (const group of ['buy', 'have', 'skip']) for (const it of ITEMS[group]) document.getElementById(group).appendChild(card(it, it.id));
+
+  const A = (t, u) => u ? `<a href="${u}" target="_blank" rel="noopener">${t}</a>` : t;
+  const tabs = document.getElementById('themes');
+  for (const [k, th] of Object.entries(THEMES)) {
+    const b = document.createElement('button'); b.type = 'button'; b.dataset.k = k; b.setAttribute('role', 'tab');
+    b.innerHTML = `<span>${th.label}</span><b>${inr(sum(rentFor(k), i => i.price))}/mo</b>`;
+    b.addEventListener('click', () => { theme = k; try { localStorage.setItem(TKEY, k); } catch (e) {} render(); });
+    tabs.appendChild(b);
+  }
+  function render() {
+    tabs.querySelectorAll('button').forEach(b => b.setAttribute('aria-selected', b.dataset.k === theme));
+    document.getElementById('themeblurb').textContent = THEMES[theme].blurb;
+    const rent = rentFor(theme), host = document.getElementById('rent'), gl = document.getElementById('glance');
+    host.innerHTML = ''; gl.innerHTML = '';
+    for (const it of rent) host.appendChild(card(it, it.themed ? theme + ':' + it.id : it.id));
+    let g2 = 0;
+    for (const it of rent) {
+      const sc = it.second || [it.short, it.price, it.url];
+      g2 += sc[1];
+      const tr = document.createElement('tr');
+      if (it.themed || THEMES.boho.items[it.id]) tr.className = 'themed';
+      tr.innerHTML = `<td>${it.name.split(':')[0]}</td><td>${A(it.short, it.url)}</td><td class="n">${inr(it.price)}</td><td>${it.second ? A(sc[0], sc[2]) : '<span class="muted">no better fit</span>'}</td><td class="n">${it.second ? inr(sc[1]) : '—'}</td>`;
+      gl.appendChild(tr);
+    }
+    document.getElementById('gt1').textContent = inr(sum(rent, i => i.price));
+    document.getElementById('gt2').textContent = inr(g2);
+    tally();
+  }
+  function tally() {
+    const rent = rentFor(theme);
+    document.getElementById('total').textContent = inr(sum(rent, i => i.price));
+    document.getElementById('deposit').textContent = inr(sum(rent, i => i.dep));
+    const keys = [...rent.map(i => i.themed ? theme + ':' + i.id : i.id), ...ITEMS.buy.map(i => i.id)];
+    document.getElementById('count').textContent = keys.filter(k => state[k]).length + ' / ' + keys.length;
+  }
+  document.getElementById('reset').addEventListener('click', () => {
+    state = {}; save(); document.querySelectorAll('.item input').forEach(c => { c.checked = false; c.closest('.item').classList.remove('done'); }); tally();
+  });
+  render();
+})();
+</script>
+
+</html>
