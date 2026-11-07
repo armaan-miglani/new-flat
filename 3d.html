@@ -355,14 +355,14 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   }
   colliders.push([11.6, 0, 12.4, 4.2]);
 
-  // balcony aluminium sliding door: two panels stacked, the rest open
+  // balcony aluminium sliding door: it slides either way; the two panels are stacked at the sofa end so the recliner can sit in front of them, and the TV end is open
   fx(3.8, 33.2, 4.2, 39.8, 7.8, 8, alu); fx(3.8, 33.2, 4.2, 39.8, 0, 0.12, alu);
-  for (const [x, z1] of [[3.9, 33.25], [4.1, 33.7]]) {
+  for (const [x, z1] of [[3.9, 37.05], [4.1, 36.6]]) {
     fx(x - 0.03, z1, x + 0.03, z1 + 2.7, 0.15, 7.75, glassMat);
     fx(x - 0.06, z1, x + 0.06, z1 + 0.12, 0.1, 7.8, alu); fx(x - 0.06, z1 + 2.58, x + 0.06, z1 + 2.7, 0.1, 7.8, alu);
     fx(x - 0.06, z1, x + 0.06, z1 + 2.7, 0.1, 0.3, alu); fx(x - 0.06, z1, x + 0.06, z1 + 2.7, 7.6, 7.8, alu);
   }
-  colliders.push([3.6, 33, 4.4, 36.5]);
+  colliders.push([3.6, 36.5, 4.4, 40]);
 
   // windows: aluminium frame, centre mullion, grille on the outside
   function windowFit(o, line, a, b, y1, y2, vent) {
@@ -1181,7 +1181,9 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     // side table + lamp at the balcony end of the sofa, keeping the main-door end clear
     const et = place('endtable', 0, 0, Math.PI, 42.05); nudgeX(et, sofaP.bb.min.x - 0.15 - et.bb.max.x);
     F('sofa-lamp', 'Table lamp on the side table', null, () => { tableLamp((et.bb.min.x + et.bb.max.x) / 2, (et.bb.min.z + et.bb.max.z) / 2, et.top, 0.8); });
-    const cx = (sofaProd.chaise ? 11.6 : 10.7) + (cornerP.recliner ? 0.9 : 0); // with a recliner by the glass, the table shifts toward the corridor to keep the way to the balcony door open
+    // with the desk on the north wall and no guests, the recliner lives in the open dining corner as a lounge seat; with guests it comes back beside the sofa
+    const reclinerAway = !!cornerP.recliner && useDesk && deskNorth && !guests, reclinerHere = !!cornerP.recliner && !reclinerAway;
+    const cx = sofaProd.chaise ? 11.6 : 10.7; // with a recliner by the glass, the table shifts toward the corridor to keep the way to the balcony door open
     const cof = place('coffee', cx, 0, 0, sofaFront - 1.4, 'maxZ'); // 1.4 ft of legroom in front of the seats
     if (guests && extraSeat === 'bean') { // two bean bags for the evening, in the open spot by the desk and turned to the TV; day to day they are put away
       const spots = useDesk ? [[19.8, 34.4], [19.8, 37.6]] : [[19.7, 32.4], [19.7, 35.3]];
@@ -1190,7 +1192,8 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
         const back = new THREE.Mesh(new THREE.SphereGeometry(0.95, 24, 16), m); back.scale.set(1.1, 0.95, 0.7); back.position.set(x - Math.sin(face) * 0.75, 1.35, z - Math.cos(face) * 0.75); decor.add(back); colliders.push([x - 1.35, z - 1.35, x + 1.35, z + 1.35]);
       }, 'Rent · Rentickle'));
     }
-    if (cornerP.recliner) { const rc = place('corner', 0, 0, 1.876, 36.3, 'maxZ'); nudgeX(rc, 4.45 - rc.bb.min.x); } // in front of the fixed glass panel, clear of the balcony door, turned toward the TV
+    if (reclinerHere) { const rc = place('corner', 0, 0, 1.876, sofaFront - 0.1, 'maxZ'); nudgeX(rc, 4.45 - rc.bb.min.x); } // in front of the stacked balcony glass, beside the sofa's balcony end, angled about 45° to the TV so the open half of the door keeps about 2.5 ft
+    else if (reclinerAway) { const rc = place('corner', 0, 0, Math.atan2(9.5 - 24.4, 31.5 - 39.6), 41.3, 'maxZ'); nudgeX(rc, 26.0 - rc.bb.max.x); } // dining corner, a foot out from the corner so it can recline, facing the TV
     else if (!cornerP.none) { const ot = place('corner', 0, 0, 0, sofaFront - 0.6, 'maxZ'); nudgeX(ot, Math.min(sofaP.bb.min.x + 0.2, cof.bb.min.x - 0.4 - (ot.bb.max.x - ot.bb.min.x)) - ot.bb.min.x); } // in front of the sofa's balcony end
     F('plant-door', 'Snake plant by the main door', null, () => { plant(14.25, 41.5, 1.0, null, 'snake'); });
     F('plants-tv', 'Monstera and areca palm either side of the TV', null, () => { plant(13.7, 31.3, 1.3, null, 'monstera'); plant(5, 31.5, 1.5, null, 'areca'); });
@@ -1215,19 +1218,10 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
         B(x1 + 1.4, z1 + 0.3, x2 - 1.4, z1 + 0.4, 3.1, 4.5, 0x111316, false, 0.3); C(mx, z1 + 0.4, 0.06, 2.52, 3.1, S.metal);
         chair(mx, z2 + 0.9, 'n', S.dark); F('flat-lamp', 'Desk lamp on the flatmate\'s desk', null, () => { deskLamp(x2 - 0.5, z1 + 0.5, 2.52, 0.7); });
         F('flat-shelf', 'Wall shelf with books over the flatmate\'s desk', null, () => { B(x1, z1, x2, z1 + 0.95, 5.6, 5.7, S.wood); books(x1 + 0.4, z1 + 0.05, x2 - 0.4, 5.7, 0.7, false); });
-        if (useDesk) { // no dining table: the long east wall gets a sideboard, the main-door corner a reading chair, and a rug ties it together
-          F('east-rug', 'Rug under the open area', 'A 5 × 6 ft rug in the same colours as the living-room rug, so the work corner reads as part of the room. To buy.', () => { rug(19.6, 34.6, 24.9, 40.6); }, 'To buy · decor');
-          F('east-sideboard', 'Low sideboard on the long wall', 'A 4 ft, 17 in deep sideboard: storage for board games, chargers, extra crockery and the router, with a lamp and art above. Not in the rent list yet.', () => {
-            B(25.35, 35.0, 26.75, 39.0, 0.35, 2.6, S.wood, true); for (const z of [35.15, 38.85]) for (const x of [25.45, 26.65]) C(x, z, 0.05, 0, 0.35, S.dark);
-            B(25.32, 36.98, 25.36, 37.02, 0.5, 2.45, S.dark); for (const z of [36.4, 37.6]) B(25.3, z - 0.15, 25.34, z + 0.15, 1.45, 1.5, S.metal); // door split + handles
-            tableLamp(26.05, 35.6, 2.6, 0.8); books(37.6, 25.6, 38.6, 2.6, 0.7, true); art(26.72, 35.6, 26.8, 38.6, 3.9, 6.3); }, 'Not rented yet');
-          F('east-armchair', 'Reading chair in the main-door corner', 'An upholstered armchair with a floor lamp: a reading spot, and one more seat when friends come over. It looks across the room towards the TV. Not in the rent list yet.', () => {
-            const x = 23.7, z = 40.5, fab = S.fabric;
-            B(x - 1.1, z - 1.25, x + 1.1, z + 1.25, 0.4, 1.5, fab, true); B(x + 0.75, z - 1.25, x + 1.1, z + 1.25, 1.5, 3.0, fab); // seat + back (facing west)
-            for (const dz of [-1, 1]) B(x - 1.1, z + dz * 1.1 - 0.15, x + 0.75, z + dz * 1.1 + 0.15, 1.5, 2.15, fab);
-            for (const [dx, dz] of [[-1, -1], [-1, 1], [1, -1], [1, 1]]) C(x + dx * 0.95, z + dz * 1.1, 0.06, 0, 0.4, S.wood2);
-            B(x + 0.45, z - 0.55, x + 0.75, z + 0.55, 1.5, 2.4, S.accent); floorLamp(22.2, 41.75, 0.9); }, 'Not rented yet');
-          F('flat-plants', 'Plants either end of the sideboard', null, () => { plant(26.2, 34.3, 1.1, null, 'rubber'); plant(26.15, 41.55, 1, null, 'zz'); });
+        if (useDesk) { // no dining table: art, a plant and a floor lamp; the recliner lounges in this corner on ordinary days
+          F('east-art', 'Art on the long east wall', null, () => { art(26.72, 34.9, 26.8, 38.1, 4, 6.3); });
+          F('east-lamp', 'Floor lamp by the lounge corner', 'Reading light for the recliner when it sits in this corner.', () => { floorLamp(26.15, 38.7, 0.9); });
+          F('flat-plants', 'Plant on the long east wall', null, () => { plant(26.2, 34.0, 1.1, null, 'rubber'); });
         }
       }
       if (!useDesk) {
@@ -1269,9 +1263,9 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     }
     // living: sheer + lined curtains on a high rod, drawn back from the balcony door
     const CURTAIN_WHY = 'Not in the rent list. You will want curtains or blinds here anyway, so buy them separately.';
-    F('living-curtains', 'Living-room curtains', CURTAIN_WHY, () => { rod('v', 4, 0.6, 32.3, 40.7, 8.7);
-    drape('v', 4, 0.42, 32.4, 36.3, S.sheer, 8.65, 0.55);
-    drape('v', 4, 0.6, 32.4, 33.6, S.curtain, 8.65); drape('v', 4, 0.6, 39.5, 40.6, S.curtain, 8.65); });
+    F('living-curtains', 'Living-room curtains', CURTAIN_WHY, () => { rod('v', 4, 0.6, 31.3, 40.7, 8.7);
+    drape('v', 4, 0.42, 36.6, 40.6, S.sheer, 8.65, 0.55);
+    drape('v', 4, 0.6, 31.4, 32.6, S.curtain, 8.65); drape('v', 4, 0.6, 39.5, 40.6, S.curtain, 8.65); });
     // balcony: outdoor bamboo chick blinds rolled up on the grille (west sun)
     F('balcony-blinds', 'Bamboo blinds on the balcony', CURTAIN_WHY, () => { for (const [a, b] of [[31, 34.6], [34.8, 38.4], [38.6, 42]]) { const r = new THREE.Mesh(new THREE.CylinderGeometry(0.17, 0.17, b - a, 12), mat(0xb68a52, 1)); r.rotation.x = Math.PI / 2; r.position.set(0.3, 7.65, (a + b) / 2); decor.add(r); } });
     // separate area: blinds inside both windows, clear of the desk
@@ -1576,7 +1570,7 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     const stools = guests && tp.stools ? Math.min(STOOLS_OUT, tp.stools) : 0, tableSeats = tp.seats || 0;
     const chairs = guests ? (useDesk ? 1 : 5) : 0, extra = guests && extraSeat !== 'none' ? 2 : 0;
     const tv = sofa + corner + stools + extra, total = tv + tableSeats + chairs;
-    const parts = [`sofa ${sofa}`]; if (corner) parts.push(`${cp.recliner ? 'recliner' : 'ottoman'} 1`); if (stools) parts.push(`stools ${stools}`);
+    const parts = [`sofa ${sofa}`]; if (corner) parts.push(`${cp.recliner ? (useDesk && deskNorth && !guests ? 'recliner 1 (in the dining corner)' : 'recliner 1') : 'ottoman 1'}`); if (stools) parts.push(`stools ${stools}`);
     if (extra) parts.push('bean bags 2');
     const other = []; if (tableSeats) other.push(`table seats ${tableSeats} (side-on)`); if (chairs) other.push(useDesk ? 'desk chair 1' : 'desk chair 1 + dining chairs 4');
     const tucked = tp.stools ? ` · ${tp.stools - stools} stool${tp.stools - stools === 1 ? '' : 's'} tucked under` : '';
@@ -1720,15 +1714,8 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     [14.8, 34.4, 2.4, 'Living room: the sofa against the main-door wall, facing the TV'],
     [14.8, 34.4, 0.95, 'TV wall, with plants either side'],
   ];
-  const TO_BALCONY = { // two ways to the balcony door: past the TV, or behind the coffee table when the recliner sits by the glass
-    open: [[13.6, 33.7, 1.57, ''], [6.4, 33.7, 1.57, 'Balcony door, kept clear'], [5.0, 35.6, 1.57, ''], [4.9, 38.2, 1.57, '']],
-    // with the recliner by the glass, walk the gap between it and the coffee table (the table shifts toward the corridor to open it)
-    recliner: mx => [[mx, 34.0, 3.14, ''], [mx, 37.5, 2.3, 'With the recliner by the glass, the way to the balcony runs between it and the coffee table'], [5.3, 38.2, 1.57, ''], [4.9, 38.2, 1.57, '']],
-  };
-  const FROM_BALCONY = {
-    open: [[4.9, 38.2, -1.57, ''], [5.0, 35.6, -0.6, ''], [6.4, 33.7, -1.4, '']],
-    recliner: mx => [[4.9, 38.2, -1.57, ''], [5.3, 38.2, -1.57, ''], [mx, 37.5, -0.6, ''], [mx, 34.0, 0, '']],
-  };
+  const TO_BALCONY = [[13.6, 33.7, 1.57, ''], [6.4, 33.9, 1.57, 'Balcony door: the glass stacks at the sofa end, so the TV end is open'], [4.9, 34.8, 1.57, '']];
+  const FROM_BALCONY = [[4.9, 34.8, -1.57, ''], [6.4, 33.9, -1.4, '']];
   const TOUR_REST = [
     [13.8, 33.8, -0.6, ''],
     [16, 31.5, 0, 'Into the corridor'],
@@ -1749,11 +1736,9 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   ];
   let TOUR = [];
   function tourRoute() {
-    const rec = currentProduct('corner', styleKey).recliner, mx = rec ? (placed.corner[0].bb.max.x + placed.coffee[0].bb.min.x) / 2 : 0;
-    const to = rec ? TO_BALCONY.recliner(mx) : TO_BALCONY.open, from = rec ? FROM_BALCONY.recliner(mx) : FROM_BALCONY.open;
-    return [...TOUR_LIVING, ...to,
-      [2.4, 38.0, 0.05, 'Balcony garden: herbs and marigolds in the planter, palms, hanging money plants'], [2.4, 38.0, 3.1, ''],
-      ...from, ...TOUR_REST];
+    return [...TOUR_LIVING, ...TO_BALCONY,
+      [2.4, 36.5, 0.05, 'Balcony garden: herbs and marigolds in the planter, palms, hanging money plants'], [2.4, 36.5, 3.1, ''],
+      ...FROM_BALCONY, ...TOUR_REST];
   }
   let tour = null;
   const tourBtn = document.getElementById('iTour');
