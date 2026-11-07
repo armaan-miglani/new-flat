@@ -1172,7 +1172,7 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     function nudgeX(rec, dx) { rec.g.position.x += dx; rec.bb = solidBox(rec.g); colliders[rec.ci] = [rec.bb.min.x, rec.bb.min.z, rec.bb.max.x, rec.bb.max.z]; return rec; }
     // Living: TV wall faces the sofa on the main-door wall
     const tv = place('tvunit', 9.5, 0, 0, 30.85), top = tv.top;
-    B(8.9, 31.3, 10.1, 31.9, top, top + 0.08, S.metal); B(9.4, 31.55, 9.6, 31.65, top + 0.08, top + 0.4, S.metal); B(7.3, 31.5, 11.7, 31.62, top + 0.35, top + 2.85, 0x111316, false, 0.3); // your own 55" TV on its stand
+    B(8.9, 31.3, 10.1, 31.9, top, top + 0.08, S.metal); B(9.4, 31.55, 9.6, 31.65, top + 0.08, top + 0.4, S.metal); B(7.48, 31.5, 11.52, 31.62, top + 0.35, top + 2.68, 0x111316, false, 0.3); // your own 55" TV on its stand: about 48.5 × 28 in
     F('tv-strip', 'LED strip behind the TV', null, () => { strip(6.6, 30.72, 12.4, 30.76, top + 0.6, 0.45); });
     F('living-rug', 'Living-room rug', null, () => { rug(7.4, 33.6, 14, 39.6); });
     // Sofa against the main-door wall facing the TV, balcony path kept clear on the west side
@@ -1429,8 +1429,8 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
         <li>Lamps here: ${m.lampL}. Get plug-in versions of the pendants (they hang from a ceiling hook and run a cord to a socket), so nothing needs an electrician and they move with you.</li>
         <li>Smart bulbs or smart plugs let you switch a whole room's lamps on together.</li></ul></div>
       <div class="room"><h3>Living</h3><ul>
-        <li>TV wall: wall-mount a 55" TV on the wall next to the passage opening, with a 6 ft low console under it and a warm LED strip behind the console.</li>
-        <li>Sofa: the rented 3-seater for this style (5.6 to 6.6 ft) along the main-door wall facing the TV, about 9 ft away, right for a 55" screen. In Moody a brown recliner in front of the fixed balcony glass, turned to the TV, makes the L; the open half of the balcony door stays clear even when it is reclined. The sage ottoman is the cheaper second choice. Use the Rented pieces panel to see each pick and second choice.</li>
+        <li>TV wall: your 55" TV (about 4 ft wide) on its own stand, on the 70 in TV unit, with a warm LED strip behind the unit. No wall-mounting, so no holes.</li>
+        <li>Sofa: the rented 3-seater for this style (5.6 to 6.6 ft) along the main-door wall facing the TV, about 9 ft away, right for a 55" screen. In Moody a brown recliner beside the sofa's balcony end, angled to the TV, makes the L. The balcony door slides either way, so keep the glass stacked behind the recliner; the TV end stays open, about 2.5 ft. The sage ottoman is the cheaper second choice. Use the Rented pieces panel to see each pick and second choice.</li>
         <li>${m.rug}, 6 × 8 ft, with a ${m.table} (about 3 ft) on it.</li>
         <li>The side table and its lamp sit at the balcony end of the sofa, so the main-door end stays clear; a small plant fills the gap by the door.</li>
         <li>Side table with a lamp at the sofa's end, and a shoe cabinet with a plant on top right beside the main door.</li></ul></div>
