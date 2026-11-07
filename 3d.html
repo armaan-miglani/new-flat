@@ -776,6 +776,7 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     bedside: { label: 'Bedside tables (3)', moody: ['setWingMinion', 'setFloralMinion'], calm: ['setHugo', 'setWingman'], boho: ['setJasper', 'setRay'], japandi: ['setWatson', 'setStooge'] },
     desk: { label: 'Workstation', moody: ['floralDesk', 'bianca'], calm: ['bianca', 'moreno'], boho: ['bohoEarth', 'caramelCrest'], japandi: ['elvi', 'caramelCrest'] },
     endtable: { label: 'Side table', all: ['vienna'] },
+    bookshelf: { label: 'Bookshelf with cabinet', moody: ['rowlingL', 'hugoBook'], calm: ['hugoBook', 'rowlingL'], boho: ['ladderOak', 'rowlingM'], japandi: ['ladderOak', 'rianOak'] },
   };
   function roundSlab(g, w, d, t, r, y, m, x, z) { // rounded-rectangle top with a soft bevelled edge
     const s = new THREE.Shape(), a = w / 2, b = d / 2;
@@ -785,6 +786,19 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     geo.rotateX(-Math.PI / 2); geo.translate(x || 0, y + bev, z || 0);
     const uv = geo.attributes.uv; for (let i = 0; i < uv.count; i++) uv.setXY(i, uv.getX(i) / (w * 1.2) + 0.5, uv.getY(i) / (w * 1.2) + 0.5);
     const mesh = new THREE.Mesh(geo, m); g.add(mesh); return mesh;
+  }
+  function bookcase(g, o, x0) { // freestanding bookshelf, back at -z; o in inches: W D H, shelves (heights), doors [bottom, top], cols
+    const W = IN(o.W), D = IN(o.D), Hh = IN(o.H), t = IN(0.7), x = x0 || 0, fr = pmat('wood', o.frame), dr = pmat('wood', o.door ?? o.frame), metal = mat(0x8a8478, 0.3);
+    for (const sx of [-1, 1]) prbox(g, t, Hh, D, x + sx * (W / 2 - t / 2), Hh / 2, 0, fr, 0);
+    prbox(g, W, t, D, x, Hh - t / 2, 0, fr, 0); prbox(g, W, IN(2), D, x, IN(1), 0, fr, 0); prbox(g, W - 2 * t, Hh, IN(0.3), x, Hh / 2, -D / 2 + IN(0.15), fr, 0);
+    for (const y of o.shelves) prbox(g, W - 2 * t, t, D - IN(0.5), x, IN(y), IN(0.25), fr, 0);
+    if (o.cols > 1) prbox(g, t, Hh - IN(2), D - IN(0.5), x, Hh / 2 + IN(1), IN(0.25), fr, 0);
+    const [da, db] = o.doors || [0, 0];
+    if (o.doors) for (const sx of [-1, 1]) { prbox(g, W / 2 - t - IN(0.2), IN(db - da) - IN(0.4), IN(0.7), x + sx * (W / 4), IN((da + db) / 2), D / 2 - IN(0.35), dr, IN(0.2)); prbox(g, IN(0.4), IN(3), IN(0.6), x + sx * IN(1.5), IN((da + db) / 2), D / 2 + IN(0.1), metal, 0); }
+    const BK = [0x7a3b2e, 0x2f4a3a, 0xb8893d, 0xd9cfbf, 0x3e4a5c, 0x8c6a4a, 0x5d6650], levels = [2, ...o.shelves].filter(y => !o.doors || y < da || y >= db);
+    levels.forEach((y, li) => { const next = [...o.shelves, o.H].find(v => v > y) - y; if (next < 6) return; // a row of books on each open shelf, leaving room for a plant or box
+      let bx = -W / 2 + t + IN(0.6), i = li * 3; const end = bx + (W - 2 * t) * 0.62;
+      while (bx < end) { const bw = IN(0.9 + (i % 3) * 0.35), bh = IN(Math.min(next - 1.5, 7 + (i % 4) * 1.2)); prbox(g, bw, bh, D * 0.7, x + bx + bw / 2, IN(y) + t / 2 + bh / 2, IN(0.5), mat(BK[i % BK.length], 0.8), 0); bx += bw + IN(0.12); i++; } });
   }
   function recliner(g, o) { // shown reclined: back tilted, footrest out; local back at z = -D/2, facing +z
     const W = IN(o.W), D = IN(o.D), Hh = IN(o.H), aw = IN(o.armW || 7), fab = o.fab, dark = mat(0x151515);
@@ -908,6 +922,16 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
           prbox(s, IN(14), IN(3.5), IN(14), 0, IN(9.25), 0, c, IN(1.6)); for (const a of [-1, 1]) for (const b of [-1, 1]) prbox(s, IN(2), IN(7.5), IN(2), a * IN(6), IN(3.75), b * IN(6), w, IN(0.2));
           for (const a of [-1, 1]) { prbox(s, IN(14), IN(1.8), IN(1.4), 0, IN(6.6), a * IN(6.3), w, IN(0.2)); prbox(s, IN(1.4), IN(1.8), IN(14), a * IN(6.3), IN(6.6), 0, w, IN(0.2)); } g.add(s); }
         pblob(g, IN(40), IN(40)); } },
+    rowlingL: { name: 'Rowling Large bookshelf with cabinet, dark chocolate', site: 'RentoMojo', price: 388, url: RMU + 'furniture/rent-rowling-bookshelf-divider/1991', size: '35 × 18 × 66 in',
+      build: g => bookcase(g, { W: 35, D: 18, H: 66, frame: 0x3a2418, shelves: [14, 30, 44, 56], cols: 2, doors: [14, 30] }) },
+    hugoBook: { name: 'Hugo bookshelf, walnut doors on a taupe frame', site: 'Furlenco', price: 429, url: FLU + 'hugo-bookshelf-5645-rent', size: '69 × 30 × 141 cm',
+      build: g => bookcase(g, { W: 27, D: 12, H: 55.5, frame: 0x8a7f74, door: 0x5c3a24, shelves: [19, 31, 43], doors: [2, 19] }) },
+    ladderOak: { name: 'Ladder open bookshelf, light oak (listed as Walnut)', site: 'RentoMojo', price: 193, url: RMU + 'furniture/rent-ladder-open-bookshelf-walnut/115813', size: '38 × 11 × 41 in',
+      build: g => { bookcase(g, { W: 19, D: 11, H: 41, frame: 0xc49a62, shelves: [14, 27.5] }, -IN(9.5)); bookcase(g, { W: 19, D: 11, H: 21, frame: 0xc49a62, shelves: [10.5] }, IN(9.5)); } },
+    rianOak: { name: 'Rian bookshelf with cabinet, grey-brown oak', site: 'RentoMojo', price: 245, url: RMU + 'furniture/rent-rian-book-shelf-sonoma-oak/116746', size: '23 × 11 × 47 in',
+      build: g => bookcase(g, { W: 23, D: 11, H: 47, frame: 0x7d6f60, shelves: [22, 34.5], doors: [2, 22] }) },
+    rowlingM: { name: 'Rowling Medium bookshelf, honey oak (listed as Walnut)', site: 'RentoMojo', price: 163, url: RMU + 'furniture/rent-rowling-bookshelf-medium-walnut/114972', size: '24 × 12 × 36 in',
+      build: g => bookcase(g, { W: 24, D: 12, H: 36, frame: 0xb07a45, shelves: [12.5, 24] }) },
     perk: { name: 'Perk table with 4 stools, dark chocolate', site: 'RentoMojo', price: 644, url: RMU + 'furniture/rent-perk-coffee-table/1971', size: '37 × 37 × 14 in, stools 17 in', stools: 4,
       build: g => { const w = pmat('wood', 0x3a2418), c = pmat('fabric', 0xa88a68);
         prbox(g, IN(37), IN(2.6), IN(37), 0, IN(12.7), 0, w, IN(0.4)); prbox(g, IN(35), IN(1.6), IN(35), 0, IN(10.6), 0, w, IN(0.3));
@@ -1187,7 +1211,7 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     const cx = sofaProd.chaise ? 11.6 : 10.7; // with a recliner by the glass, the table shifts toward the corridor to keep the way to the balcony door open
     const cof = place('coffee', cx, 0, 0, sofaFront - 1.4, 'maxZ'); // 1.4 ft of legroom in front of the seats
     if (guests && extraSeat === 'bean') { // two bean bags for the evening, in the open spot by the desk and turned to the TV; day to day they are put away
-      const spots = useDesk ? [[19.8, 34.4], [19.8, 37.6]] : [[19.7, 32.4], [19.7, 35.3]];
+      const spots = useDesk ? [[19.8, 34.4], [19.8, 37.6]] : [[19.7, 33.7], [19.7, 36.5]];
       spots.forEach(([x, z], i) => F('extra-bean' + i, 'Bean bag, XXL', 'Rentickle XXL bean bag, ₹159/mo each on 11 months (₹99 on 12). About 3 ft across, so between visits park them in Bedroom 2 or the separate area.', () => {
         const face = Math.atan2(TV_AT[0] - x, TV_AT[1] - z), m = pmat('leather', 0x5a3b2a), b = new THREE.Mesh(new THREE.SphereGeometry(1.35, 28, 18), m); b.scale.set(1, 0.6, 1); b.position.set(x, 0.8, z); decor.add(b);
         const back = new THREE.Mesh(new THREE.SphereGeometry(0.95, 24, 16), m); back.scale.set(1.1, 0.95, 0.7); back.position.set(x - Math.sin(face) * 0.75, 1.35, z - Math.cos(face) * 0.75); decor.add(back); colliders.push([x - 1.35, z - 1.35, x + 1.35, z + 1.35]);
@@ -1209,15 +1233,15 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
         for (const [x, z] of [[24.6, z1 + 0.2], [24.6, z2 - 0.2], [26.6, z1 + 0.2], [26.6, z2 - 0.2]]) C(x, z, 0.05, 0, 2.4, S.metal);
         B(26.3, z1 + 1.4, 26.4, z2 - 1.4, 3.1, 4.5, 0x111316, false, 0.3); C(26.4, (z1 + z2) / 2, 0.06, 2.52, 3.1, S.metal);
         chair(23.4, (z1 + z2) / 2, 'e', S.dark); F('flat-lamp', 'Desk lamp on the flatmate\'s desk', null, () => { deskLamp(26.3, z2 - 0.5, 2.52, 0.7); });
-        F('flat-shelf', 'Wall shelf with books over the flatmate\'s desk', null, () => { B(25.8, z1, 26.75, z2, 5.6, 5.7, S.wood); books(z1 + 0.4, 26, z2 - 0.4, 5.7, 0.7, true); });
-        F('flat-plants', 'Plants either side of the flatmate\'s desk', null, () => { plant(26.2, 31.4, 1.1, null, 'rubber'); plant(26.2, 40.6, 1, null, 'zz'); });
+        const bs = place('bookshelf', 0, 0, 0, 30.7); nudgeX(bs, 26.6 - bs.bb.max.x); // freestanding bookshelf in the north-east corner, making an L with the end of the desk
+        F('flat-plants', 'Plant beyond the flatmate\'s desk', null, () => { plant(26.2, 40.6, 1, null, 'zz'); });
       } else {
         const x1 = 21.6, x2 = 26.6, z1 = 30.7, z2 = 33.1, mx = (x1 + x2) / 2;
         B(x1, z1, x2, z2, 2.4, 2.52, S.wood, true);
+        const bs = place('bookshelf', 0, 0, 0, 30.7); nudgeX(bs, 18.35 - bs.bb.min.x); // freestanding bookshelf on the north wall, just left of the desk
         for (const [x, z] of [[x1 + 0.2, z1 + 0.2], [x2 - 0.2, z1 + 0.2], [x1 + 0.2, z2 - 0.2], [x2 - 0.2, z2 - 0.2]]) C(x, z, 0.05, 0, 2.4, S.metal);
         B(x1 + 1.4, z1 + 0.3, x2 - 1.4, z1 + 0.4, 3.1, 4.5, 0x111316, false, 0.3); C(mx, z1 + 0.4, 0.06, 2.52, 3.1, S.metal);
         chair(mx, z2 + 0.9, 'n', S.dark); F('flat-lamp', 'Desk lamp on the flatmate\'s desk', null, () => { deskLamp(x2 - 0.5, z1 + 0.5, 2.52, 0.7); });
-        F('flat-shelf', 'Wall shelf with books over the flatmate\'s desk', null, () => { B(x1, z1, x2, z1 + 0.95, 5.6, 5.7, S.wood); books(x1 + 0.4, z1 + 0.05, x2 - 0.4, 5.7, 0.7, false); });
         if (useDesk) { // no dining table: art and a plant on the long east wall
           F('east-art', 'Art on the long east wall', null, () => { art(26.72, 34.9, 26.8, 38.1, 4, 6.3); });
           F('flat-plants', 'Plant on the long east wall', null, () => { plant(26.2, 34.0, 1.1, null, 'rubber'); });
@@ -1435,8 +1459,8 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
         <li>Side table with a lamp at the sofa's end, and a shoe cabinet with a plant on top right beside the main door.</li></ul></div>
       <div class="room"><h3>${useDesk ? 'Flatmate workstation' : 'Workstation + dining'}</h3><ul>${useDesk
         ? (deskNorth
-          ? '<li>One 5 ft desk and an ergonomic chair on the north wall (the corridor end), pushed towards the corner, with a monitor, a desk lamp and a shelf above.</li><li>On video calls the camera looks at the dining area and the main-door wall, so the sofa and TV stay out of the frame. Balcony daylight falls from the side: no screen glare, face evenly lit.</li><li>The long east wall stays free for plants and art.</li>'
-          : '<li>One 5 ft desk and an ergonomic chair against the long east wall, with a monitor, a desk lamp and a shelf above.</li><li>On video calls the camera looks back across the living room, TV and balcony glass. Try Workstation · north wall above to compare.</li>')
+          ? '<li>One 5 ft desk and an ergonomic chair on the north wall (the corridor end), pushed towards the corner, with a monitor and a desk lamp, and a freestanding bookshelf with a cabinet just to its left (no drilling).</li><li>On video calls the camera looks at the dining area and the main-door wall, so the sofa and TV stay out of the frame. Balcony daylight falls from the side: no screen glare, face evenly lit.</li><li>The long east wall stays free for plants and art.</li>'
+          : '<li>One 5 ft desk and an ergonomic chair against the long east wall, with a monitor and a desk lamp, and a freestanding bookshelf with a cabinet in the corner beside it (no drilling).</li><li>On video calls the camera looks back across the living room, TV and balcony glass. Try Workstation · north wall above to compare.</li>')
         : '<li>The flatmate desk sits on the north wall (the corridor end), towards the corner, so video calls show the dining area, not the living room.</li><li>A round 3 ft table for four fills the main-door end, with a low pendant over it. Round keeps the corners free, so the path from the main door to the corridor stays clear.</li><li>About 2 ft between the desk chair and the nearest dining chair, so both can be used at once.</li>'}</ul></div>
       <div class="room"><h3>Balcony</h3><ul><li>No seating: a balcony garden. A long planter trough along the grille, big potted plants in both corners, and hanging planters from the top rail, with a clear path down the middle.</li><li>Warm string lights along the top of the grille. It faces west, so this is the sunset spot.</li></ul></div>
       <div class="room"><h3>My Bedroom</h3><ul>
