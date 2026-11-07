@@ -776,7 +776,7 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     bedside: { label: 'Bedside tables (3)', moody: ['setWingMinion', 'setFloralMinion'], calm: ['setHugo', 'setWingman'], boho: ['setJasper', 'setRay'], japandi: ['setWatson', 'setStooge'] },
     desk: { label: 'Workstation', moody: ['floralDesk', 'bianca'], calm: ['bianca', 'moreno'], boho: ['bohoEarth', 'caramelCrest'], japandi: ['elvi', 'caramelCrest'] },
     endtable: { label: 'Side table', all: ['vienna'] },
-    bookshelf: { label: 'Bookshelf with cabinet', moody: ['rowlingL', 'hugoBook'], calm: ['hugoBook', 'rowlingL'], boho: ['ladderOak', 'rowlingM'], japandi: ['ladderOak', 'rianOak'] },
+    bookshelf: { label: 'Bookshelf or cabinet', moody: ['rowlingL', 'hugoBook', 'rowlingMW', 'hugoEnt'], calm: ['hugoBook', 'rowlingL', 'hugoChest', 'hugoEnt'], boho: ['ladderOak', 'rowlingM', 'rianOak'], japandi: ['ladderOak', 'rianOak', 'rowlingM'] },
   };
   function roundSlab(g, w, d, t, r, y, m, x, z) { // rounded-rectangle top with a soft bevelled edge
     const s = new THREE.Shape(), a = w / 2, b = d / 2;
@@ -787,18 +787,38 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     const uv = geo.attributes.uv; for (let i = 0; i < uv.count; i++) uv.setXY(i, uv.getX(i) / (w * 1.2) + 0.5, uv.getY(i) / (w * 1.2) + 0.5);
     const mesh = new THREE.Mesh(geo, m); g.add(mesh); return mesh;
   }
-  function bookcase(g, o, x0) { // freestanding bookshelf, back at -z; o in inches: W D H, shelves (heights), doors [bottom, top], cols
-    const W = IN(o.W), D = IN(o.D), Hh = IN(o.H), t = IN(0.7), x = x0 || 0, fr = pmat('wood', o.frame), dr = pmat('wood', o.door ?? o.frame), metal = mat(0x8a8478, 0.3);
-    for (const sx of [-1, 1]) prbox(g, t, Hh, D, x + sx * (W / 2 - t / 2), Hh / 2, 0, fr, 0);
-    prbox(g, W, t, D, x, Hh - t / 2, 0, fr, 0); prbox(g, W, IN(2), D, x, IN(1), 0, fr, 0); prbox(g, W - 2 * t, Hh, IN(0.3), x, Hh / 2, -D / 2 + IN(0.15), fr, 0);
-    for (const y of o.shelves) prbox(g, W - 2 * t, t, D - IN(0.5), x, IN(y), IN(0.25), fr, 0);
-    if (o.cols > 1) prbox(g, t, Hh - IN(2), D - IN(0.5), x, Hh / 2 + IN(1), IN(0.25), fr, 0);
-    const [da, db] = o.doors || [0, 0];
-    if (o.doors) for (const sx of [-1, 1]) { prbox(g, W / 2 - t - IN(0.2), IN(db - da) - IN(0.4), IN(0.7), x + sx * (W / 4), IN((da + db) / 2), D / 2 - IN(0.35), dr, IN(0.2)); prbox(g, IN(0.4), IN(3), IN(0.6), x + sx * IN(1.5), IN((da + db) / 2), D / 2 + IN(0.1), metal, 0); }
-    const BK = [0x7a3b2e, 0x2f4a3a, 0xb8893d, 0xd9cfbf, 0x3e4a5c, 0x8c6a4a, 0x5d6650], levels = [2, ...o.shelves].filter(y => !o.doors || y < da || y >= db);
-    levels.forEach((y, li) => { const next = [...o.shelves, o.H].find(v => v > y) - y; if (next < 6) return; // a row of books on each open shelf, leaving room for a plant or box
-      let bx = -W / 2 + t + IN(0.6), i = li * 3; const end = bx + (W - 2 * t) * 0.62;
-      while (bx < end) { const bw = IN(0.9 + (i % 3) * 0.35), bh = IN(Math.min(next - 1.5, 7 + (i % 4) * 1.2)); prbox(g, bw, bh, D * 0.7, x + bx + bw / 2, IN(y) + t / 2 + bh / 2, IN(0.5), mat(BK[i % BK.length], 0.8), 0); bx += bw + IN(0.12); i++; } });
+  // freestanding storage, back at -z, facing +z. o in inches: W D H; shelves (heights); divs (x of vertical dividers from the centre);
+  // doors [bottom, top] (pair) and doorX [left, right] to limit them to a middle bay; drawers [[bottom, top], ...]; paint: matte frame colour
+  function bookcase(g, o, x0) {
+    const W = IN(o.W), D = IN(o.D), Hh = IN(o.H), t = IN(0.7), x = x0 || 0, plinth = IN(o.plinth ?? 2);
+    const fr = o.paint ? pmat('paint', o.frame) : pmat('wood', o.frame), back = pmat('paint', o.backHex ?? (o.paint ? o.frame : 0x2b211b)), dr = pmat('wood', o.door ?? o.frame), metal = pmat('metal', o.handleHex ?? 0x8f8574);
+    for (const sx of [-1, 1]) prbox(g, t, Hh, D, x + sx * (W / 2 - t / 2), Hh / 2, 0, fr, IN(0.15));
+    prbox(g, W, t, D, x, Hh - t / 2, 0, fr, IN(0.15)); prbox(g, W - 2 * t, plinth, D - IN(1.2), x, plinth / 2, IN(-0.6), fr, 0); // top, recessed plinth
+    prbox(g, W - 2 * t, Hh - t, IN(0.25), x, Hh / 2, -D / 2 + IN(0.2), back, 0);
+    for (const y of o.shelves) prbox(g, W - 2 * t, t, D - IN(0.6), x, IN(y), IN(0.3), fr, 0);
+    const divs = o.divs || (o.cols > 1 ? [0] : []);
+    for (const dx of divs) prbox(g, t, Hh - plinth - t, D - IN(0.6), x + IN(dx), plinth + (Hh - plinth - t) / 2, IN(0.3), fr, 0);
+    const front = D / 2 - IN(0.35), closed = []; // closed fronts, as [xa, xb, ya, yb] in inches from the centre / floor
+    if (o.doors) { const [a, b] = o.doors, [xa, xb] = o.doorX || [-o.W / 2 + 0.7, o.W / 2 - 0.7], mid = (xa + xb) / 2;
+      for (const [l, r] of [[xa, mid], [mid, xb]]) { prbox(g, IN(r - l - 0.15), IN(b - a - 0.3), IN(0.7), x + IN((l + r) / 2), IN((a + b) / 2), front, dr, IN(0.15)); prbox(g, IN(0.35), IN(4), IN(0.5), x + IN(mid + (l < mid - 0.01 ? -1.2 : 1.2)), IN((a + b) / 2 + 2), front + IN(0.5), metal, IN(0.1)); }
+      closed.push([xa, xb, a, b]); }
+    for (const [a, b] of o.drawers || []) { prbox(g, IN(o.W - 1.6), IN(b - a - 0.3), IN(0.8), x, IN((a + b) / 2), front, dr, IN(0.15)); prbox(g, IN(Math.min(8, o.W * 0.35)), IN(0.45), IN(0.5), x, IN(b - 1.6), front + IN(0.5), metal, IN(0.1)); closed.push([-o.W / 2, o.W / 2, a, b]); }
+    // what sits on the open shelves, as in the listing photos: mostly cream and tan books, with a plant, a vase or a small frame
+    const BK = [0xeee6d6, 0xd9cbb2, 0xc2ab86, 0x8c6a4a, 0x5d6650, 0x3a3631, 0xb8893d, 0xe4dccb, 0x6b4a36];
+    const levels = [o.H > 30 ? (o.plinth ?? 2) : (o.plinth ?? 2), ...o.shelves], edges = [-o.W / 2 + 0.7, ...divs.slice().sort((p, q) => p - q), o.W / 2 - 0.7]; let n = 0;
+    for (let li = 0; li < levels.length; li++) { const y0 = levels[li] + 0.35, y1 = (li + 1 < levels.length ? levels[li + 1] : o.H) - 0.7, gap = y1 - y0; if (gap < 5) continue;
+      for (let ci = 0; ci + 1 < edges.length; ci++) { const l = edges[ci] + 0.4, r = edges[ci + 1] - 0.4; if (closed.some(([xa, xb, a, b]) => (l + r) / 2 > xa && (l + r) / 2 < xb && y0 + 1 > a && y0 + 1 < b)) continue;
+        const kind = n++ % 3, w = r - l; let bx = l + 0.3;
+        const upto = l + w * (kind === 0 ? 0.7 : 0.45);
+        for (let i = 0; bx < upto; i++) { const bw = 0.8 + ((i + n) % 3) * 0.35, bh = Math.min(gap - 1.2, 7 + ((i * 7 + n) % 4) * 1.1); prbox(g, IN(bw), IN(bh), IN(o.D * 0.68), x + IN(bx + bw / 2), IN(y0 + bh / 2), IN(0.4), mat(BK[(i * 3 + n) % BK.length], 0.85), 0); bx += bw + 0.1; }
+        const cx = x + IN(Math.min(r - 2.6, bx + (r - bx) / 2)), cz = IN(0.8);
+        if (kind === 1 && gap > 7) { pcyl(g, IN(1.9), IN(1.5), IN(3.4), cx, IN(y0 + 1.7), cz, pmat('paint', 0xe9e4da), 20); const lv = new THREE.Mesh(new THREE.SphereGeometry(IN(2.4), 12, 10), mat(0x56794a, 0.9)); lv.scale.set(1, 0.85, 1); lv.position.set(cx, IN(y0 + 5.4), cz); g.add(lv); }
+        else if (kind === 2) { for (let k = 0; k < 3; k++) prbox(g, IN(6 - k * 0.6), IN(0.9), IN(o.D * 0.6 - k), cx, IN(y0 + 0.45 + k * 0.92), cz, mat(BK[(k + n) % BK.length], 0.85), 0); if (gap > 6) pcyl(g, IN(1.2), IN(1.5), IN(4.2), cx, IN(y0 + 2.75 + 2.1), cz, pmat('paint', 0xb8a68a), 18); }
+        else if (gap > 8 && w > 9) prbox(g, IN(4), IN(5), IN(0.5), x + IN(r - 2.6), IN(y0 + 2.5), IN(-0.5), pmat('wood', 0x3a2418), 0); } }
+    if (o.H < 45) { pcyl(g, IN(1.6), IN(2), IN(6), x + IN(o.W / 2 - 4), Hh + IN(3), 0, pmat('paint', 0xd9cfbf), 20); for (let k = 0; k < 2; k++) prbox(g, IN(7), IN(1), IN(5), x - IN(o.W / 2 - 6), Hh + IN(0.5 + k), 0, mat(BK[k + 1], 0.85), 0); } // low pieces get a vase and a book stack on top
+  }
+  function mediaUnit(g, o) { // low unit: closed middle, open cubbies either side
+    bookcase(g, { W: o.W, D: o.D, H: o.H, frame: o.frame, paint: true, door: o.door, shelves: [o.H / 2], divs: [-o.mid / 2, o.mid / 2], doors: [o.plinth ?? 2, o.H - 0.7], doorX: [-o.mid / 2, o.mid / 2], plinth: o.plinth });
   }
   function recliner(g, o) { // shown reclined: back tilted, footrest out; local back at z = -D/2, facing +z
     const W = IN(o.W), D = IN(o.D), Hh = IN(o.H), aw = IN(o.armW || 7), fab = o.fab, dark = mat(0x151515);
@@ -923,15 +943,21 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
           for (const a of [-1, 1]) { prbox(s, IN(14), IN(1.8), IN(1.4), 0, IN(6.6), a * IN(6.3), w, IN(0.2)); prbox(s, IN(1.4), IN(1.8), IN(14), a * IN(6.3), IN(6.6), 0, w, IN(0.2)); } g.add(s); }
         pblob(g, IN(40), IN(40)); } },
     rowlingL: { name: 'Rowling Large bookshelf with cabinet, dark chocolate', site: 'RentoMojo', price: 388, url: RMU + 'furniture/rent-rowling-bookshelf-divider/1991', size: '35 × 18 × 66 in',
-      build: g => bookcase(g, { W: 35, D: 18, H: 66, frame: 0x3a2418, shelves: [14, 30, 44, 56], cols: 2, doors: [14, 30] }) },
+      build: g => bookcase(g, { W: 35, D: 18, H: 66, frame: 0x2e211a, door: 0x33251d, backHex: 0x241a14, shelves: [14, 30, 44, 56], cols: 2, doors: [14, 30], handleHex: 0x1a1512 }) },
     hugoBook: { name: 'Hugo bookshelf, walnut doors on a taupe frame', site: 'Furlenco', price: 429, url: FLU + 'hugo-bookshelf-5645-rent', size: '69 × 30 × 141 cm',
-      build: g => bookcase(g, { W: 27, D: 12, H: 55.5, frame: 0x8a7f74, door: 0x5c3a24, shelves: [19, 31, 43], doors: [2, 19] }) },
+      build: g => bookcase(g, { W: 27, D: 12, H: 55.5, frame: 0x625a52, paint: true, door: 0x6e4529, shelves: [19, 31, 43], doors: [2, 19], handleHex: 0x6b6258 }) },
     ladderOak: { name: 'Ladder open bookshelf, light oak (listed as Walnut)', site: 'RentoMojo', price: 193, url: RMU + 'furniture/rent-ladder-open-bookshelf-walnut/115813', size: '38 × 11 × 41 in',
-      build: g => { bookcase(g, { W: 19, D: 11, H: 41, frame: 0xc49a62, shelves: [14, 27.5] }, -IN(9.5)); bookcase(g, { W: 19, D: 11, H: 21, frame: 0xc49a62, shelves: [10.5] }, IN(9.5)); } },
+      build: g => { bookcase(g, { W: 19, D: 11, H: 41, frame: 0xc9a06a, backHex: 0xb58c58, shelves: [14, 27.5] }, -IN(9.5)); bookcase(g, { W: 19, D: 11, H: 21, frame: 0xc9a06a, backHex: 0xb58c58, shelves: [10.5] }, IN(9.5)); } },
     rianOak: { name: 'Rian bookshelf with cabinet, grey-brown oak', site: 'RentoMojo', price: 245, url: RMU + 'furniture/rent-rian-book-shelf-sonoma-oak/116746', size: '23 × 11 × 47 in',
-      build: g => bookcase(g, { W: 23, D: 11, H: 47, frame: 0x7d6f60, shelves: [22, 34.5], doors: [2, 22] }) },
+      build: g => bookcase(g, { W: 23, D: 11, H: 47, frame: 0x857463, backHex: 0x6f6152, shelves: [22, 34.5], doors: [2, 22] }) },
     rowlingM: { name: 'Rowling Medium bookshelf, honey oak (listed as Walnut)', site: 'RentoMojo', price: 163, url: RMU + 'furniture/rent-rowling-bookshelf-medium-walnut/114972', size: '24 × 12 × 36 in',
-      build: g => bookcase(g, { W: 24, D: 12, H: 36, frame: 0xb07a45, shelves: [12.5, 24] }) },
+      build: g => bookcase(g, { W: 24, D: 12, H: 36, frame: 0xb98048, backHex: 0xa06c3c, shelves: [12.5, 24] }) },
+    rowlingMW: { name: 'Rowling Medium bookshelf, wenge (dark brown)', site: 'RentoMojo', price: 142, url: RMU + 'furniture/rent-rowling-bookshelf-medium/1987', size: '24 × 12 × 36 in',
+      build: g => bookcase(g, { W: 24, D: 12, H: 36, frame: 0x2e231c, backHex: 0x241b15, shelves: [12.5, 24] }) },
+    hugoChest: { name: 'Hugo chest of drawers, walnut on taupe', site: 'Furlenco', price: 439, url: FLU + 'hugo-chest-of-drawer-5641-rent', size: '63 × 40 × 91 cm',
+      build: g => bookcase(g, { W: 25, D: 16, H: 36, frame: 0x625a52, paint: true, door: 0x6e4529, shelves: [], drawers: [[2.5, 12], [12, 21.5], [21.5, 35.3]], handleHex: 0x6b6258 }) },
+    hugoEnt: { name: 'Hugo low storage unit, walnut doors with open cubbies', site: 'Furlenco', price: 439, url: FLU + 'hugo-entertainment-unit-5642-rent', size: '126 × 40 × 51 cm',
+      build: g => mediaUnit(g, { W: 49.6, D: 15.7, H: 20, mid: 24, frame: 0x625a52, door: 0x6e4529, plinth: 3 }) },
     perk: { name: 'Perk table with 4 stools, dark chocolate', site: 'RentoMojo', price: 644, url: RMU + 'furniture/rent-perk-coffee-table/1971', size: '37 × 37 × 14 in, stools 17 in', stools: 4,
       build: g => { const w = pmat('wood', 0x3a2418), c = pmat('fabric', 0xa88a68);
         prbox(g, IN(37), IN(2.6), IN(37), 0, IN(12.7), 0, w, IN(0.4)); prbox(g, IN(35), IN(1.6), IN(35), 0, IN(10.6), 0, w, IN(0.3));
@@ -1239,7 +1265,8 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
         const x1 = 21.6, x2 = 26.6, z1 = 30.7, z2 = 33.1, mx = (x1 + x2) / 2;
         B(x1, z1, x2, z2, 2.4, 2.52, S.wood, true);
         if (useDesk) place('bookshelf', 0, 36.6, -Math.PI / 2, 26.8, 'maxX'); // no dining table: the bookshelf stands on the long east wall behind the desk chair, facing into the room
-        else { const bs = place('bookshelf', 0, 0, 0, 30.7); nudgeX(bs, 18.35 - bs.bb.min.x); } // with the dining table: on the north wall, just left of the desk
+        else { const bs = place('bookshelf', 0, 0, 0, 30.7); if (bs.bb.max.x - bs.bb.min.x <= 3.25) nudgeX(bs, 18.35 - bs.bb.min.x); // with the dining table: on the north wall, just left of the desk
+          else { bs.g.rotation.y = -Math.PI / 2; bs.g.updateMatrixWorld(true); let b = solidBox(bs.g); bs.g.position.x += 26.8 - b.max.x; bs.g.position.z += 33.3 - b.min.z; bs.g.updateMatrixWorld(true); bs.bb = solidBox(bs.g); colliders[bs.ci] = [bs.bb.min.x, bs.bb.min.z, bs.bb.max.x, bs.bb.max.z]; } } // a wide low unit goes on the east wall, between the desk and the table
         for (const [x, z] of [[x1 + 0.2, z1 + 0.2], [x2 - 0.2, z1 + 0.2], [x1 + 0.2, z2 - 0.2], [x2 - 0.2, z2 - 0.2]]) C(x, z, 0.05, 0, 2.4, S.metal);
         B(x1 + 1.4, z1 + 0.3, x2 - 1.4, z1 + 0.4, 3.1, 4.5, 0x111316, false, 0.3); C(mx, z1 + 0.4, 0.06, 2.52, 3.1, S.metal);
         chair(mx, z2 + 0.9, 'n', S.dark); F('flat-lamp', 'Desk lamp on the flatmate\'s desk', null, () => { deskLamp(x2 - 0.5, z1 + 0.5, 2.52, 0.7); });
@@ -1514,7 +1541,7 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
       opts.forEach((id, i) => {
         const pr = P[id], b = document.createElement('button');
         b.setAttribute('aria-pressed', i === cur);
-        b.innerHTML = `<span>${['Pick', 'Second', 'Guest option'][i]}: ${pr.name}</span><span class="pr">${inrF(pr.price)}</span><small>${pr.url ? `${pr.site} · ${pr.size} · <a href="${pr.url}" target="_blank" rel="noopener">listing</a>` : 'Nothing to rent'}</small>`;
+        b.innerHTML = `<span>${i < 2 ? ['Pick', 'Second'][i] : slot === 'coffee' ? 'Guest option' : 'Option ' + (i + 1)}: ${pr.name}</span><span class="pr">${inrF(pr.price)}</span><small>${pr.url ? `${pr.site} · ${pr.size} · <a href="${pr.url}" target="_blank" rel="noopener">listing</a>` : 'Nothing to rent'}</small>`;
         b.addEventListener('click', e => { if (e.target.closest('a')) return; choice[ckey(slot, styleKey)] = i; saveChoice(); selected = slot; refresh(); });
         row.querySelector('.opts').appendChild(b);
       });
