@@ -97,7 +97,8 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
       <div class="seg" role="group" aria-label="Design style" id="styleSeg"></div></div>
     <div class="grp"><span class="lbl">Dining area</span>
       <div class="seg" role="group" aria-label="Dining area use">
-        <button id="dDesk" aria-pressed="true">Workstation</button>
+        <button id="dDesk" aria-pressed="true">Workstation · east wall</button>
+        <button id="dDeskN" aria-pressed="false">Workstation · north wall</button>
         <button id="dDining" aria-pressed="false">Workstation + dining</button>
       </div></div>
     <div class="grp"><span class="lbl">Light</span>
@@ -1204,21 +1205,36 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     B(18.6, 41.25, 21.8, 42.3, 0.3, 3, S.wood, true); F('plant-shoe', 'Money plant trailing over the shoe cabinet', null, () => { plant(21.1, 41.75, 0.55, null, 'pothos', 3); });
     F('living-pendant', 'Pendant light over the coffee table', 'Decoration to show the lighting. The flat\'s own ceiling lights stay, so this is optional.', () => { pendant(cx, (cof.bb.min.z + cof.bb.max.z) / 2, 8.3, 0.7, 0.5); });
 
-    { // flatmate workstation against the east wall; with dining it moves to the north half and a round 4-seater takes the south half
-      const z1 = useDesk ? 33.5 : 31.0, z2 = z1 + 5;
-      B(24.4, z1, 26.8, z2, 2.4, 2.52, S.wood, true);
-      for (const [x, z] of [[24.6, z1 + 0.2], [24.6, z2 - 0.2], [26.6, z1 + 0.2], [26.6, z2 - 0.2]]) C(x, z, 0.05, 0, 2.4, S.metal);
-      B(26.3, z1 + 1.4, 26.4, z2 - 1.4, 3.1, 4.5, 0x111316, false, 0.3); C(26.4, (z1 + z2) / 2, 0.06, 2.52, 3.1, S.metal);
-      chair(23.4, (z1 + z2) / 2, 'e', S.dark); F('flat-lamp', 'Desk lamp on the flatmate\'s desk', null, () => { deskLamp(26.3, z2 - 0.5, 2.52, 0.7); });
-      F('flat-shelf', 'Wall shelf with books over the flatmate\'s desk', null, () => { B(25.8, z1, 26.75, z2, 5.6, 5.7, S.wood); books(z1 + 0.4, 26, z2 - 0.4, 5.7, 0.7, true); });
-      if (useDesk) F('flat-plants', 'Plants either side of the flatmate\'s desk', null, () => { plant(26.2, 31.4, 1.1, null, 'rubber'); plant(26.2, 40.6, 1, null, 'zz'); });
-      else {
-        // round 3 ft table for four between the desk and the main-door wall; the path from the main door to the corridor stays clear
-        const tx = 23.4, tz = 39.25, o = 2.05;
+    { // flatmate workstation: on the east wall facing east, or on the north (corridor-end) wall towards the east corner, facing north
+      // facing north, a video-call camera looks at the dining area and main-door wall, not the living room and TV, and balcony daylight comes from the side
+      if (!deskNorth) {
+        const z1 = 33.5, z2 = 38.5;
+        B(24.4, z1, 26.8, z2, 2.4, 2.52, S.wood, true);
+        for (const [x, z] of [[24.6, z1 + 0.2], [24.6, z2 - 0.2], [26.6, z1 + 0.2], [26.6, z2 - 0.2]]) C(x, z, 0.05, 0, 2.4, S.metal);
+        B(26.3, z1 + 1.4, 26.4, z2 - 1.4, 3.1, 4.5, 0x111316, false, 0.3); C(26.4, (z1 + z2) / 2, 0.06, 2.52, 3.1, S.metal);
+        chair(23.4, (z1 + z2) / 2, 'e', S.dark); F('flat-lamp', 'Desk lamp on the flatmate\'s desk', null, () => { deskLamp(26.3, z2 - 0.5, 2.52, 0.7); });
+        F('flat-shelf', 'Wall shelf with books over the flatmate\'s desk', null, () => { B(25.8, z1, 26.75, z2, 5.6, 5.7, S.wood); books(z1 + 0.4, 26, z2 - 0.4, 5.7, 0.7, true); });
+        F('flat-plants', 'Plants either side of the flatmate\'s desk', null, () => { plant(26.2, 31.4, 1.1, null, 'rubber'); plant(26.2, 40.6, 1, null, 'zz'); });
+      } else {
+        const x1 = 21.6, x2 = 26.6, z1 = 30.7, z2 = 33.1, mx = (x1 + x2) / 2;
+        B(x1, z1, x2, z2, 2.4, 2.52, S.wood, true);
+        for (const [x, z] of [[x1 + 0.2, z1 + 0.2], [x2 - 0.2, z1 + 0.2], [x1 + 0.2, z2 - 0.2], [x2 - 0.2, z2 - 0.2]]) C(x, z, 0.05, 0, 2.4, S.metal);
+        B(x1 + 1.4, z1 + 0.3, x2 - 1.4, z1 + 0.4, 3.1, 4.5, 0x111316, false, 0.3); C(mx, z1 + 0.4, 0.06, 2.52, 3.1, S.metal);
+        chair(mx, z2 + 0.9, 'n', S.dark); F('flat-lamp', 'Desk lamp on the flatmate\'s desk', null, () => { deskLamp(x2 - 0.5, z1 + 0.5, 2.52, 0.7); });
+        F('flat-shelf', 'Wall shelf with books over the flatmate\'s desk', null, () => { B(x1, z1, x2, z1 + 0.95, 5.6, 5.7, S.wood); books(x1 + 0.4, z1 + 0.05, x2 - 0.4, 5.7, 0.7, false); });
+        if (useDesk) {
+          F('flat-plants', 'Plants along the free east wall', null, () => { plant(26.2, 34.4, 1.1, null, 'rubber'); plant(26.2, 40.6, 1, null, 'zz'); });
+          F('dining-art', 'Art on the free east wall', null, () => { art(26.72, 35.6, 26.8, 39.4, 4, 6.4); });
+        }
+      }
+      if (!useDesk) {
+        // round 3 ft table for four at the main-door end; the path from the main door to the corridor stays clear
+        const tx = 23.4, tz = 39.3, o = 2.05;
         F('dining-set', 'Dining table for four, round 3 ft', 'Shown with the Workstation + dining option. A compact round table so the desk, the dining chairs and the walkway from the main door all fit. Not in the rent list yet.', () => {
           C(tx, tz, 1.5, 2.4, 2.52, S.wood); C(tx, tz, 0.3, 0, 2.4, S.wood2); C(tx, tz, 0.8, 0, 0.08, S.wood2); colliders.push([tx - 1.5, tz - 1.5, tx + 1.5, tz + 1.5]);
           chair(tx, tz - o, 's', S.fabric); chair(tx, tz + o, 'n', S.fabric); chair(tx - o, tz, 'e', S.fabric); chair(tx + o, tz, 'w', S.fabric); pendant(tx, tz, 5.9, 1, 1.4); }, 'Not rented yet');
         F('dining-art', 'Art on the dining wall', null, () => { art(26.72, 37.6, 26.8, 40.9, 4, 6.4); });
+        F('flat-plants', 'Plant in the corner by the desk', null, () => { plant(26.2, 34.6, 1.0, null, 'rubber'); });
       }
     }
 
@@ -1422,8 +1438,10 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
         <li>The side table and its lamp sit at the balcony end of the sofa, so the main-door end stays clear; a small plant fills the gap by the door.</li>
         <li>Side table with a lamp at the sofa's end, and a shoe cabinet with a plant on top right beside the main door.</li></ul></div>
       <div class="room"><h3>${useDesk ? 'Flatmate workstation' : 'Workstation + dining'}</h3><ul>${useDesk
-        ? '<li>One 5 ft desk and an ergonomic chair against the far wall, with a monitor, a desk lamp and a shelf above.</li><li>Facing the wall keeps the living room out of video calls. Switch to Workstation + dining above to add a table for four next to it.</li>'
-        : '<li>The flatmate desk moves to the corridor end of the far wall (still 5 ft, still facing the wall for video calls).</li><li>A round 3 ft table for four fills the main-door end, with a low pendant over it. Round keeps the corners free, so the path from the main door to the corridor stays clear.</li><li>About 2 ft between the desk chair and the nearest dining chair, so both can be used at once.</li>'}</ul></div>
+        ? (deskNorth
+          ? '<li>One 5 ft desk and an ergonomic chair on the north wall (the corridor end), pushed towards the corner, with a monitor, a desk lamp and a shelf above.</li><li>On video calls the camera looks at the dining area and the main-door wall, so the sofa and TV stay out of the frame. Balcony daylight falls from the side: no screen glare, face evenly lit.</li><li>The long east wall stays free for plants and art.</li>'
+          : '<li>One 5 ft desk and an ergonomic chair against the long east wall, with a monitor, a desk lamp and a shelf above.</li><li>On video calls the camera looks back across the living room, TV and balcony glass. Try Workstation · north wall above to compare.</li>')
+        : '<li>The flatmate desk sits on the north wall (the corridor end), towards the corner, so video calls show the dining area, not the living room.</li><li>A round 3 ft table for four fills the main-door end, with a low pendant over it. Round keeps the corners free, so the path from the main door to the corridor stays clear.</li><li>About 2 ft between the desk chair and the nearest dining chair, so both can be used at once.</li>'}</ul></div>
       <div class="room"><h3>Balcony</h3><ul><li>No seating: a balcony garden. A long planter trough along the grille, big potted plants in both corners, and hanging planters from the top rail, with a clear path down the middle.</li><li>Warm string lights along the top of the grille. It faces west, so this is the sunset spot.</li></ul></div>
       <div class="room"><h3>My Bedroom</h3><ul>
         <li>${m.bed} (queen, 5 × 6.5 ft) centred on the back wall, leaving 3 ft to walk to the built-in wardrobe.</li>
@@ -1455,7 +1473,7 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   document.getElementById('notesBtn').onclick = () => toggleNotes(notesEl.hidden);
 
   // ---- state + UI ----
-  let styleKey = 'moody', useDesk = true;
+  let styleKey = 'moody', useDesk = true, deskNorth = false; // dining area: desk on the east wall, desk on the north wall, or north desk + dining table
   const styleSeg = document.getElementById('styleSeg');
   for (const k of Object.keys(STYLES)) {
     const b = document.createElement('button'); b.textContent = STYLES[k].name; b.id = 'style-' + k;
@@ -1576,10 +1594,12 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     applyFillers(); applyLight(); renderNotes(styleKey, useDesk); renderPieces(); renderSeats(); highlight();
     for (const k of Object.keys(STYLES)) document.getElementById('style-' + k).setAttribute('aria-pressed', k === styleKey);
     document.getElementById('dDining').setAttribute('aria-pressed', !useDesk);
-    document.getElementById('dDesk').setAttribute('aria-pressed', useDesk);
+    document.getElementById('dDesk').setAttribute('aria-pressed', useDesk && !deskNorth);
+    document.getElementById('dDeskN').setAttribute('aria-pressed', useDesk && deskNorth);
   }
-  document.getElementById('dDining').onclick = () => { useDesk = false; refresh(); };
-  document.getElementById('dDesk').onclick = () => { useDesk = true; refresh(); };
+  document.getElementById('dDining').onclick = () => { useDesk = false; deskNorth = true; refresh(); };
+  document.getElementById('dDesk').onclick = () => { useDesk = true; deskNorth = false; refresh(); };
+  document.getElementById('dDeskN').onclick = () => { useDesk = true; deskNorth = true; refresh(); };
   document.getElementById('lDay').onclick = () => { evening = false; applyLight(); };
   document.getElementById('lEve').onclick = () => { evening = true; applyLight(); };
 
