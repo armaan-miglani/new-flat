@@ -101,6 +101,11 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
         <button id="dDeskN" aria-pressed="false">Workstation · north wall</button>
         <button id="dDining" aria-pressed="false">Workstation + dining</button>
       </div></div>
+    <div class="grp"><span class="lbl">Separate area</span>
+      <div class="seg" role="group" aria-label="Separate area use">
+        <button id="nOffice" aria-pressed="true">Office</button>
+        <button id="nDay" aria-pressed="false">Daybed nook</button>
+      </div></div>
     <div class="grp"><span class="lbl">Light</span>
       <div class="seg" role="group" aria-label="Time of day">
         <button id="lDay" aria-pressed="false">Day</button>
@@ -158,7 +163,7 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   // ---- plan data, in feet (x east, y south), matches the 2D floor plan ----
   const H = 9.5, T = 0.4, G = 0.5, EYE = 5.2;
   const ROOMS = [
-    { name: 'Separate area', x: 10, y: 8, w: 4, h: 6, floor: 'tile' }, // measured: ~3.8 ft from the glass partition to the window, ~6.3 ft along it
+    { name: 'Separate area', x: 10, y: 7.5, w: 4, h: 6.5, floor: 'tile' }, // measured: ~3.8 ft from the glass partition to the window, ~6.3 ft along it (inside the walls: 3.6 x 6.1 here)
     { name: 'My Bedroom', x: 14, y: 8, w: 12, h: 12, floor: 'tile' }, // measured: the wardrobe fills the 12 ft east wall
     { name: 'Bedroom 2', x: 4, y: 14, w: 10, h: 9, floor: 'tile' }, // its door sits at your door's corner; the wall on the left as you enter starts at the frame
     { name: 'Passage', x: 14, y: 20, w: 4, h: 10.5, floor: 'tile' },
@@ -174,7 +179,7 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     ['h', 20, 14, 17.2, 'door'], ['v', 14, 20, 23, 'door'], ['v', 18, 25.6, 28.4, 'door'],
     ['h', 20, 20.5, 23, 'door'], ['v', 6, 25, 28, 'door'], ['h', 42.5, 14.5, 18.5, 'door'],
     ['h', 30.5, 14, 18, 'open'], ['v', 14, 25.5, 29.5, 'open'], ['v', 4, 32.4, 41.1, 'open'], ['v', 14, 8.3, 13.9, 'open'],
-    ['v', 10, 8.6, 13.4, 'window'], ['h', 8, 10.4, 13.6, 'window'], ['v', 4, 16, 21, 'window'], ['h', 14, 11, 13.2, 'window'],
+    ['v', 10, 8.6, 13.4, 'window'], ['h', 7.5, 10.4, 13.6, 'window'], ['v', 4, 16, 21, 'window'], ['h', 14, 11, 13.2, 'window'],
     ['v', 2, 24.5, 29, 'window'], ['v', 0, 31, 42, 'rail'],
     ['v', 25.5, 21.3, 23.7, 'vent'], ['v', 25.5, 26.2, 28.8, 'vent'],
   ];
@@ -513,8 +518,8 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     for (const [a, b, y1, y2] of hs) { put(cur, a, 0, H); put(a, b, 0, y1); put(a, b, y2, H); cur = b; }
     put(cur, s2, 0, H);
   }
-  paintWall('v', 10.215, 8.2, 13.8, [[8.8, 13.2, 3, 7]], WALL_NOOK);
-  paintWall('h', 8.215, 10.2, 13.8, [[10.6, 13.4, 3, 7]], WALL_NOOK);
+  paintWall('v', 10.215, 7.7, 13.8, [[8.8, 13.2, 3, 7]], WALL_NOOK);
+  paintWall('h', 7.715, 10.2, 13.8, [[10.6, 13.4, 3, 7]], WALL_NOOK);
   paintWall('h', 13.785, 10.2, 13.8, [[11.2, 13.0, 3, 7]], WALL_NOOK);
   paintWall('h', 30.715, 0.2, 3.8, [], WALL_BALCONY); paintWall('h', 42.285, 0.2, 3.8, [], WALL_BALCONY);
   paintWall('v', 3.785, 30.7, 42.3, [[32.4, 41.1, 0, 8]], WALL_BALCONY);
@@ -669,7 +674,7 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     prbox(g, mW, mT, mL, 0, deckY + mT / 2, mz, mat(0xf3f1ec, 0.9), IN(2));
     prbox(g, mW + IN(1), IN(1.4), mL * 0.55, 0, deckY + mT + IN(0.5), mz + mL * 0.2, pmat('fabric', o.duvet || 0xe8e2d6), IN(0.8));
     prbox(g, mW + IN(2), IN(1.8), IN(16), 0, deckY + mT + IN(1), mz + mL * 0.38, pmat('fabric', o.throwHex || 0x7d8a70), IN(0.8));
-    for (const sx of [-1, 1]) { const p = prbox(g, IN(25), IN(6), IN(15), sx * IN(14), deckY + mT + IN(3), z0 + t + IN(9), mat(0xf6f4ef, 0.95), IN(3)); p.rotation.x = -0.35; }
+    for (const sx of (o.mW || 60) < 48 ? [0] : [-1, 1]) { const p = prbox(g, IN(Math.min(25, (o.mW || 60) - 6)), IN(6), IN(15), sx * IN(14), deckY + mT + IN(3), z0 + t + IN(9), mat(0xf6f4ef, 0.95), IN(3)); p.rotation.x = -0.35; } // one pillow on a single bed
     // headboard
     const hb = o.head || 'panel';
     if (hb === 'posts') { // Aara: tall posts, curved top rail, quilted panel between
@@ -797,6 +802,7 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     bed2: { label: 'Bedroom 2 bed', moody: ['bohoQueen', 'miliDvi'], calm: ['auroraGrey', 'bohoQueen'], boho: ['bohoQueen', 'auroraLow'], japandi: ['mysa', 'kipper'] },
     bedside: { label: 'Bedside tables (3)', moody: ['setWingMinion', 'setFloralMinion'], calm: ['setHugo', 'setWingman'], boho: ['setJasper', 'setRay'], japandi: ['setWatson', 'setStooge'] },
     desk: { label: 'Workstation', moody: ['leonardDesk', 'howardDesk'], calm: ['leonardDesk', 'poiseDesk'], boho: ['poiseDesk', 'leonardDesk'], japandi: ['howardDesk', 'leonardDesk'] }, // the separate area is 4 ft deep: only desks 20 in deep or less leave room for the chair
+    daybed: { label: 'Daybed (nook mode)', all: ['atticusSingle', 'auroraSingle'] }, // a single bed along the 6.3 ft window wall; only listings 74 in long or less fit
     endtable: { label: 'Side table', all: ['vienna'] },
     bookshelf: { label: 'Bookshelf or cabinet', moody: ['rowlingL', 'hugoBook', 'rowlingMW'], calm: ['hugoBook', 'rowlingL', 'hugoChest'], boho: ['ladderOak', 'rowlingM', 'rianOak'], japandi: ['ladderOak', 'rianOak', 'rowlingM'] },
   };
@@ -897,6 +903,10 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     moreno: { name: 'Moreno workstation, walnut + monitor shelf (chair included)', site: 'Furlenco', price: 599, url: FLU + 'moreno-workstation-3824-rent', size: 'about 90 × 60 cm', build: DK.moreno },
     bohoEarth: { name: 'Boho Earth, honey wood + cane drawers + shelves', site: 'Furlenco', price: 1949, url: FLU + 'boho-earth-solid-wood-study-table-5353-rent', size: 'about 104 × 53 cm (not listed)', build: DK.bohoEarth },
     caramelCrest: { name: 'Caramel Crest L-desk, oak + black, monitor riser', site: 'RentoMojo', price: 388, url: RMU + 'furniture/rent-caramel-crest-l-shape-study-table/135317', size: '55 × 19.8 in + return', build: DK.caramelCrest },
+    auroraSingle: { name: 'Aurora low single bed, walnut-brown with a slatted headboard', site: 'RentoMojo', price: 358, url: RMU + 'furniture/rent-aurora-low-height-single-bed-solid-wood/3275', size: '72 × 36 × 8 in (frame)',
+      build: g => bed(g, { W: 36, L: 72, mW: 35, mL: 69, head: 'vslats', hbH: 22, legH: 2, railH: 6, legs: 'block', wood: pmat('wood', 0x5a3420), throwHex: 0x8a9a78 }) },
+    atticusSingle: { name: 'Atticus single platform bed, plain walnut-brown, no headboard', site: 'RentoMojo', price: 336, url: RMU + 'furniture/rent-atticus-solid-wood-single-platform-bed/2734', size: '73.4 × 37.4 × 7 in',
+      build: g => bed(g, { W: 37.4, L: 73.4, mW: 36, mL: 72, head: 'none', hbT: 0.5, legH: 1, railH: 6, legs: 'block', wood: pmat('wood', 0x6b3f22), throwHex: 0xb9a68a }) },
     leonardDesk: { name: 'Leonard study table, walnut + black A-frame legs', site: 'RentoMojo', price: 275, url: RMU + 'furniture/rent-leonard-study-table/103750', size: '34 × 20 × 31 in', build: DK.leonard },
     poiseDesk: { name: 'Poise study table, walnut-brown top on a black frame', site: 'RentoMojo', price: 214, url: RMU + 'furniture/rent-poise-study-table/5091', size: '37 × 20 × 34 in', build: DK.poise },
     howardDesk: { name: 'Howard study table, wenge with open shelves', site: 'RentoMojo', price: 123, url: RMU + 'furniture/rent-howard-study-table/2018', size: '36 × 18 × 29 in', build: DK.howard },
@@ -1391,9 +1401,10 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     F('bed1-plant', 'Snake plant in your bedroom', null, () => { plant(14.65, 15.6, 1.0, null, 'snake'); });
     F('bed1-art', 'Art above your bed', null, () => { art(16.65, 8.21, 21.45, 8.25, 5, 6.8); });
 
+    const NOOK_POT = 0xf2efe8;
+    if (nookMode === 'office') {
     // Separate area: workstation centred on the big window, framed by a window garden
-    F('nook-rug', 'Rug in the separate area', null, () => { rug(10.35, 8.4, 13.7, 13.6); });
-    const NOOK_WOOD = S.deskNook, NOOK_POT = 0xf2efe8;
+    F('nook-rug', 'Rug in the separate area', null, () => { rug(10.35, 8.1, 13.7, 13.6); });
     const dk = place('desk', 0, 11.0, Math.PI / 2, 10.3, 'minX'), dTop = dk.top; // centred on the window
     B(dk.bb.min.x + 0.3, 10.1, dk.bb.min.x + 0.42, 11.9, dTop + 0.55, dTop + 1.9, 0x111316, false, 0.3); C(dk.bb.min.x + 0.36, 11.0, 0.06, dTop, dTop + 0.6, S.metal); B(dk.bb.min.x + 0.15, 10.7, dk.bb.min.x + 0.55, 11.3, dTop, dTop + 0.03, S.metal); // your monitor
     F('desk-chair', 'Desk chair', 'Not in the rent list. You need a chair to work: bring your own, or pick Moreno, which comes with one.', () => { chair(Math.min(dk.bb.max.x + 0.75, 13.15), 11.0, 'w', S.dark); });
@@ -1404,6 +1415,21 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     addBox(decor, 10.35, 9.0, 10.45, 13.0, 7.9, 7.98, mat(S.metal));
     for (const z of [9.4, 10.6, 11.8, 12.8]) { C(10.55, z, 0.02, 7.0, 7.9, S.dark); C(10.55, z, 0.25, 6.6, 7.0, NOOK_POT, 0.3); growAt(10.55, 6.98, z, 0.45, 'pothos'); } });
     F('nook-plant', 'Plant in the corner by the glass partition', null, () => { plant(13.45, 13.45, 0.8, NOOK_POT, 'rubber'); });
+    } else { // daybed nook: a single bed along the window wall, cushions against the wall, plants all round
+    const db = place('daybed', 0, 10.75, 0, 10.25, 'minX'), seat = 1.38; // headboard (if any) at the north wall
+    const cx0 = db.bb.min.x;
+    F('daybed-cushions', 'Cushions and bolster on the daybed', 'Buy: four 18 in cushions and one bolster, so it sits like a sofa by day.', () => {
+      const cols = [S.cush, S.fabric, S.accent, S.cush];
+      [9.2, 10.4, 11.6, 12.8].forEach((z, k) => { const c = new THREE.Mesh(new THREE.BoxGeometry(0.42, 1.25, 1.25), mat(cols[k], 0.95)); c.position.set(cx0 + 0.42, seat + 0.6, z); c.rotation.z = -0.18; decor.add(c); });
+      const bol = new THREE.Mesh(new THREE.CylinderGeometry(0.33, 0.33, 2.5, 20), mat(S.accent, 0.95)); bol.rotation.z = Math.PI / 2; bol.position.set((db.bb.min.x + db.bb.max.x) / 2, seat + 0.33, db.bb.max.z - 0.45); decor.add(bol); }, 'Buy');
+    F('nook-hanging', 'Money plant and string lights along the window rail', null, () => {
+      addBox(decor, 10.35, 8.6, 10.45, 13.2, 7.9, 7.98, mat(S.metal));
+      for (const z of [9.0, 10.1, 11.2, 12.3, 13.0]) { C(10.55, z, 0.02, 7.0, 7.9, S.dark); C(10.55, z, 0.25, 6.6, 7.0, NOOK_POT, 0.3); growAt(10.55, 6.98, z, 0.45, 'pothos'); }
+      strip(10.32, 8.7, 10.38, 13.1, 7.82, 0.35); });
+    F('nook-sill', 'Herbs and succulents on the side window sill', null, () => { for (const x of [11.0, 11.9, 12.8]) { C(x, 7.95, 0.2, 3.0, 3.35, NOOK_POT, 0.3); growAt(x, 3.33, 7.95, 0.3, x < 11.5 ? 'herb' : 'succ'); } });
+    F('nook-plants', 'Hanging planters along the side window', 'The bed fills the floor, so the plants hang: a tension rod inside the side window frame, no drilling.', () => { addBox(decor, 10.7, 7.83, 13.3, 7.9, 7.6, 7.66, mat(S.metal)); for (const x of [11.2, 12.0, 12.8]) { C(x, 7.95, 0.02, 6.6, 7.6, S.dark); C(x, 7.95, 0.24, 6.2, 6.6, NOOK_POT, 0.3); growAt(x, 6.58, 7.95, 0.42, 'pothos'); } });
+    F('nook-lamp', 'Clip-on reading lamp at the head of the daybed', null, () => { deskLamp(db.bb.max.x - 0.35, db.bb.min.z + 0.25, seat + 0.5, 0.6); });
+    }
 
     // Bedroom 2: built-in cabinets on the passage wall, bed headboard on the kitchen-side wall
     const b2 = place('bed2', 7.0, 0, Math.PI, 22.78); nudgeX(b2, 4.3 - b2.bb.min.x); // headboard on the plain wall on your left as you enter, pushed to the window wall so the entrance door and wardrobe doors stay clear
@@ -1513,8 +1539,11 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
         <li>A rug under the bottom two-thirds of the bed and a plant in the corner. The foot of the bed stays clear so the door can swing open and you can walk round to both sides; shoes live in the cabinet by the main door.</li></ul></div>
       <div class="room"><h3>Separate area</h3><ul>
         <li>Measured from the video: only about 4 ft from the glass partition to the window, and about 6 ft along it. Two windows, yellow walls, and the only way in is through your bedroom.</li>
-        <li>Your workstation: a slim desk, 18 to 20 in deep (the usual 24 in desks leave no room for the chair), centred on the window, with a monitor and a desk lamp. That leaves about 2 ft for the chair; when you stand up, it rolls back into the partition opening.</li>
-        <li>A compact plant either side of the desk, money plant trailing from a rail above the window, and a rubber plant in the corner by the partition. No floor lamp: there is no room for one. The ironing stand needs a new home; to be decided.</li></ul></div>
+        ${nookMode === 'office' ? `<li><b>Office (switch above):</b> a slim desk, 18 to 20 in deep (the usual 24 in desks leave no room for the chair), centred on the window, with a monitor and a desk lamp. That leaves about 2 ft for the chair; when you stand up, it rolls back into the partition opening.</li>
+        <li>A compact plant either side of the desk, money plant trailing from a rail above the window, and a rubber plant in the corner by the partition. No floor lamp: there is no room for one.</li>` : `<li><b>Daybed nook (switch above):</b> a single bed along the window wall, 74 in long or less (the wall is about 75 in), sitting like a sofa by day with four cushions against the wall and a bolster at the foot. A weekend reading and nap spot, and a spare bed for a guest.</li>
+        <li>The bed fills the floor, so the plants go up: money plant hanging from a tension rod along the big window, three hanging planters on the side window, herbs and succulents on its sill, warm string lights along the rail and a clip-on reading lamp at the head. From your bed you look through the glass at a wall of green.</li>
+        <li>Pick the Atticus platform (73.4 in, no headboard) first: it fits with about 2 in spare. The Aurora single is listed at 72 in with a headboard; confirm the overall length with RentoMojo before ordering.</li>`}
+        <li>The ironing stand needs a new home; to be decided.</li></ul></div>
       <div class="room"><h3>Bedroom 2</h3><ul>
         <li>About 10 × 9 ft wall to wall. The door is in the corner next to your bedroom door; the wall on your left as you walk in starts right at the frame.</li>
         <li>The built-in wardrobe is on the passage-side wall, from the corner by the small window up to the entrance door: a 2-door section, a mirror niche, another 2-door section, and a loft. About 2 ft deep.</li>
@@ -1537,7 +1566,7 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   document.getElementById('notesBtn').onclick = () => toggleNotes(notesEl.hidden);
 
   // ---- state + UI ----
-  let styleKey = 'moody', useDesk = true, deskNorth = false; // dining area: desk on the east wall, desk on the north wall, or north desk + dining table
+  let styleKey = 'moody', useDesk = true, deskNorth = false, nookMode = 'office'; // dining area: desk on the east wall, desk on the north wall, or north desk + dining table
   const styleSeg = document.getElementById('styleSeg');
   for (const k of Object.keys(STYLES)) {
     const b = document.createElement('button'); b.textContent = STYLES[k].name; b.id = 'style-' + k;
@@ -1550,6 +1579,7 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     pieceList.innerHTML = '';
     let tot = 0;
     for (const slot of Object.keys(CATALOG)) {
+      if ((slot === 'desk' && nookMode !== 'office') || (slot === 'daybed' && nookMode !== 'daybed')) continue;
       const opts = optionsFor(slot, styleKey), cur = Math.min(choice[ckey(slot, styleKey)] || 0, opts.length - 1);
       tot += P[opts[cur]].price;
       const row = document.createElement('div'); row.className = 'row' + (selected === slot ? ' sel' : '');
@@ -1663,10 +1693,14 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     document.getElementById('dDining').setAttribute('aria-pressed', !useDesk);
     document.getElementById('dDesk').setAttribute('aria-pressed', useDesk && !deskNorth);
     document.getElementById('dDeskN').setAttribute('aria-pressed', useDesk && deskNorth);
+    document.getElementById('nOffice').setAttribute('aria-pressed', nookMode === 'office');
+    document.getElementById('nDay').setAttribute('aria-pressed', nookMode === 'daybed');
   }
   document.getElementById('dDining').onclick = () => { useDesk = false; deskNorth = true; refresh(); };
   document.getElementById('dDesk').onclick = () => { useDesk = true; deskNorth = false; refresh(); };
   document.getElementById('dDeskN').onclick = () => { useDesk = true; deskNorth = true; refresh(); };
+  document.getElementById('nOffice').onclick = () => { nookMode = 'office'; refresh(); };
+  document.getElementById('nDay').onclick = () => { nookMode = 'daybed'; refresh(); };
   document.getElementById('lDay').onclick = () => { evening = false; applyLight(); };
   document.getElementById('lEve').onclick = () => { evening = true; applyLight(); };
 
@@ -1805,7 +1839,7 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   function tourRoute() {
     return [...TOUR_LIVING, ...TO_BALCONY,
       [2.4, 36.5, 0.05, 'Balcony garden: herbs and marigolds in the planter, palms, hanging money plants'], [2.4, 36.5, 3.1, ''],
-      ...FROM_BALCONY, ...TOUR_REST];
+      ...FROM_BALCONY, ...(nookMode === 'office' ? TOUR_REST : [...TOUR_REST.slice(0, -1), [14.7, 13.1, 1.45, 'Separate area: a daybed under the window, plants all round']])];
   }
   let tour = null;
   const tourBtn = document.getElementById('iTour');
@@ -1890,7 +1924,7 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   }).catch(() => {});
 
   scene.traverse(o => { if (o.isMesh) o.receiveShadow = true; });
-  window.home3d = { me, orbit, setMode, get placed() { return placed; }, get fillers() { return fillers; }, setGuests: (on, extra) => { guests = on; extraSeat = extra || 'none'; refresh(); }, startTour, get tourOn() { return !!tour; }, tourAdvance: sec => { for (let t = 0; t < sec && tour; t += 0.05) tourStep(0.05); return tour ? tour.i : -1; }, get colliders() { return colliders; }, pick: (slot, i) => { choice[ckey(slot, styleKey)] = i; saveChoice(); refresh(); }, setStyle: k => { styleKey = k; refresh(); }, setLayout: (d, n) => { useDesk = d; deskNorth = n; refresh(); }, options: slot => optionsFor(slot, styleKey), P, CATALOG, ROOMS, segs }; // console hook for screenshots and fit checks
+  window.home3d = { me, orbit, setMode, get placed() { return placed; }, get fillers() { return fillers; }, setGuests: (on, extra) => { guests = on; extraSeat = extra || 'none'; refresh(); }, startTour, get tourOn() { return !!tour; }, tourAdvance: sec => { for (let t = 0; t < sec && tour; t += 0.05) tourStep(0.05); return tour ? tour.i : -1; }, get colliders() { return colliders; }, pick: (slot, i) => { choice[ckey(slot, styleKey)] = i; saveChoice(); refresh(); }, setStyle: k => { styleKey = k; refresh(); }, setLayout: (d, n) => { useDesk = d; deskNorth = n; refresh(); }, setNook: m => { nookMode = m; refresh(); }, options: slot => optionsFor(slot, styleKey), P, CATALOG, ROOMS, segs }; // console hook for screenshots and fit checks
   refresh();
   setMode('walk');
   renderer.setAnimationLoop(tick);
