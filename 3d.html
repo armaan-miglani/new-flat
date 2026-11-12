@@ -821,7 +821,7 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     bed2: { label: 'Bedroom 2 bed', moody: ['bohoQueen', 'miliDvi'], calm: ['auroraGrey', 'bohoQueen'], boho: ['bohoQueen', 'auroraLow'], japandi: ['mysa', 'kipper'] },
     bedside: { label: 'Bedside tables (3)', moody: ['setWingMinion', 'setFloralMinion'], calm: ['setHugo', 'setWingman'], boho: ['setJasper', 'setRay'], japandi: ['setWatson', 'setStooge'] },
     desk: { label: 'Workstation', moody: ['leonardDesk', 'howardDesk'], calm: ['leonardDesk', 'poiseDesk'], boho: ['poiseDesk', 'leonardDesk'], japandi: ['howardDesk', 'leonardDesk'] }, // the separate area is 4 ft deep: only desks 20 in deep or less leave room for the chair
-    fridge: { label: 'Fridge', all: ['haier270', 'rmFridge240', 'fur328'] }, // in the slot at the kitchen entrance, against the counter end
+    fridge: { label: 'Fridge', all: ['fur328', 'haier270', 'rmFridge240'] }, // in the slot at the kitchen entrance, against the counter end
     ro: { label: 'Water purifier (RO)', all: ['drinkprimeF', 'drinkprimeRM'] },
     shoe: { label: 'Shoe cabinet', all: ['saddleShoe', 'flipShoe'] },
     chest: { label: 'Chest of drawers, facing your bed', moody: ['avianChest', 'kipperChest'], calm: ['hugoChest', 'avianChest'], boho: ['kipperChest', 'magnumChest'], japandi: ['filbertChest', 'kipperChest'] }, // the 3 ft wall between your door and the bathroom door
@@ -933,7 +933,7 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
       build: g => bed(g, { W: 37.4, L: 73.4, mW: 36, mL: 72, head: 'none', hbT: 0.5, legH: 1, railH: 6, legs: 'block', wood: pmat('wood', 0x6b3f22), throwHex: 0xb9a68a }) },
     haier270: { name: 'Haier 270 L double door, deep navy glass', site: 'Furlenco', price: 1499, url: FLU + 'refrigerator-double-door-268l-6112-rent', size: '62 × 55 × 169 cm', build: g => fridgeBody(g, { W: 62, D: 55, H: 169, hex: 0x1d2a44, glass: true, split: 0.74 }) },
     rmFridge240: { name: 'Double door 240 L, steel (brand varies)', site: 'RentoMojo', price: 1040, url: RMU + 'appliances/rent-double-door-fridge-240-litre/95989', size: '76 × 64 × 152 cm', build: g => fridgeBody(g, { W: 76, D: 64, H: 152, hex: 0xb4b9be, split: 0.72 }) },
-    fur328: { name: 'Double door 328 L, graphite black', site: 'Furlenco', price: 2349, url: FLU + 'refrigerator-double-door-328l-5749-rent', size: '62 × 66 × 164 cm', build: g => fridgeBody(g, { W: 62, D: 66, H: 164, hex: 0x2a2b2e, glass: true, split: 0.74 }) },
+    fur328: { name: 'Double door 328 L, graphite black (brand not shown: ask Furlenco)', site: 'Furlenco', price: 2349, url: FLU + 'refrigerator-double-door-328l-5749-rent', size: '62 × 66 × 164 cm', build: g => fridgeBody(g, { W: 62, D: 66, H: 164, hex: 0x2a2b2e, glass: true, split: 0.74 }) },
     drinkprimeF: { name: 'DrinkPrime RO + UV + Copper, white', site: 'Furlenco', price: 379, url: FLU + 'fur---water-purifier---drinkprime-5451-rent', size: '35 × 21 × 52 cm', build: g => roUnit(g, { W: 35, D: 21, H: 52, accent: 0x2f6fb0 }) },
     drinkprimeRM: { name: 'DrinkPrime RO+, white', site: 'RentoMojo', price: 423, url: RMU + 'appliances/rent-drinkprime-ro-plus/138385', size: 'about 35 × 21 × 52 cm', build: g => roUnit(g, { W: 35, D: 21, H: 52, accent: 0x1c1d20 }) },
     saddleShoe: { name: 'Saddle shoe cabinet, large, dark espresso, two doors', site: 'RentoMojo', price: 234, url: RMU + 'furniture/rent-footsie-shoe-rack-large/1970', size: '24 × 15 × 36 in',
@@ -1059,18 +1059,19 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
           g.add(s); }
         pblob(g, IN(62), IN(26)); } },
 
-    leonard: { name: 'Leonard TV unit, honey oak, 70 in', site: 'RentoMojo', price: 286, url: RMU + 'furniture/rent-leonard-tv-unit-walnut/115815', size: '70 in wide', top: IN(20),
-      build: g => { const w = pmat('wood', 0xc08a50), d = pmat('wood', 0xb8834a), back = mat(0x6e4e2e), al = pmat('metal', 0xd8d8d4);
-        prbox(g, IN(70), IN(0.8), IN(16), 0, IN(19.6), 0, w, IN(0.25)); prbox(g, IN(70), IN(0.8), IN(16), 0, IN(4.4), 0, w, IN(0.25)); for (const x of [-34.6, -12.6, 0, 12.6, 34.6]) prbox(g, IN(0.8), IN(14.6), IN(16), IN(x), IN(12), 0, w, IN(0.2));
-        prbox(g, IN(25), IN(14.6), IN(0.3), 0, IN(12), -IN(7.8), back, 0); prbox(g, IN(25), IN(0.7), IN(15), 0, IN(12), IN(0.3), w, 0);
-        for (const sx of [-1, 1]) { prbox(g, IN(21.6), IN(14.6), IN(0.7), sx * IN(23.6), IN(12), IN(7.9), d, IN(0.15)); for (const k of [0, 1]) prbox(g, IN(0.35), IN(13.6), IN(0.3), sx * (IN(13.6) + IN(1 + k * 0.9)), IN(12), IN(8.3), al, 0); }
-        for (const sx of [-1, 1]) for (const sz of [-1, 1]) pcyl(g, IN(0.8), IN(0.7), IN(4), sx * IN(32.5), IN(2), sz * IN(6), pmat('paint', 0xe8e6e0), 14); pblob(g, IN(70), IN(16)); } },
-    pearl: { name: 'Pearl TV unit, oak frame + white drawers, 60 in', site: 'RentoMojo', price: 292, url: RMU + 'furniture/rent-pearl-tv-unit-walnut/115978', size: '60 in wide', top: IN(17),
+    leonard: { name: 'Leonard TV unit, honey oak, 70 in', site: 'RentoMojo', price: 286, url: RMU + 'furniture/rent-leonard-tv-unit-walnut/115815', size: '70 × 15 × 20 in', top: IN(20),
+      build: g => { const w = pmat('wood', 0xc08a50), d = pmat('wood', 0xb8834a), back = mat(0x6e4e2e), wh = pmat('paint', 0xeceae4);
+        prbox(g, IN(70), IN(0.8), IN(15), 0, IN(19.6), 0, w, IN(0.25)); prbox(g, IN(70), IN(0.8), IN(15), 0, IN(2.9), 0, w, IN(0.25)); // top and bottom on short legs
+        for (const x of [-34.6, -15.85, 0, 15.85, 34.6]) prbox(g, IN(0.8), IN(16.4), IN(15), IN(x), IN(11.2), 0, w, IN(0.2)); // ends, cupboard partitions, centre divider
+        prbox(g, IN(31.7), IN(0.7), IN(14.6), 0, IN(11.2), IN(0.2), w, 0); prbox(g, IN(69), IN(16.4), IN(0.3), 0, IN(11.2), -IN(7.35), back, 0); // middle shelf: four open cubbies, about 15 x 8 in each
+        for (const sx of [-1, 1]) { prbox(g, IN(18.4), IN(16.2), IN(0.7), sx * IN(25.2), IN(11.2), IN(7.4), d, IN(0.15)); prbox(g, IN(0.4), IN(14), IN(0.3), sx * IN(16.9), IN(11.2), IN(7.8), wh, 0); } // doors + light handle grooves
+        for (const sx of [-1, 1]) for (const sz of [-1, 1]) pcyl(g, IN(0.8), IN(0.7), IN(2.5), sx * IN(33), IN(1.25), sz * IN(5.5), wh, 14); pblob(g, IN(70), IN(15)); } },
+    pearl: { name: 'Pearl TV unit, oak frame + white drawers, 60 in (low, 13 in)', site: 'RentoMojo', price: 292, url: RMU + 'furniture/rent-pearl-tv-unit-walnut/115978', size: '60 × 14.5 × 13 in', top: IN(13),
       build: g => { const wh = pmat('paint', 0xf3f1ec), w = pmat('wood', 0x9a6a3e), dk = mat(0x1e1e1e);
-        prbox(g, IN(60), IN(1), IN(16), 0, IN(16.5), 0, w, IN(0.25)); prbox(g, IN(60), IN(0.8), IN(16), 0, IN(2.4), 0, w, IN(0.25)); for (const sx of [-1, 1]) prbox(g, IN(1), IN(14.2), IN(16), sx * IN(29.5), IN(9.5), 0, w, IN(0.25));
-        prbox(g, IN(58), IN(14), IN(0.3), 0, IN(9.5), -IN(7.8), wh, 0); prbox(g, IN(58), IN(0.7), IN(15), 0, IN(9.8), 0, wh, 0); prbox(g, IN(0.7), IN(6.2), IN(15), 0, IN(13.2), 0, wh, 0);
-        for (const sx of [-1, 1]) { prbox(g, IN(28.6), IN(6.6), IN(15), sx * IN(14.45), IN(6.1), IN(0.6), wh, IN(0.25)); const h = prbox(g, IN(10), IN(0.6), IN(0.3), sx * IN(14.45), IN(8.6), IN(8.15), dk, 0); }
-        for (const sx of [-1, 1]) for (const sz of [-1, 1]) pcyl(g, IN(0.6), IN(0.6), IN(2), sx * IN(27.5), IN(1), sz * IN(6.5), pmat('metal', 0xbdbdbd), 12); pblob(g, IN(60), IN(16)); } },
+        prbox(g, IN(60), IN(0.9), IN(14.5), 0, IN(12.55), 0, w, IN(0.25)); prbox(g, IN(60), IN(0.7), IN(14.5), 0, IN(1.85), 0, w, IN(0.2)); for (const sx of [-1, 1]) prbox(g, IN(0.9), IN(11.4), IN(14.5), sx * IN(29.55), IN(7.2), 0, w, IN(0.25));
+        prbox(g, IN(58), IN(10.6), IN(0.3), 0, IN(7.2), -IN(7.05), wh, 0); prbox(g, IN(58), IN(0.6), IN(13.8), 0, IN(7.75), 0, wh, 0); prbox(g, IN(0.7), IN(4.2), IN(13.8), 0, IN(10.1), 0, wh, 0); // open shelf only about 4.5 in tall
+        for (const sx of [-1, 1]) { prbox(g, IN(28.4), IN(5.4), IN(13.8), sx * IN(14.45), IN(4.9), IN(0.4), wh, IN(0.25)); prbox(g, IN(10), IN(0.5), IN(0.3), sx * IN(14.45), IN(6.8), IN(7.4), dk, 0); }
+        for (const sx of [-1, 1]) for (const sz of [-1, 1]) pcyl(g, IN(0.6), IN(0.6), IN(1.5), sx * IN(27.5), IN(0.75), sz * IN(6), pmat('metal', 0xbdbdbd), 12); pblob(g, IN(60), IN(14.5)); } },
     vienna: { name: 'Vienna end table, dark walnut', site: 'RentoMojo', price: 173, url: RMU + 'furniture/rent-end-table-vienna/2921', size: '21 × 18 in', top: IN(22),
       build: g => { const w = pmat('wood', 0x4a2c1a); prbox(g, IN(21), IN(1.2), IN(18), 0, IN(21.4), 0, w, IN(0.3)); prbox(g, IN(18.4), IN(2.8), IN(15.4), 0, IN(19.4), 0, w, IN(0.2));
         for (const sx of [-1, 1]) for (const sz of [-1, 1]) prbox(g, IN(1.5), IN(20.8), IN(1.5), sx * IN(8.9), IN(10.4), sz * IN(7.4), w, IN(0.2)); pblob(g, IN(21), IN(18), 0.35); } },
@@ -1301,6 +1302,10 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     function nudgeX(rec, dx) { rec.g.position.x += dx; rec.bb = solidBox(rec.g); colliders[rec.ci] = [rec.bb.min.x, rec.bb.min.z, rec.bb.max.x, rec.bb.max.z]; return rec; }
     // Living: TV wall faces the sofa on the main-door wall
     const tv = place('tvunit', 9.5, 0, 0, 30.85), top = tv.top;
+    { const free = tv.bb.max.x - 11.52; F('ps5', 'Your PS5, lying flat beside the TV', free >= 0.86 ? 'Yours. Lying flat on the unit top, right of the TV: about 10.5 in free there, the PS5 is 10.2 in wide (8.5 in for the Slim) and gets open air on every side. Short HDMI run.' : 'Yours. This TV unit leaves no room beside the TV and its open shelf is too low for a PS5, so it would sit on the floor; the Leonard fits it.', () => {
+      const cx = free >= 0.86 ? tv.bb.max.x - 0.02 - 0.425 : 13.3, cz = free >= 0.86 ? (tv.bb.min.z + tv.bb.max.z) / 2 : 31.6, y = free >= 0.86 ? top : 0;
+      B(cx - 0.33, cz - 0.62, cx + 0.33, cz + 0.62, y + 0.03, y + 0.31, 0x15161a, false, 0.3); for (const s of [-1, 1]) B(cx + s * 0.37 - 0.055, cz - 0.64, cx + s * 0.37 + 0.055, cz + 0.64, y, y + 0.34, 0xf4f4f2, false, 0.35); // 39 x 26 x 10.4 cm lying flat
+      Sph(cx, y + 0.31, cz + 0.6, 0.02, glowMat(0x7db7ff)); }, 'Yours'); }
     B(8.9, 31.3, 10.1, 31.9, top, top + 0.08, S.metal); B(9.4, 31.55, 9.6, 31.65, top + 0.08, top + 0.4, S.metal); B(7.48, 31.5, 11.52, 31.62, top + 0.35, top + 2.68, 0x111316, false, 0.3); // your own 55" TV on its stand: about 48.5 × 28 in
     F('tv-strip', 'LED strip behind the TV', null, () => { strip(6.6, 30.72, 12.4, 30.76, top + 0.6, 0.45); });
     F('living-rug', 'Living-room rug', null, () => { rug(7.4, 33.6, 14, 39.6); });
@@ -1615,6 +1620,7 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
         <li>Smart bulbs or smart plugs let you switch a whole room's lamps on together.</li></ul></div>
       <div class="room"><h3>Living</h3><ul>
         <li>TV wall: your 55" TV (about 4 ft wide) on its own stand, on the 70 in TV unit, with a warm LED strip behind the unit. No wall-mounting, so no holes.</li>
+        <li><b>TV height:</b> the Leonard is 20 in tall, so the middle of the screen sits about 38 in up, at eye level from the sofa (about 40 in seated, 9 ft away). The 13 in Pearl puts it about 6° below eye level. <b>PS5:</b> lying flat on the unit top, right of the TV, with about 10.5 in free and open air all round; the open cubbies (about 15 × 8 in) are just too narrow for the original PS5 lying flat.</li>
         <li>Sofa: the rented 3-seater for this style (5.6 to 6.6 ft) along the main-door wall facing the TV, about 9 ft away, right for a 55" screen. In Moody a brown recliner beside the sofa's balcony end, angled to the TV, makes the L. The balcony door slides either way, so keep the glass stacked behind the recliner; the TV end stays open, about 2.5 ft. The sage ottoman is the cheaper second choice. Use the Rented pieces panel to see each pick and second choice.</li>
         <li>${m.rug}, 6 × 8 ft, with a ${m.table} (about 3 ft) on it.</li>
         <li>The side table and its lamp sit at the balcony end of the sofa, so the main-door end stays clear; a small plant fills the gap by the door.</li>
