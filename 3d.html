@@ -103,8 +103,8 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
       </div></div>
     <div class="grp"><span class="lbl">Separate area</span>
       <div class="seg" role="group" aria-label="Separate area use">
-        <button id="nOffice" aria-pressed="true">Office</button>
-        <button id="nDay" aria-pressed="false">Daybed nook</button>
+        <button id="nRead" aria-pressed="true">Plants + reading</button>
+        <button id="nOffice" aria-pressed="false">Office</button>
       </div></div>
     <div class="grp"><span class="lbl">Light</span>
       <div class="seg" role="group" aria-label="Time of day">
@@ -163,7 +163,7 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   // ---- plan data, in feet (x east, y south), matches the 2D floor plan ----
   const H = 9.5, T = 0.4, G = 0.5, EYE = 5.2;
   const ROOMS = [
-    { name: 'Separate area', x: 10, y: 7.5, w: 4, h: 6.5, floor: 'tile' }, // measured: ~3.8 ft from the glass partition to the window, ~6.3 ft along it (inside the walls: 3.6 x 6.1 here)
+    { name: 'Separate area', x: 10, y: 8, w: 4, h: 6, floor: 'tile' }, // measured: ~3.8 x 6.3 ft inside; its back wall is in line with your bed wall (the 0.4 ft walls make it draw a little smaller inside)
     { name: 'My Bedroom', x: 14, y: 8, w: 12, h: 12, floor: 'tile' }, // measured: the wardrobe fills the 12 ft east wall
     { name: 'Bedroom 2', x: 4, y: 14, w: 10, h: 9, floor: 'tile' }, // its door sits at your door's corner; the wall on the left as you enter starts at the frame
     { name: 'Passage', x: 14, y: 20, w: 4, h: 10.5, floor: 'tile' },
@@ -178,8 +178,8 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   const OPENINGS = [
     ['h', 20, 14, 17.2, 'door'], ['v', 14, 20, 23, 'door'], ['v', 18, 25.6, 28.4, 'door'],
     ['h', 20, 20.5, 23, 'door'], ['v', 6, 25, 28, 'door'], ['h', 42.5, 14.5, 18.5, 'door'],
-    ['h', 30.5, 14, 18, 'open'], ['v', 14, 25.5, 29.5, 'open'], ['v', 4, 32.4, 41.1, 'open'], ['v', 14, 8.1, 10.9, 'iwin'], ['v', 14, 11.0, 13.8, 'door'],
-    ['v', 10, 8.6, 13.4, 'window'], ['h', 7.5, 10.4, 13.6, 'window'], ['v', 4, 16, 21, 'window'], ['h', 14, 11, 13.2, 'window'],
+    ['h', 30.5, 14, 18, 'open'], ['v', 14, 25.5, 29.5, 'open'], ['v', 4, 32.4, 41.1, 'open'], ['v', 14, 8.3, 10.9, 'iwin'], ['v', 14, 11.0, 13.8, 'door'],
+    ['v', 10, 8.7, 13.3, 'window'], ['h', 8, 10.4, 13.6, 'window'], ['v', 4, 16, 21, 'window'], ['h', 14, 11, 13.2, 'window'],
     ['v', 2, 24.5, 29, 'window'], ['v', 0, 31, 42, 'rail'],
     ['v', 25.5, 21.3, 23.7, 'vent'], ['v', 25.5, 26.2, 28.8, 'vent'],
   ];
@@ -352,9 +352,9 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   // partition between my bedroom and the separate area (your frame from the bedroom): a 2.8 ft aluminium glass door at the end by Bedroom 2,
   // then a 3.3 ft half-wall about 3.2 ft high with a two-pane sliding window above it. The door leaf itself is drawn per layout (see build)
   doorFrame('v', 14, 11.0, 13.8, 7);
-  fx(13.8, 8.1, 14.2, 10.95, 3.12, 3.25, mat(0xf0e8d5, 0.9)); // sill
-  fx(13.94, 8.1, 14.06, 10.95, 3.2, 3.32, alu); fx(13.94, 8.1, 14.06, 10.95, 6.88, 7, alu); fx(13.94, 8.1, 14.06, 8.22, 3.2, 7, alu); fx(13.94, 10.83, 14.06, 10.95, 3.2, 7, alu);
-  for (const [x, z1, z2] of [[13.96, 8.2, 9.65], [14.04, 9.4, 10.85]]) { fx(x - 0.02, z1, x + 0.02, z2, 3.3, 6.9, glassMat); fx(x - 0.04, z1, x + 0.04, z1 + 0.08, 3.3, 6.9, alu); fx(x - 0.04, z2 - 0.08, x + 0.04, z2, 3.3, 6.9, alu); }
+  fx(13.8, 8.3, 14.2, 10.95, 3.12, 3.25, mat(0xf0e8d5, 0.9)); // sill
+  fx(13.94, 8.3, 14.06, 10.95, 3.2, 3.32, alu); fx(13.94, 8.3, 14.06, 10.95, 6.88, 7, alu); fx(13.94, 8.3, 14.06, 8.42, 3.2, 7, alu); fx(13.94, 10.83, 14.06, 10.95, 3.2, 7, alu);
+  for (const [x, z1, z2] of [[13.96, 8.4, 9.75], [14.04, 9.5, 10.85]]) { fx(x - 0.02, z1, x + 0.02, z2, 3.3, 6.9, glassMat); fx(x - 0.04, z1, x + 0.04, z1 + 0.08, 3.3, 6.9, alu); fx(x - 0.04, z2 - 0.08, x + 0.04, z2, 3.3, 6.9, alu); }
 
   // balcony aluminium sliding door: it slides either way; the two panels are stacked at the sofa end so the recliner can sit in front of them, and the TV end is open
   fx(3.8, 32.4, 4.2, 41.1, 7.8, 8, alu); fx(3.8, 32.4, 4.2, 41.1, 0, 0.12, alu);
@@ -516,8 +516,8 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     for (const [a, b, y1, y2] of hs) { put(cur, a, 0, H); put(a, b, 0, y1); put(a, b, y2, H); cur = b; }
     put(cur, s2, 0, H);
   }
-  paintWall('v', 10.215, 7.7, 13.8, [[8.8, 13.2, 3, 7]], WALL_NOOK);
-  paintWall('h', 7.715, 10.2, 13.8, [[10.6, 13.4, 3, 7]], WALL_NOOK);
+  paintWall('v', 10.215, 8.2, 13.8, [[8.9, 13.1, 3, 7]], WALL_NOOK);
+  paintWall('h', 8.215, 10.2, 13.8, [[10.6, 13.4, 3, 7]], WALL_NOOK);
   paintWall('h', 13.785, 10.2, 13.8, [[11.2, 13.0, 3, 7]], WALL_NOOK);
   paintWall('h', 30.715, 0.2, 3.8, [], WALL_BALCONY); paintWall('h', 42.285, 0.2, 3.8, [], WALL_BALCONY);
   paintWall('v', 3.785, 30.7, 42.3, [[32.4, 41.1, 0, 8]], WALL_BALCONY);
@@ -800,6 +800,7 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     bed2: { label: 'Bedroom 2 bed', moody: ['bohoQueen', 'miliDvi'], calm: ['auroraGrey', 'bohoQueen'], boho: ['bohoQueen', 'auroraLow'], japandi: ['mysa', 'kipper'] },
     bedside: { label: 'Bedside tables (3)', moody: ['setWingMinion', 'setFloralMinion'], calm: ['setHugo', 'setWingman'], boho: ['setJasper', 'setRay'], japandi: ['setWatson', 'setStooge'] },
     desk: { label: 'Workstation', moody: ['leonardDesk', 'howardDesk'], calm: ['leonardDesk', 'poiseDesk'], boho: ['poiseDesk', 'leonardDesk'], japandi: ['howardDesk', 'leonardDesk'] }, // the separate area is 4 ft deep: only desks 20 in deep or less leave room for the chair
+    plantshelf: { label: 'Plant stand (reading nook)', all: ['ladderOak'] }, // a ladder shelf along the big window, south of the glass door's swing
     router: { label: 'Router stand', moody: ['rowlingMW', 'rowlingM'], calm: ['rowlingMW', 'rowlingM'], boho: ['rowlingM', 'rowlingMW'], japandi: ['rowlingMW', 'rowlingM'] }, // 3 ft high, under the dining-wall switchboard, over the internet point
     daybed: { label: 'Daybed (nook mode)', all: ['atticusSingle', 'auroraSingle'] }, // a single bed along the 6.3 ft window wall; only listings 74 in long or less fit
     endtable: { label: 'Side table', all: ['vienna'] },
@@ -1428,7 +1429,7 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     const NOOK_POT = 0xf2efe8;
     if (nookMode === 'office') {
     // Separate area: workstation centred on the big window, framed by a window garden
-    F('nook-rug', 'Rug in the separate area', null, () => { rug(10.35, 8.1, 13.7, 13.6); });
+    F('nook-rug', 'Rug in the separate area', null, () => { rug(10.35, 8.4, 13.7, 13.6); });
     const dk = place('desk', 0, 10.3, Math.PI / 2, 10.3, 'minX'), dTop = dk.top; // centred on the window, north of the glass door's swing
     B(dk.bb.min.x + 0.3, 9.4, dk.bb.min.x + 0.42, 11.2, dTop + 0.55, dTop + 1.9, 0x111316, false, 0.3); C(dk.bb.min.x + 0.36, 10.3, 0.06, dTop, dTop + 0.6, S.metal); B(dk.bb.min.x + 0.15, 10.0, dk.bb.min.x + 0.55, 10.6, dTop, dTop + 0.03, S.metal); // your monitor
     F('desk-chair', 'Desk chair', 'Not in the rent list. You need a chair to work: bring your own, or pick Moreno, which comes with one.', () => { chair(Math.min(dk.bb.max.x + 0.75, 13.15), 10.3, 'w', S.dark); });
@@ -1438,25 +1439,45 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     plant(10.65, 13.35, 0.9, NOOK_POT, 'areca');
     addBox(decor, 10.35, 9.0, 10.45, 13.0, 7.9, 7.98, mat(S.metal));
     for (const z of [9.4, 10.6, 11.8, 12.8]) { C(10.55, z, 0.02, 7.0, 7.9, S.dark); C(10.55, z, 0.25, 6.6, 7.0, NOOK_POT, 0.3); growAt(10.55, 6.98, z, 0.45, 'pothos'); } });
-    F('nook-plant', 'Plant in the corner behind the half-wall', null, () => { plant(13.4, 8.2, 0.85, NOOK_POT, 'monstera'); });
-      hingedDoor('v', 14, 11.0, 13.8, true, false, null, true, decor); // the glass door opens into the separate area, clear of the desk
+    F('nook-plant', 'Plant in the corner behind the half-wall', null, () => { plant(13.4, 8.7, 0.85, NOOK_POT, 'monstera'); });
+    } else if (nookMode === 'reading') { // plants + floor-seating reading nook: lounger in the north half (the glass door never reaches it), plant ladder along the big window
+    const ps = place('plantshelf', 0, 12.2, Math.PI / 2, 10.25, 'minX'); // 38 in ladder shelf, back to the window wall, from the door's reach to the corner
+    const lx1 = 10.95, lx2 = 13.25, lz1 = 8.3, lz2 = 10.6;
+    F('nook-lounger', 'Floor lounger with back cushions', 'Buy: a 2.5 × 3 ft floor mattress (gadda) with a cover, three back cushions and a bolster. Floor seating keeps the room open and the glass door free.', () => {
+      addBox(decor, lx1, lz1, lx2, lz2, 0, 0.42, mat(S.fabric, 0.95)); addBox(decor, lx1 + 0.05, lz1 + 0.05, lx2 - 0.05, lz2 - 0.05, 0.42, 0.46, mat(S.fabric, 1));
+      [11.4, 12.1, 12.8].forEach((x, k) => { const c = new THREE.Mesh(new THREE.BoxGeometry(0.8, 1.15, 0.38), mat([S.cush, S.accent, S.cush][k], 0.95)); c.position.set(x, 0.98, lz1 + 0.3); c.rotation.x = 0.2; decor.add(c); });
+      const bol = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.28, 1.9, 20), mat(S.accent, 0.95)); bol.rotation.x = Math.PI / 2; bol.position.set(lx2 - 0.3, 0.74, (lz1 + lz2) / 2 + 0.1); decor.add(bol);
+      colliders.push([lx1, lz1, lx2, lz2]); }, 'Buy');
+    F('nook-tray', 'Low round tray table', 'Buy: a 1.2 ft low tray table for a cup and a book.', () => { C(11.85, 11.3, 0.6, 0.95, 1.0, S.wood); C(11.85, 11.3, 0.08, 0, 0.95, S.metal); C(11.85, 11.3, 0.35, 0, 0.04, S.metal); colliders.push([11.25, 10.7, 12.45, 11.9]); }, 'Buy');
+    F('nook-lamp', 'Reading floor lamp in the corner by the lounger', null, () => { floorLamp(13.5, 8.65, 0.9); });
+    F('nook-tall-plant', 'Monstera in the corner behind the lounger', null, () => { plant(10.6, 8.65, 0.95, NOOK_POT, 'monstera'); });
+    F('nook-rug', 'Jute rug under the lounger', null, () => { rug(10.4, 8.3, 13.7, 11.9); });
+    F('nook-ladder-pots', 'Pots on the plant ladder', 'Herbs, peperomia, a fern and trailing money plant, stepping up towards the window light.', () => {
+      const x0 = ps.bb.min.x, tiers = [[0.62, 0.62], [1.55, 0.48], [2.45, 0.34], [3.3, 0.2]], kinds = ['zz', 'herb', 'succ', 'pothos'];
+      tiers.forEach(([y, dx], t) => { for (const z of [ps.bb.min.z + 0.5, (ps.bb.min.z + ps.bb.max.z) / 2, ps.bb.max.z - 0.5]) { C(x0 + dx + 0.1, z, 0.2, y, y + 0.35, NOOK_POT, 0.3); growAt(x0 + dx + 0.1, y + 0.33, z, t === 3 ? 0.4 : 0.32, kinds[(t + Math.round(z)) % 4]); } }); });
+    F('nook-hanging', 'Money plant hanging along both window rails', 'Tension rods inside the window frames, no drilling.', () => {
+      addBox(decor, 10.35, 9.0, 10.45, 13.0, 7.9, 7.98, mat(S.metal)); for (const z of [9.3, 10.4, 11.5, 12.6]) { C(10.55, z, 0.02, 7.0, 7.9, S.dark); C(10.55, z, 0.25, 6.6, 7.0, NOOK_POT, 0.3); growAt(10.55, 6.98, z, 0.45, 'pothos'); }
+      addBox(decor, 10.7, 8.33, 13.3, 8.4, 7.6, 7.66, mat(S.metal)); for (const x of [11.4, 12.6]) { C(x, 8.45, 0.02, 6.7, 7.6, S.dark); C(x, 8.45, 0.24, 6.3, 6.7, NOOK_POT, 0.3); growAt(x, 6.68, 8.45, 0.42, 'pothos'); }
+      strip(10.32, 9.1, 10.38, 12.9, 7.82, 0.35); });
+    F('nook-sill', 'Succulents on the half-wall ledge', null, () => { for (const z of [8.8, 9.6, 10.4]) { C(13.75, z, 0.17, 3.25, 3.55, NOOK_POT, 0.3); growAt(13.75, 3.53, z, 0.28, 'succ'); } });
     } else { // daybed nook: a single bed along the window wall, cushions against the wall, plants all round
-    const db = place('daybed', 0, 10.75, 0, 10.25, 'minX'), seat = 1.38; // headboard (if any) at the north wall
+    const db = place('daybed', 0, 11.25, 0, 10.25, 'minX'), seat = 1.38; // headboard (if any) at the north wall
     const cx0 = db.bb.min.x;
     F('daybed-cushions', 'Cushions and bolster on the daybed', 'Buy: four 18 in cushions and one bolster, so it sits like a sofa by day.', () => {
       const cols = [S.cush, S.fabric, S.accent, S.cush];
-      [9.2, 10.4, 11.6, 12.8].forEach((z, k) => { const c = new THREE.Mesh(new THREE.BoxGeometry(0.42, 1.25, 1.25), mat(cols[k], 0.95)); c.position.set(cx0 + 0.42, seat + 0.6, z); c.rotation.z = -0.18; decor.add(c); });
+      [9.7, 10.9, 12.1, 13.3].forEach((z, k) => { const c = new THREE.Mesh(new THREE.BoxGeometry(0.42, 1.25, 1.25), mat(cols[k], 0.95)); c.position.set(cx0 + 0.42, seat + 0.6, z); c.rotation.z = -0.18; decor.add(c); });
       const bol = new THREE.Mesh(new THREE.CylinderGeometry(0.33, 0.33, 2.5, 20), mat(S.accent, 0.95)); bol.rotation.z = Math.PI / 2; bol.position.set((db.bb.min.x + db.bb.max.x) / 2, seat + 0.33, db.bb.max.z - 0.45); decor.add(bol); }, 'Buy');
     F('nook-hanging', 'Money plant and string lights along the window rail', null, () => {
-      addBox(decor, 10.35, 8.6, 10.45, 13.2, 7.9, 7.98, mat(S.metal));
-      for (const z of [9.0, 10.1, 11.2, 12.3, 13.0]) { C(10.55, z, 0.02, 7.0, 7.9, S.dark); C(10.55, z, 0.25, 6.6, 7.0, NOOK_POT, 0.3); growAt(10.55, 6.98, z, 0.45, 'pothos'); }
-      strip(10.32, 8.7, 10.38, 13.1, 7.82, 0.35); });
-    F('nook-sill', 'Herbs and succulents on the side window sill', null, () => { for (const x of [11.0, 11.9, 12.8]) { C(x, 7.95, 0.2, 3.0, 3.35, NOOK_POT, 0.3); growAt(x, 3.33, 7.95, 0.3, x < 11.5 ? 'herb' : 'succ'); } });
-    F('nook-plants', 'Hanging planters along the side window', 'The bed fills the floor, so the plants hang: a tension rod inside the side window frame, no drilling.', () => { addBox(decor, 10.7, 7.83, 13.3, 7.9, 7.6, 7.66, mat(S.metal)); for (const x of [11.2, 12.0, 12.8]) { C(x, 7.95, 0.02, 6.6, 7.6, S.dark); C(x, 7.95, 0.24, 6.2, 6.6, NOOK_POT, 0.3); growAt(x, 6.58, 7.95, 0.42, 'pothos'); } });
+      addBox(decor, 10.35, 9.1, 10.45, 13.7, 7.9, 7.98, mat(S.metal));
+      for (const z of [9.5, 10.6, 11.7, 12.8, 13.5]) { C(10.55, z, 0.02, 7.0, 7.9, S.dark); C(10.55, z, 0.25, 6.6, 7.0, NOOK_POT, 0.3); growAt(10.55, 6.98, z, 0.45, 'pothos'); }
+      strip(10.32, 9.2, 10.38, 13.6, 7.82, 0.35); });
+    F('nook-sill', 'Herbs and succulents on the side window sill', null, () => { for (const x of [11.0, 11.9, 12.8]) { C(x, 8.45, 0.2, 3.0, 3.35, NOOK_POT, 0.3); growAt(x, 3.33, 8.45, 0.3, x < 11.5 ? 'herb' : 'succ'); } });
+    F('nook-plants', 'Hanging planters along the side window', 'The bed fills the floor, so the plants hang: a tension rod inside the side window frame, no drilling.', () => { addBox(decor, 10.7, 8.33, 13.3, 8.4, 7.6, 7.66, mat(S.metal)); for (const x of [11.2, 12.0, 12.8]) { C(x, 8.45, 0.02, 6.6, 7.6, S.dark); C(x, 8.45, 0.24, 6.2, 6.6, NOOK_POT, 0.3); growAt(x, 6.58, 8.45, 0.42, 'pothos'); } });
     F('nook-lamp', 'Clip-on reading lamp at the head of the daybed', null, () => { deskLamp(db.bb.max.x - 0.35, db.bb.min.z + 0.25, seat + 0.5, 0.6); });
     // the bed fills the floor, so the glass door (which opens inwards) cannot swing: shown lifted off, with a sheer curtain in the doorway
-    { const sh = new THREE.MeshStandardMaterial({ color: S.sheer, transparent: true, opacity: 0.55, roughness: 1, side: THREE.DoubleSide }); for (let k = 0; k < 11; k++) addBox(decor, 14.12 + (k % 2 ? 0.06 : 0), 11.3 + k * 0.215, 14.16 + (k % 2 ? 0.06 : 0), 11.515 + k * 0.215, 0.1, 6.9, sh); }
+    { const sh = new THREE.MeshStandardMaterial({ color: S.sheer, transparent: true, opacity: 0.55, roughness: 1, side: THREE.DoubleSide }); for (let k = 0; k < 11; k++) addBox(decor, 14.12 + (k % 2 ? 0.06 : 0), 11.8 + k * 0.215, 14.16 + (k % 2 ? 0.06 : 0), 12.015 + k * 0.215, 0.1, 6.9, sh); }
     }
+    if (nookMode !== 'daybed') hingedDoor('v', 14, 11.0, 13.8, true, false, null, true, decor); // the glass door opens into the separate area
 
     // Bedroom 2: built-in cabinets on the passage wall, bed headboard on the kitchen-side wall
     const b2 = place('bed2', 7.0, 0, Math.PI, 22.78); nudgeX(b2, 4.3 - b2.bb.min.x); // headboard on the plain wall on your left as you enter, pushed to the window wall so the entrance door and wardrobe doors stay clear
@@ -1566,11 +1587,11 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
         <li>A rug under the bottom two-thirds of the bed and a plant in the corner. The foot of the bed stays clear so the door can swing open and you can walk round to both sides; shoes live in the cabinet by the main door.</li></ul></div>
       <div class="room"><h3>Separate area</h3><ul>
         <li>Measured from the video and your frame: about 3.8 × 6.3 ft inside. Two windows to the outside. From your bedroom: a 2.8 ft glass door at the Bedroom 2 end that opens into the room, then a half-wall about 3 ft high with a sliding glass window above it.</li>
-        ${nookMode === 'office' ? `<li><b>Office (switch above):</b> a slim desk, 18 to 20 in deep (the usual 24 in desks leave no room for the chair), centred on the window, with a monitor and a desk lamp. That leaves about 2 ft for the chair; when you stand up, it rolls back into the partition opening.</li>
-        <li>A compact plant either side of the desk, money plant trailing from a rail above the window, and a rubber plant in the corner by the partition. No floor lamp: there is no room for one.</li>` : `<li><b>Daybed nook (switch above):</b> a single bed along the window wall, 74 in long or less (the wall is about 75 in), sitting like a sofa by day with four cushions against the wall and a bolster at the foot. A weekend reading and nap spot, and a spare bed for a guest.</li>
-        <li>The bed fills the floor, so the plants go up: money plant hanging from a tension rod along the big window, three hanging planters on the side window, herbs and succulents on its sill, warm string lights along the rail and a clip-on reading lamp at the head. From your bed you look through the glass at a wall of green.</li>
-        <li>Pick the Atticus platform (73.4 in, no headboard) first: it fits with about 2 in spare. The Aurora single is listed at 72 in with a headboard; confirm the overall length with RentoMojo before ordering.</li>
-        <li><b>The catch:</b> the glass door opens into the room, and the bed fills the floor, so the door can only open a few inches. The nook needs the door lifted off its hinges (with the owner's OK, kept safe for when you move out) and a sheer curtain hung in its place, as shown. If that is not possible, stay with the office.</li>`}
+        ${nookMode === 'reading' ? `<li><b>Plants + reading (the pick):</b> a plant room with a floor-seating reading corner. The glass door swings into the south end, so the north half holds the seating: a floor lounger (2.5 × 3 ft gadda) with three back cushions and a bolster, a low round tray table, and a reading floor lamp in the corner.</li>
+        <li>The ladder shelf (rented, 38 in wide) stands along the big window with pots on every step, stepping up to the light. Money plant hangs from tension rods on both windows, succulents sit on the half-wall ledge, a monstera fills the corner behind the lounger, and warm string lights run along the rail. From your bed you look through the glass at a wall of green.</li>
+        <li>No desk, no bed: the floor stays open, the glass door opens fully, and nothing here is big to rent. If you want an office later, switch to Office above.</li>` : `<li><b>Office (switch above):</b> a slim desk, 18 to 20 in deep, centred on the window, with a monitor and a desk lamp. Only about 2 ft is left for the chair, so a big gaming chair will not fit; treat this as a laptop corner.</li>
+        <li>A compact plant either side of the desk, money plant trailing from a rail above the window, and a monstera in the corner behind the half-wall.</li>`}
+        <li>Ideas for later: a daybed only works if the glass door is lifted off (it opens inwards and the bed fills the floor); a yoga mat fits along the window wall.</li>
         <li>The ironing stand needs a new home; to be decided.</li></ul></div>
       <div class="room"><h3>Bedroom 2</h3><ul>
         <li>About 10 × 9 ft wall to wall. The door is in the corner next to your bedroom door; the wall on your left as you walk in starts right at the frame.</li>
@@ -1602,7 +1623,7 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   document.getElementById('notesBtn').onclick = () => toggleNotes(notesEl.hidden);
 
   // ---- state + UI ----
-  let styleKey = 'moody', useDesk = true, deskNorth = false, nookMode = 'office'; // dining area: desk on the east wall, desk on the north wall, or north desk + dining table
+  let styleKey = 'moody', useDesk = true, deskNorth = false, nookMode = 'reading'; // dining area: desk on the east wall, desk on the north wall, or north desk + dining table
   const styleSeg = document.getElementById('styleSeg');
   for (const k of Object.keys(STYLES)) {
     const b = document.createElement('button'); b.textContent = STYLES[k].name; b.id = 'style-' + k;
@@ -1615,7 +1636,7 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     pieceList.innerHTML = '';
     let tot = 0;
     for (const slot of Object.keys(CATALOG)) {
-      if ((slot === 'desk' && nookMode !== 'office') || (slot === 'daybed' && nookMode !== 'daybed')) continue;
+      if ((slot === 'desk' && nookMode !== 'office') || (slot === 'daybed' && nookMode !== 'daybed') || (slot === 'plantshelf' && nookMode !== 'reading')) continue;
       const opts = optionsFor(slot, styleKey), cur = Math.min(choice[ckey(slot, styleKey)] || 0, opts.length - 1);
       tot += P[opts[cur]].price;
       const row = document.createElement('div'); row.className = 'row' + (selected === slot ? ' sel' : '');
@@ -1730,13 +1751,13 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     document.getElementById('dDesk').setAttribute('aria-pressed', useDesk && !deskNorth);
     document.getElementById('dDeskN').setAttribute('aria-pressed', useDesk && deskNorth);
     document.getElementById('nOffice').setAttribute('aria-pressed', nookMode === 'office');
-    document.getElementById('nDay').setAttribute('aria-pressed', nookMode === 'daybed');
+    document.getElementById('nRead').setAttribute('aria-pressed', nookMode === 'reading');
   }
   document.getElementById('dDining').onclick = () => { useDesk = false; deskNorth = true; refresh(); };
   document.getElementById('dDesk').onclick = () => { useDesk = true; deskNorth = false; refresh(); };
   document.getElementById('dDeskN').onclick = () => { useDesk = true; deskNorth = true; refresh(); };
   document.getElementById('nOffice').onclick = () => { nookMode = 'office'; refresh(); };
-  document.getElementById('nDay').onclick = () => { nookMode = 'daybed'; refresh(); };
+  document.getElementById('nRead').onclick = () => { nookMode = 'reading'; refresh(); };
   document.getElementById('lDay').onclick = () => { evening = false; applyLight(); };
   document.getElementById('lEve').onclick = () => { evening = true; applyLight(); };
 
@@ -1868,14 +1889,14 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     [17.4, 17.6, 0.1, 'Your bedroom: bed on the back wall, bedside tables either side'],
     [21.4, 16.8, -1.45, 'Wardrobe wall, corner to corner'],
     [15.4, 16.6, 0.6, ''],
-    [15.2, 13.2, 1.57, 'Through the glass partition to the separate area'],
+    [15.2, 13.0, 1.57, 'Through the glass door to the separate area'],
     [12.9, 12.3, 1.3, 'Separate area: a compact workstation at the window'],
   ];
   let TOUR = [];
   function tourRoute() {
     return [...TOUR_LIVING, ...TO_BALCONY,
       [2.4, 36.5, 0.05, 'Balcony garden: herbs and marigolds in the planter, palms, hanging money plants'], [2.4, 36.5, 3.1, ''],
-      ...FROM_BALCONY, ...(nookMode === 'office' ? TOUR_REST : [...TOUR_REST.slice(0, -1), [14.7, 13.1, 1.45, 'Separate area: a daybed under the window, plants all round']])];
+      ...FROM_BALCONY, ...(nookMode === 'office' ? TOUR_REST : [...TOUR_REST.slice(0, -1), nookMode === 'reading' ? [13.2, 12.6, 0.75, 'Separate area: a plant room with a floor-seating reading corner'] : [14.7, 13.1, 1.45, 'Separate area: a daybed under the window, plants all round']])];
   }
   let tour = null;
   const tourBtn = document.getElementById('iTour');
