@@ -178,13 +178,13 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   const OPENINGS = [
     ['h', 20, 14, 17.2, 'door'], ['v', 14, 20, 23, 'door'], ['v', 18, 25.6, 28.4, 'door'],
     ['h', 20, 20.5, 23, 'door'], ['v', 6, 25, 28, 'door'], ['h', 42.5, 14.5, 18.5, 'door'],
-    ['h', 30.5, 14, 18, 'open'], ['v', 14, 25.5, 29.5, 'open'], ['v', 4, 32.4, 41.1, 'open'], ['v', 14, 8.3, 13.9, 'open'],
+    ['h', 30.5, 14, 18, 'open'], ['v', 14, 25.5, 29.5, 'open'], ['v', 4, 32.4, 41.1, 'open'], ['v', 14, 8.1, 10.9, 'iwin'], ['v', 14, 11.0, 13.8, 'door'],
     ['v', 10, 8.6, 13.4, 'window'], ['h', 7.5, 10.4, 13.6, 'window'], ['v', 4, 16, 21, 'window'], ['h', 14, 11, 13.2, 'window'],
     ['v', 2, 24.5, 29, 'window'], ['v', 0, 31, 42, 'rail'],
     ['v', 25.5, 21.3, 23.7, 'vent'], ['v', 25.5, 26.2, 28.8, 'vent'],
   ];
-  const SPANS = { wall: [[0, H]], door: [[7, H]], open: [[8, H]], window: [[0, 3], [7, H]], vent: [[0, 4.6], [6.6, H]], rail: [[0, 3.5]] };
-  const BLOCKS = new Set(['wall', 'window', 'vent', 'rail']);
+  const SPANS = { wall: [[0, H]], iwin: [[0, 3.2], [7, H]], door: [[7, H]], open: [[8, H]], window: [[0, 3], [7, H]], vent: [[0, 4.6], [6.6, H]], rail: [[0, 3.5]] };
+  const BLOCKS = new Set(['wall', 'window', 'vent', 'rail', 'iwin']);
   const GLASS = { window: [3, 7], vent: [4.6, 6.6] };
 
   function region(px, py) {
@@ -330,11 +330,11 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     if (o === 'h') { fx(A, line - w, A + 0.15, line + w, 0, top, frameWood); fx(Bb - 0.15, line - w, Bb, line + w, 0, top, frameWood); fx(A, line - w, Bb, line + w, top, top + 0.2, frameWood); }
     else { fx(line - w, A, line + w, A + 0.15, 0, top, frameWood); fx(line - w, Bb - 0.15, line + w, Bb, 0, top, frameWood); fx(line - w, A, line + w, Bb, top, top + 0.2, frameWood); }
   }
-  function hingedDoor(o, line, a, b, hingeAtB, swingPos, m, glass) {
+  function hingedDoor(o, line, a, b, hingeAtB, swingPos, m, glass, parent) {
     const A = a + 0.35, Bb = b - 0.35, L = Bb - A, P = hingeAtB ? Bb : A;
     const d = hingeAtB ? -1 : 1, dir = o === 'h' ? [d, 0] : [0, d], n = o === 'h' ? [0, swingPos ? 1 : -1] : [swingPos ? 1 : -1, 0];
     const t = 80 * Math.PI / 180, ux = Math.cos(t) * dir[0] + Math.sin(t) * n[0], uz = Math.cos(t) * dir[1] + Math.sin(t) * n[1];
-    const g = new THREE.Group(); g.position.set(o === 'h' ? P : line, 0, o === 'h' ? line : P); g.rotation.y = -Math.atan2(uz, ux); scene.add(g);
+    const g = new THREE.Group(); g.position.set(o === 'h' ? P : line, 0, o === 'h' ? line : P); g.rotation.y = -Math.atan2(uz, ux); (parent || scene).add(g);
     const part = (w, h, d2, x, y, mm) => { const p = new THREE.Mesh(new THREE.BoxGeometry(w, h, d2), mm); p.position.set(x, y, 0); g.add(p); };
     if (glass) { part(L, 6.8, 0.06, L / 2, 3.45, frosted); part(L, 0.18, 0.12, L / 2, 0.1, alu); part(L, 0.18, 0.12, L / 2, 6.8, alu); part(0.12, 6.8, 0.12, 0.06, 3.45, alu); part(0.12, 6.8, 0.12, L - 0.06, 3.45, alu); part(L, 0.1, 0.12, L / 2, 3.4, alu); }
     else { part(L, 6.8, 0.14, L / 2, 3.45, m); part(L - 0.6, 2.4, 0.18, L / 2, 1.8, m === mainWood ? mat(0x7a4822, 0.5) : panelWood); part(L - 0.6, 2.4, 0.18, L / 2, 4.9, m === mainWood ? mat(0x7a4822, 0.5) : panelWood); }
@@ -349,14 +349,12 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   for (const d of DOORS) { doorFrame(d[0], d[1], d[2], d[3], 7); hingedDoor(d[0], d[1], d[2], d[3], d[4], d[5], d[6], !d[6]); }
   doorFrame('v', 14, 25.5, 29.5, 8);
 
-  // full-length sliding door between my bedroom and the separate area, pushed open to the back wall
-  fx(13.85, 8.4, 14.15, 13.8, 7.85, 8, alu);
-  for (const [x, z1] of [[13.82, 8.4], [13.97, 8.75], [14.12, 9.1]]) {
-    fx(x - 0.05, z1, x + 0.05, z1 + 3.1, 0.05, 7.8, frosted);
-    fx(x - 0.07, z1, x + 0.07, z1 + 0.15, 0, 7.85, frameWood); fx(x - 0.07, z1 + 2.95, x + 0.07, z1 + 3.1, 0, 7.85, frameWood);
-    fx(x - 0.07, z1, x + 0.07, z1 + 3.1, 0, 0.2, frameWood); fx(x - 0.07, z1, x + 0.07, z1 + 3.1, 7.65, 7.85, frameWood);
-  }
-  colliders.push([13.6, 8, 14.4, 12.3]);
+  // partition between my bedroom and the separate area (your frame from the bedroom): a 2.8 ft aluminium glass door at the end by Bedroom 2,
+  // then a 3.3 ft half-wall about 3.2 ft high with a two-pane sliding window above it. The door leaf itself is drawn per layout (see build)
+  doorFrame('v', 14, 11.0, 13.8, 7);
+  fx(13.8, 8.1, 14.2, 10.95, 3.12, 3.25, mat(0xf0e8d5, 0.9)); // sill
+  fx(13.94, 8.1, 14.06, 10.95, 3.2, 3.32, alu); fx(13.94, 8.1, 14.06, 10.95, 6.88, 7, alu); fx(13.94, 8.1, 14.06, 8.22, 3.2, 7, alu); fx(13.94, 10.83, 14.06, 10.95, 3.2, 7, alu);
+  for (const [x, z1, z2] of [[13.96, 8.2, 9.65], [14.04, 9.4, 10.85]]) { fx(x - 0.02, z1, x + 0.02, z2, 3.3, 6.9, glassMat); fx(x - 0.04, z1, x + 0.04, z1 + 0.08, 3.3, 6.9, alu); fx(x - 0.04, z2 - 0.08, x + 0.04, z2, 3.3, 6.9, alu); }
 
   // balcony aluminium sliding door: it slides either way; the two panels are stacked at the sofa end so the recliner can sit in front of them, and the TV end is open
   fx(3.8, 32.4, 4.2, 41.1, 7.8, 8, alu); fx(3.8, 32.4, 4.2, 41.1, 0, 0.12, alu);
@@ -802,6 +800,7 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     bed2: { label: 'Bedroom 2 bed', moody: ['bohoQueen', 'miliDvi'], calm: ['auroraGrey', 'bohoQueen'], boho: ['bohoQueen', 'auroraLow'], japandi: ['mysa', 'kipper'] },
     bedside: { label: 'Bedside tables (3)', moody: ['setWingMinion', 'setFloralMinion'], calm: ['setHugo', 'setWingman'], boho: ['setJasper', 'setRay'], japandi: ['setWatson', 'setStooge'] },
     desk: { label: 'Workstation', moody: ['leonardDesk', 'howardDesk'], calm: ['leonardDesk', 'poiseDesk'], boho: ['poiseDesk', 'leonardDesk'], japandi: ['howardDesk', 'leonardDesk'] }, // the separate area is 4 ft deep: only desks 20 in deep or less leave room for the chair
+    router: { label: 'Router stand', moody: ['rowlingMW', 'rowlingM'], calm: ['rowlingMW', 'rowlingM'], boho: ['rowlingM', 'rowlingMW'], japandi: ['rowlingMW', 'rowlingM'] }, // 3 ft high, under the dining-wall switchboard, over the internet point
     daybed: { label: 'Daybed (nook mode)', all: ['atticusSingle', 'auroraSingle'] }, // a single bed along the 6.3 ft window wall; only listings 74 in long or less fit
     endtable: { label: 'Side table', all: ['vienna'] },
     bookshelf: { label: 'Bookshelf or cabinet', moody: ['rowlingL', 'hugoBook', 'rowlingMW'], calm: ['hugoBook', 'rowlingL', 'hugoChest'], boho: ['ladderOak', 'rowlingM', 'rianOak'], japandi: ['ladderOak', 'rianOak', 'rowlingM'] },
@@ -1286,6 +1285,17 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     B(18.6, 41.25, 21.8, 42.3, 0.3, 3, S.wood, true); F('plant-shoe', 'Money plant trailing over the shoe cabinet', null, () => { plant(21.1, 41.75, 0.55, null, 'pothos', 3); });
     F('living-pendant', 'Pendant light over the coffee table', 'Decoration to show the lighting. The flat\'s own ceiling lights stay, so this is optional.', () => { pendant(cx, (cof.bb.min.z + cof.bb.max.z) / 2, 8.3, 0.7, 0.5); });
 
+    { // router stand: the internet line comes in on the pier just east of the passage opening, 1.5 ft up, with a socket beside it and a switchboard above (about 3.7 ft).
+      // A 3 ft open bookshelf stands over it: router and fibre box on top, below the switches; the cables drop behind it to the socket.
+      const rs = place('router', 19.25, 0, 0, 30.7), rt = rs.top || rs.bb.max.y;
+      F('router', 'Wi-Fi router and fibre box on the router stand', 'Yours, from the internet provider. Kept at the left end of the shelf top so the switchboard above stays reachable. Open shelf, not a closed cabinet, so the signal is not blocked.', () => {
+        B(18.5, 30.85, 18.95, 31.3, rt, rt + 0.13, 0xf2f2ef, false, 0.4); // fibre box (ONT)
+        B(19.1, 30.85, 19.95, 31.4, rt, rt + 0.14, 0x1c1d20, false, 0.35); for (const x of [19.18, 19.42, 19.63, 19.87]) C(x, 30.92, 0.03, rt + 0.14, rt + 0.62, 0x1c1d20); // router + antennas
+        Sph(19.8, rt + 0.15, 31.36, 0.025, glowMat(0x7dff9a)); }, 'Yours · from the provider');
+      F('wall-points', 'Internet point, socket and switchboard (from the video)', 'Where the power and data points are, as seen in the video: the internet line and socket at 1.5 ft, the switchboard above at about 3.7 ft.', () => {
+        B(18.75, 30.72, 19.45, 30.76, 1.3, 1.7, 0xf4f3ef, false, 0.4); B(18.8, 30.76, 19.05, 30.78, 1.4, 1.6, 0x1c1d20); // internet module + socket
+        B(19.6, 30.72, 20.5, 30.76, 3.45, 3.95, 0xf4f3ef, false, 0.4); }, 'Existing');
+    }
     { // flatmate workstation: on the east wall facing east, or on the north (corridor-end) wall towards the east corner, facing north
       // facing north, a video-call camera looks at the dining area and main-door wall, not the living room and TV, and balcony daylight comes from the side
       if (!deskNorth) {
@@ -1300,8 +1310,8 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
         const x1 = 21.6, x2 = 26.6, z1 = 30.7, z2 = 33.1, mx = (x1 + x2) / 2;
         B(x1, z1, x2, z2, 2.4, 2.52, S.wood, true);
         if (useDesk) place('bookshelf', 0, 36.6, -Math.PI / 2, 26.8, 'maxX'); // no dining table: the bookshelf stands on the long east wall behind the desk chair, facing into the room
-        else { const bs = place('bookshelf', 0, 0, 0, 30.7); if (bs.bb.max.x - bs.bb.min.x <= 3.25) nudgeX(bs, 18.35 - bs.bb.min.x); // with the dining table: on the north wall, just left of the desk
-          else { bs.g.rotation.y = -Math.PI / 2; bs.g.updateMatrixWorld(true); let b = solidBox(bs.g); bs.g.position.x += 26.8 - b.max.x; bs.g.position.z += 33.3 - b.min.z; bs.g.updateMatrixWorld(true); bs.bb = solidBox(bs.g); colliders[bs.ci] = [bs.bb.min.x, bs.bb.min.z, bs.bb.max.x, bs.bb.max.z]; } } // a wide low unit goes on the east wall, between the desk and the table
+        else { const bs = place('bookshelf', 0, 0, 0, 30.7); // with the dining table: on the east wall by the desk (the north wall by the passage holds the router stand)
+          { bs.g.rotation.y = -Math.PI / 2; bs.g.updateMatrixWorld(true); let b = solidBox(bs.g); bs.g.position.x += 26.8 - b.max.x; bs.g.position.z += 33.3 - b.min.z; bs.g.updateMatrixWorld(true); bs.bb = solidBox(bs.g); colliders[bs.ci] = [bs.bb.min.x, bs.bb.min.z, bs.bb.max.x, bs.bb.max.z]; } } // a wide low unit goes on the east wall, between the desk and the table
         for (const [x, z] of [[x1 + 0.2, z1 + 0.2], [x2 - 0.2, z1 + 0.2], [x1 + 0.2, z2 - 0.2], [x2 - 0.2, z2 - 0.2]]) C(x, z, 0.05, 0, 2.4, S.metal);
         B(x1 + 1.4, z1 + 0.3, x2 - 1.4, z1 + 0.4, 3.1, 4.5, 0x111316, false, 0.3); C(mx, z1 + 0.4, 0.06, 2.52, 3.1, S.metal);
         chair(mx, z2 + 0.9, 'n', S.dark); F('flat-lamp', 'Desk lamp on the flatmate\'s desk', null, () => { deskLamp(x2 - 0.5, z1 + 0.5, 2.52, 0.7); });
@@ -1320,6 +1330,20 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
         F('flat-plants', 'Plant in the corner by the desk', null, () => { plant(26.2, 34.6, 1.0, null, 'rubber'); });
       }
     }
+
+    // power points seen in the video, and the extension cords the furniture needs
+    F('wall-points-flat', 'Sockets around the flat (from the video)', 'Low sockets seen in the video. The separate area has only loose wires by the window: ask the owner to fit a socket box there before you move in.', () => {
+      const plate = (x1, z1, x2, z2, y, hex) => B(x1, z1, x2, z2, y, y + 0.35, hex || 0xf4f3ef, false, 0.4);
+      plate(24.7, 42.24, 25.3, 42.28, 1.0); plate(5.2, 42.24, 5.8, 42.28, 1.0); // hall south wall: by the SE corner, by the SW corner (sofa lamp)
+      plate(15.1, 8.22, 15.6, 8.26, 1.3); plate(22.6, 8.22, 23.1, 8.26, 1.3); // your bed wall, both sides
+      plate(8.7, 14.22, 9.3, 14.26, 1.3); // Bedroom 2, north wall
+      plate(10.5, 13.74, 11.0, 13.78, 3.3, 0xe0b04a); for (let k = 0; k < 3; k++) C(10.6 + k * 0.12, 13.72, 0.012, 2.6, 3.3, 0x333333); // separate area: loose wires, socket to be fitted
+    }, 'Existing');
+    F('cords', 'Extension cords and power strips', 'Buy: a 4-way surge strip for the TV unit, a 3 m strip for the flatmate desk, and one for the router stand. Run cords along the skirting with adhesive clips, never across a walkway.', () => {
+      const cm = mat(0x26282b, 0.6), cord = (x1, z1, x2, z2) => addBox(decor, Math.min(x1, x2) - 0.02, Math.min(z1, z2) - 0.02, Math.max(x1, x2) + 0.02, Math.max(z1, z2) + 0.02, 0.01, 0.05, cm);
+      if (!deskNorth) { cord(25.0, 42.3, 26.75, 42.3); cord(26.75, 42.3, 26.75, 38.3); B(26.4, 38.0, 26.75, 38.9, 0.01, 0.12, 0xf4f3ef); } // SE-corner socket along the skirting to a strip under the east-wall desk
+      else { cord(20.2, 30.8, 21.9, 30.8); B(21.9, 30.75, 22.8, 31.1, 0.01, 0.12, 0xf4f3ef); } // router-stand socket to a strip under the north-wall desk
+    }, 'Buy');
 
     // Balcony: a garden of plants on both sides, clear walkway in the middle
     F('balcony-garden', 'Balcony herbs, marigolds, palms and hanging money plants', null, () => {
@@ -1396,7 +1420,7 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     // My Bedroom: bed centred on the back wall, walkway to the cabinets
     F('bed1-rug', 'Rug under your bed', null, () => { rug(16.0, 11.0, 22.1, 17.2); });
     const b1 = place('bed1', 19.05, 0, 0, 8.22), bset = currentProduct('bedside', styleKey).set;
-    for (const d of [-1, 1]) { const t = beside('bedside', b1, d, 8.22, 0, bset[0]); F('bed1-lamp' + d, 'Bedside lamp', null, () => { tableLamp((t.bb.min.x + t.bb.max.x) / 2, (t.bb.min.z + t.bb.max.z) / 2, t.bb.max.y, 0.75); }); }
+    for (const d of [-1, 1]) { const t = beside('bedside', b1, d, 8.22, 0, bset[0]); if (d < 0) F('mesh-node', 'Wi-Fi mesh node on your bedside table', 'Buy a 2-pack mesh system: the main unit replaces or joins the router in the dining area, this one sits here on the bed-wall socket. It covers your bedroom, the separate area through the glass, and Bedroom 2 through the shared wall.', () => { C(t.bb.max.x - 0.35, t.bb.min.z + 0.4, 0.22, t.bb.max.y, t.bb.max.y + 0.42, 0xf4f3ef, 0.4); Sph(t.bb.max.x - 0.35, t.bb.max.y + 0.43, t.bb.min.z + 0.4, 0.03, glowMat(0x7dd3ff)); }, 'Buy'); F('bed1-lamp' + d, 'Bedside lamp', null, () => { tableLamp((t.bb.min.x + t.bb.max.x) / 2, (t.bb.min.z + t.bb.max.z) / 2, t.bb.max.y, 0.75); }); }
     F('bed1-strip', 'LED strip above your bed', null, () => { strip(16.05, 8.22, 22.05, 8.26, 7.6, 0.5); });
     F('bed1-plant', 'Snake plant in your bedroom', null, () => { plant(14.65, 15.6, 1.0, null, 'snake'); });
     F('bed1-art', 'Art above your bed', null, () => { art(16.65, 8.21, 21.45, 8.25, 5, 6.8); });
@@ -1405,16 +1429,17 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     if (nookMode === 'office') {
     // Separate area: workstation centred on the big window, framed by a window garden
     F('nook-rug', 'Rug in the separate area', null, () => { rug(10.35, 8.1, 13.7, 13.6); });
-    const dk = place('desk', 0, 11.0, Math.PI / 2, 10.3, 'minX'), dTop = dk.top; // centred on the window
-    B(dk.bb.min.x + 0.3, 10.1, dk.bb.min.x + 0.42, 11.9, dTop + 0.55, dTop + 1.9, 0x111316, false, 0.3); C(dk.bb.min.x + 0.36, 11.0, 0.06, dTop, dTop + 0.6, S.metal); B(dk.bb.min.x + 0.15, 10.7, dk.bb.min.x + 0.55, 11.3, dTop, dTop + 0.03, S.metal); // your monitor
-    F('desk-chair', 'Desk chair', 'Not in the rent list. You need a chair to work: bring your own, or pick Moreno, which comes with one.', () => { chair(Math.min(dk.bb.max.x + 0.75, 13.15), 11.0, 'w', S.dark); });
-    F('desk-lamp', 'Desk lamp', null, () => { deskLamp(dk.bb.min.x + 0.45, Math.min(dk.bb.max.z - 0.35, 12.6), dTop, 0.7); });
+    const dk = place('desk', 0, 10.3, Math.PI / 2, 10.3, 'minX'), dTop = dk.top; // centred on the window, north of the glass door's swing
+    B(dk.bb.min.x + 0.3, 9.4, dk.bb.min.x + 0.42, 11.2, dTop + 0.55, dTop + 1.9, 0x111316, false, 0.3); C(dk.bb.min.x + 0.36, 10.3, 0.06, dTop, dTop + 0.6, S.metal); B(dk.bb.min.x + 0.15, 10.0, dk.bb.min.x + 0.55, 10.6, dTop, dTop + 0.03, S.metal); // your monitor
+    F('desk-chair', 'Desk chair', 'Not in the rent list. You need a chair to work: bring your own, or pick Moreno, which comes with one.', () => { chair(Math.min(dk.bb.max.x + 0.75, 13.15), 10.3, 'w', S.dark); });
+    F('desk-lamp', 'Desk lamp', null, () => { deskLamp(dk.bb.min.x + 0.45, dk.bb.max.z - 0.35, dTop, 0.7); });
     // window garden: tall plants either side of the desk, a plant ledge, trailing plants hanging from a rail above the window
     F('window-garden', 'Plants either side of the desk and money plant along the window', null, () => {
-    plant(10.7, 8.6, 0.9, NOOK_POT, 'monstera'); plant(10.7, 13.4, 0.9, NOOK_POT, 'areca');
+    plant(10.65, 13.35, 0.9, NOOK_POT, 'areca');
     addBox(decor, 10.35, 9.0, 10.45, 13.0, 7.9, 7.98, mat(S.metal));
     for (const z of [9.4, 10.6, 11.8, 12.8]) { C(10.55, z, 0.02, 7.0, 7.9, S.dark); C(10.55, z, 0.25, 6.6, 7.0, NOOK_POT, 0.3); growAt(10.55, 6.98, z, 0.45, 'pothos'); } });
-    F('nook-plant', 'Plant in the corner by the glass partition', null, () => { plant(13.45, 13.45, 0.8, NOOK_POT, 'rubber'); });
+    F('nook-plant', 'Plant in the corner behind the half-wall', null, () => { plant(13.4, 8.2, 0.85, NOOK_POT, 'monstera'); });
+      hingedDoor('v', 14, 11.0, 13.8, true, false, null, true, decor); // the glass door opens into the separate area, clear of the desk
     } else { // daybed nook: a single bed along the window wall, cushions against the wall, plants all round
     const db = place('daybed', 0, 10.75, 0, 10.25, 'minX'), seat = 1.38; // headboard (if any) at the north wall
     const cx0 = db.bb.min.x;
@@ -1429,6 +1454,8 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     F('nook-sill', 'Herbs and succulents on the side window sill', null, () => { for (const x of [11.0, 11.9, 12.8]) { C(x, 7.95, 0.2, 3.0, 3.35, NOOK_POT, 0.3); growAt(x, 3.33, 7.95, 0.3, x < 11.5 ? 'herb' : 'succ'); } });
     F('nook-plants', 'Hanging planters along the side window', 'The bed fills the floor, so the plants hang: a tension rod inside the side window frame, no drilling.', () => { addBox(decor, 10.7, 7.83, 13.3, 7.9, 7.6, 7.66, mat(S.metal)); for (const x of [11.2, 12.0, 12.8]) { C(x, 7.95, 0.02, 6.6, 7.6, S.dark); C(x, 7.95, 0.24, 6.2, 6.6, NOOK_POT, 0.3); growAt(x, 6.58, 7.95, 0.42, 'pothos'); } });
     F('nook-lamp', 'Clip-on reading lamp at the head of the daybed', null, () => { deskLamp(db.bb.max.x - 0.35, db.bb.min.z + 0.25, seat + 0.5, 0.6); });
+    // the bed fills the floor, so the glass door (which opens inwards) cannot swing: shown lifted off, with a sheer curtain in the doorway
+    { const sh = new THREE.MeshStandardMaterial({ color: S.sheer, transparent: true, opacity: 0.55, roughness: 1, side: THREE.DoubleSide }); for (let k = 0; k < 11; k++) addBox(decor, 14.12 + (k % 2 ? 0.06 : 0), 11.3 + k * 0.215, 14.16 + (k % 2 ? 0.06 : 0), 11.515 + k * 0.215, 0.1, 6.9, sh); }
     }
 
     // Bedroom 2: built-in cabinets on the passage wall, bed headboard on the kitchen-side wall
@@ -1538,17 +1565,26 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
         <li>Matching bedside tables with table lamps, and a hidden LED strip and one artwork above the headboard.</li>
         <li>A rug under the bottom two-thirds of the bed and a plant in the corner. The foot of the bed stays clear so the door can swing open and you can walk round to both sides; shoes live in the cabinet by the main door.</li></ul></div>
       <div class="room"><h3>Separate area</h3><ul>
-        <li>Measured from the video: only about 4 ft from the glass partition to the window, and about 6 ft along it. Two windows, yellow walls, and the only way in is through your bedroom.</li>
+        <li>Measured from the video and your frame: about 3.8 × 6.3 ft inside. Two windows to the outside. From your bedroom: a 2.8 ft glass door at the Bedroom 2 end that opens into the room, then a half-wall about 3 ft high with a sliding glass window above it.</li>
         ${nookMode === 'office' ? `<li><b>Office (switch above):</b> a slim desk, 18 to 20 in deep (the usual 24 in desks leave no room for the chair), centred on the window, with a monitor and a desk lamp. That leaves about 2 ft for the chair; when you stand up, it rolls back into the partition opening.</li>
         <li>A compact plant either side of the desk, money plant trailing from a rail above the window, and a rubber plant in the corner by the partition. No floor lamp: there is no room for one.</li>` : `<li><b>Daybed nook (switch above):</b> a single bed along the window wall, 74 in long or less (the wall is about 75 in), sitting like a sofa by day with four cushions against the wall and a bolster at the foot. A weekend reading and nap spot, and a spare bed for a guest.</li>
         <li>The bed fills the floor, so the plants go up: money plant hanging from a tension rod along the big window, three hanging planters on the side window, herbs and succulents on its sill, warm string lights along the rail and a clip-on reading lamp at the head. From your bed you look through the glass at a wall of green.</li>
-        <li>Pick the Atticus platform (73.4 in, no headboard) first: it fits with about 2 in spare. The Aurora single is listed at 72 in with a headboard; confirm the overall length with RentoMojo before ordering.</li>`}
+        <li>Pick the Atticus platform (73.4 in, no headboard) first: it fits with about 2 in spare. The Aurora single is listed at 72 in with a headboard; confirm the overall length with RentoMojo before ordering.</li>
+        <li><b>The catch:</b> the glass door opens into the room, and the bed fills the floor, so the door can only open a few inches. The nook needs the door lifted off its hinges (with the owner's OK, kept safe for when you move out) and a sheer curtain hung in its place, as shown. If that is not possible, stay with the office.</li>`}
         <li>The ironing stand needs a new home; to be decided.</li></ul></div>
       <div class="room"><h3>Bedroom 2</h3><ul>
         <li>About 10 × 9 ft wall to wall. The door is in the corner next to your bedroom door; the wall on your left as you walk in starts right at the frame.</li>
         <li>The built-in wardrobe is on the passage-side wall, from the corner by the small window up to the entrance door: a 2-door section, a mirror niche, another 2-door section, and a loft. About 2 ft deep.</li>
         <li>Queen bed with its headboard on the plain wall on your left as you enter, pushed to the window wall. That keeps the entrance door and the wardrobe doors clear and leaves about 2 ft at the foot of the bed.</li>
         <li>One bedside table and lamp on the door side (the window wall side has no room), an LED strip above the headboard, a lantern pendant, a peace lily in the window corner and a floor lamp by the small window. A rug at the foot of the bed.</li></ul></div>
+      <div class="room"><h3>Wi-Fi, power and cords</h3><ul>
+        <li><b>Internet line:</b> it comes in on the dining-side wall, about 1 ft right of the passage opening and 1.5 ft up, with a socket beside it and a switchboard above at about 3.7 ft.</li>
+        <li><b>Router stand:</b> a 3 ft open bookshelf (Rowling Medium, 2 ft wide) right over that point, in every dining layout. The router and fibre box sit on the left end of its top, under the switchboard and clear of it; the cables drop behind the shelf to the socket. Open shelving, no doors or metal around the router, and it stays at chest height, not on the floor.</li>
+        <li><b>The flatmate's desk:</b> on the north wall it sits right next to the router stand, so a 1 m LAN cable gives a wired connection for calls. On the east wall it is about 8 ft away: use Wi-Fi, or a flat LAN cable clipped along the skirting.</li>
+        <li><b>Coverage:</b> the router sits at the mouth of the passage, so the hall, kitchen and both bedroom doors are in line of sight. The far end of your bedroom and the separate area are 20 to 25 ft away through a door and the glass partition. Buy a 2-pack mesh system (TP-Link Deco or similar): the main unit at the router, the second on your bedside table on the bed-wall socket. That covers your bedroom, the separate area through the glass, and Bedroom 2 through the shared wall.</li>
+        <li><b>Sockets seen in the video:</b> the TV point behind the TV unit; low sockets by both corners of the main-door wall (the sofa lamp uses the one by the balcony end); both sides of your bed; the north wall of Bedroom 2; and the dining pier by the router. Not checked: a socket by the Bedroom 2 bedside, so bring a 3 m cord for that lamp.</li>
+        <li><b>Separate area:</b> it has only loose wires by the window. Ask the owner to fit a proper socket box before you move in; the desk, monitor and lamp (or the daybed lamp) need it. Until then, a cord from your bed-wall socket through the glass door works, but it runs across the doorway.</li>
+        <li><b>Cords to buy:</b> a 4-way surge strip for the TV unit, a 3 m strip for the flatmate's desk (from the socket by the south-east corner when the desk is on the east wall, or from the router stand when it is on the north wall), one strip at the router stand, a 3 m cord for the Bedroom 2 lamp, and adhesive cable clips. Battery or solar string lights on the balcony, since it has no socket.</li></ul></div>
       <div class="room"><h3>Mirrors, rugs and the things people forget</h3><ul>
         <li><b>Mirrors:</b> your bedroom already has the dresser mirror in the wardrobe; Bedroom 2 has the mirror niche in its wardrobe; a round mirror over the shoe cabinet by the main door for a last check before leaving; bathroom mirrors over both basins.</li>
         <li><b>Rugs:</b> living room (6 × 8 ft, under the front legs of the sofa), your bedroom (under the bed), Bedroom 2 (at the foot of the bed), the separate area (under the desk chair), and a runner down the passage.</li>
@@ -1833,7 +1869,7 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     [21.4, 16.8, -1.45, 'Wardrobe wall, corner to corner'],
     [15.4, 16.6, 0.6, ''],
     [15.2, 13.2, 1.57, 'Through the glass partition to the separate area'],
-    [12.4, 13.3, 1.2, 'Separate area: a compact workstation at the window'],
+    [12.9, 12.3, 1.3, 'Separate area: a compact workstation at the window'],
   ];
   let TOUR = [];
   function tourRoute() {
