@@ -69,6 +69,13 @@ td a { color: var(--rent); text-underline-offset: 2px; }
 tr.themed td { background: var(--chip); }
 button.reset { justify-self: start; border: 1px solid var(--line); background: var(--chip); color: var(--ink); border-radius: 6px; padding: 6px 12px; font: 500 13px var(--sans); cursor: pointer; }
 :focus-visible { outline: 2px solid var(--rent); outline-offset: 2px; }
+.phase { font: 600 11.5px var(--mono); border-radius: 4px; padding: 2px 7px; white-space: nowrap; }
+.phase.p1 { background: #2f7d4f; color: #fff; }
+.phase.p2 { background: var(--chip); color: var(--muted); }
+.plan { border: 1px solid var(--line, #ddd); border-radius: 10px; padding: 14px 16px; margin: 18px 0; }
+.plan h2 { margin-top: 0; }
+.plan table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.plan td, .plan th { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line, #ddd); vertical-align: top; }
 </style>
 
 <div class="wrap">
@@ -80,9 +87,25 @@ button.reset { justify-self: start; border: 1px solid var(--line); background: v
 
   <div class="sum" aria-live="polite">
     <div><b id="total">₹0</b><span>picked rentals per month, 11-month plan, selected theme</span></div>
+    <div><b id="p1total">₹0</b><span>Phase 1, order now: both beds, fridge, RO</span></div>
     <div><b id="deposit">₹0</b><span>RentoMojo refundable deposits (Furlenco: zero deposit)</span></div>
     <div><b id="count">0 / 0</b><span>items ticked off</span></div>
   </div>
+
+  <section class="plan">
+    <h2>Order plan: two phases</h2>
+    <p class="muted">Move in around 15–16 Nov (the old flat ends on the 20th), Dubai 21–30 Nov, Ayush back in the first week of December. Only what you need to live there goes now; the rest is decided together after seeing it in the stores. Rent starts on delivery, so nothing waits unpaid.</p>
+    <table>
+      <tr><th>When</th><th>What</th></tr>
+      <tr><td>12–13 Nov</td><td><b>Phase 1 orders.</b> One Furlenco order for your bed, the fridge and the RO, with code <b>FURMAX</b> (18% off the first month, up to ₹1,000; new customers, first order only, so keep all three in one order). One RentoMojo order for Ayush's bed. Ask Furlenco the brand of the 328 L fridge; if they cannot say, take the Haier 270 L. Delivery for 14–15 Nov.</td></tr>
+      <tr><td>13–14 Nov</td><td>Ask the owner to fit a socket box in the separate area. Book the internet installation (the line comes in on the dining wall).</td></tr>
+      <tr><td>15–16 Nov</td><td>Shift in with mattresses, bedding, the washing machine, two extension boards and a night lamp.</td></tr>
+      <tr><td>21–30 Nov</td><td>Dubai. No deliveries.</td></tr>
+      <tr><td>1st week Dec</td><td>Visit the stores together: the nearest Furlenco store and RentoMojo MojoStore. Call ahead to check the pieces are on display; take a tape measure.</td></tr>
+      <tr><td>Mid Dec</td><td><b>Phase 2</b> delivered: sofa, corner seat, TV unit, coffee and side tables, bedside tables, chest, shoe cabinet, router stand, plant ladder.</td></tr>
+    </table>
+    <p class="muted">Splitting costs very little: Furlenco's FURMAX is capped at ₹1,000 on the first order, so ordering everything at once would save only about ₹100–300 more, once. RentoMojo showed no discount for bigger carts (only fixed packages). Each item's 11 months starts at its own delivery, so Phase 1 ends about a month before Phase 2.</p>
+  </section>
 
   <section class="glance">
     <h2>Pick a theme</h2>
@@ -244,6 +267,8 @@ button.reset { justify-self: start; border: 1px solid var(--line); background: v
   try { state = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) { state = {}; }
   const save = () => { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} };
   const inr = n => '₹' + n.toLocaleString('en-IN');
+  const PHASE1 = new Set(['bed1', 'bed2', 'fridge', 'ro']); // order now, before moving in; everything else in December
+  const phaseTag = it => PHASE1.has(it.id) ? '<span class="phase p1">Phase 1 · order now</span>' : '<span class="phase p2">Phase 2 · December</span>';
 
   const card = (it, key) => {
     const el = document.createElement('label'); el.className = 'item'; el.htmlFor = 'c-' + key;
@@ -268,16 +293,16 @@ button.reset { justify-self: start; border: 1px solid var(--line); background: v
   function render() {
     tabs.querySelectorAll('button').forEach(b => b.setAttribute('aria-selected', b.dataset.k === theme));
     document.getElementById('themeblurb').textContent = THEMES[theme].blurb;
-    const rent = rentFor(theme), host = document.getElementById('rent'), gl = document.getElementById('glance');
+    const rent = rentFor(theme).slice().sort((a, b) => PHASE1.has(b.id) - PHASE1.has(a.id)), host = document.getElementById('rent'), gl = document.getElementById('glance');
     host.innerHTML = ''; gl.innerHTML = '';
-    for (const it of rent) host.appendChild(card(it, it.themed ? theme + ':' + it.id : it.id));
+    for (const it of rent) { const el = card(it, it.themed ? theme + ':' + it.id : it.id); el.querySelector('.top').insertAdjacentHTML('afterbegin', phaseTag(it)); host.appendChild(el); }
     let g2 = 0;
     for (const it of rent) {
       const sc = it.second || [it.short, it.price, it.url];
       g2 += sc[1];
       const tr = document.createElement('tr');
       if (it.themed || THEMES.boho.items[it.id]) tr.className = 'themed';
-      tr.innerHTML = `<td>${it.name.split(':')[0]}</td><td>${A(it.short, it.url)}</td><td class="n">${inr(it.price)}</td><td>${it.second ? A(sc[0], sc[2]) : '<span class="muted">no better fit</span>'}</td><td class="n">${it.second ? inr(sc[1]) : '—'}</td>`;
+      tr.innerHTML = `<td>${it.name.split(':')[0]} ${phaseTag(it)}</td><td>${A(it.short, it.url)}</td><td class="n">${inr(it.price)}</td><td>${it.second ? A(sc[0], sc[2]) : '<span class="muted">no better fit</span>'}</td><td class="n">${it.second ? inr(sc[1]) : '—'}</td>`;
       gl.appendChild(tr);
     }
     document.getElementById('gt1').textContent = inr(sum(rent, i => i.price));
@@ -287,6 +312,7 @@ button.reset { justify-self: start; border: 1px solid var(--line); background: v
   function tally() {
     const rent = rentFor(theme);
     document.getElementById('total').textContent = inr(sum(rent, i => i.price));
+    document.getElementById('p1total').textContent = inr(sum(rent.filter(i => PHASE1.has(i.id)), i => i.price));
     document.getElementById('deposit').textContent = inr(sum(rent, i => i.dep));
     const keys = [...rent.map(i => i.themed ? theme + ':' + i.id : i.id), ...ITEMS.buy.map(i => i.id)];
     document.getElementById('count').textContent = keys.filter(k => state[k]).length + ' / ' + keys.length;
