@@ -1302,10 +1302,10 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     function nudgeX(rec, dx) { rec.g.position.x += dx; rec.bb = solidBox(rec.g); colliders[rec.ci] = [rec.bb.min.x, rec.bb.min.z, rec.bb.max.x, rec.bb.max.z]; return rec; }
     // Living: TV wall faces the sofa on the main-door wall
     const tv = place('tvunit', 9.5, 0, 0, 30.85), top = tv.top;
-    { const free = tv.bb.max.x - 11.52; F('ps5', 'Your PS5, lying flat beside the TV', free >= 0.86 ? 'Yours. Lying flat on the unit top, right of the TV: about 10.5 in free there, the PS5 is 10.2 in wide (8.5 in for the Slim) and gets open air on every side. Short HDMI run.' : 'Yours. This TV unit leaves no room beside the TV and its open shelf is too low for a PS5, so it would sit on the floor; the Leonard fits it.', () => {
+    { const free = tv.bb.max.x - 11.52; F('ps5', 'PS5, lying flat beside the TV (already have)', free >= 0.86 ? 'Already have, not rented. Lying flat on the unit top, right of the TV: about 10.5 in free there, the PS5 is 10.2 in wide (8.5 in for the Slim) and gets open air on every side. Short HDMI run.' : 'Already have, not rented. This TV unit leaves no room beside the TV and its open shelf is too low for a PS5, so it would sit on the floor; the Leonard fits it.', () => {
       const cx = free >= 0.86 ? tv.bb.max.x - 0.02 - 0.425 : 13.3, cz = free >= 0.86 ? (tv.bb.min.z + tv.bb.max.z) / 2 : 31.6, y = free >= 0.86 ? top : 0;
       B(cx - 0.33, cz - 0.62, cx + 0.33, cz + 0.62, y + 0.03, y + 0.31, 0x15161a, false, 0.3); for (const s of [-1, 1]) B(cx + s * 0.37 - 0.055, cz - 0.64, cx + s * 0.37 + 0.055, cz + 0.64, y, y + 0.34, 0xf4f4f2, false, 0.35); // 39 x 26 x 10.4 cm lying flat
-      Sph(cx, y + 0.31, cz + 0.6, 0.02, glowMat(0x7db7ff)); }, 'Yours'); }
+      Sph(cx, y + 0.31, cz + 0.6, 0.02, glowMat(0x7db7ff)); }, 'Yours · already have'); }
     B(8.9, 31.3, 10.1, 31.9, top, top + 0.08, S.metal); B(9.4, 31.55, 9.6, 31.65, top + 0.08, top + 0.4, S.metal); B(7.48, 31.5, 11.52, 31.62, top + 0.35, top + 2.68, 0x111316, false, 0.3); // your own 55" TV on its stand: about 48.5 × 28 in
     F('tv-strip', 'LED strip behind the TV', null, () => { strip(6.6, 30.72, 12.4, 30.76, top + 0.6, 0.45); });
     F('living-rug', 'Living-room rug', null, () => { rug(7.4, 33.6, 14, 39.6); });
