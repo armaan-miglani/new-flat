@@ -474,17 +474,11 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   fx(5.9, 28.75, 7.9, 30.0, 2.86, 3.06, steel); fx(6.05, 28.9, 7.75, 29.85, 2.5, 2.87, mat(0x9aa4aa, 0.2)); // sink, towards the utility-door end (video 48 s)
   cyl(6.9, 3.45, 30.1, 0.05, 0.8, steel); fx(6.85, 29.75, 6.95, 30.15, 3.8, 3.86, steel); // tap
   for (let x = 8.2; x <= 10.2; x += 0.25) fx(x, 29.9, x + 0.03, 30.25, 3.2, 4.1, steel); fx(8.2, 29.9, 10.2, 30.25, 3.2, 3.24, steel); // dish rack on the counter beside the sink
-  fx(10.6, 29.95, 11.6, 30.29, 3.6, 5.0, mat(0x141618, 0.3)); cyl(11.1, 3.45, 29.9, 0.04, 0.3, steel); // RO purifier on the wall
   { const perf = mat(0x6b4a3a, 0.55); fx(4.2, 23.2, 5.4, 24.4, 5.2, 7.2, perf); for (const [y, x] of [[5.5, 4.5], [5.6, 5.1], [6.2, 4.8], [6.8, 4.5], [6.85, 5.15]]) { const h = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.11, 0.03, 18), mat(0xf4f1ea, 0.5)); h.rotation.x = Math.PI / 2; h.position.set(x, y, 24.42); scene.add(h); } } // brown cabinet with white round cut-outs at the far end (video 46-48 s)
   { const hdl = (x, z1, z2, y) => fx(x, z1, x + 0.06, z2, y, y + 0.05, steel), line = mat(0x9fa168, 0.6);
     for (let x = 4.2; x < 10.2; x += 1.35) { fx(x, 24.99, x + 0.02, 25.02, 0.15, 2.85, line); fx(x + 0.55, 25.0, x + 0.8, 25.06, 2.45, 2.52, steel); } // hob counter: door joints + handles
     for (let x = 4.2; x < 13.7; x += 1.5) { fx(x, 28.48, x + 0.02, 28.51, 0.15, 2.85, line); fx(x + 0.6, 28.44, x + 0.85, 28.5, 2.45, 2.52, steel); } // sink counter
     for (let x = 4.2; x < 13.7; x += 1.5) { fx(x, 29.08, x + 0.02, 29.1, 5.25, 8.85, line); fx(x + 0.6, 29.03, x + 0.85, 29.08, 5.4, 5.47, steel); } fx(4.2, 29.08, 13.8, 29.1, 7.4, 7.43, line); } // tall wall cabinets with a loft line
-  { // fridge in the slot: Haier 270 L double door, 62 W x 55 D x 169 cm, deep navy glass; pushed against the counter end, so about 1.4 ft stays free on the side of the wall the sliding kitchen door runs into
-    const fx1 = 10.36, fx2 = 12.39, fz1 = 23.25, fz2 = 25.05, navy = mat(0x1d2a44, 0.22);
-    fx(fx1, fz1, fx2, fz2, 0.1, 5.55, navy); fx(fx1 + 0.02, fz2, fx2 - 0.02, fz2 + 0.02, 4.05, 4.09, mat(0x0d1220, 0.4));
-    fx(fx1 + 0.08, fz2 + 0.02, fx1 + 0.14, fz2 + 0.1, 4.3, 5.2, steel); fx(fx1 + 0.08, fz2 + 0.02, fx1 + 0.14, fz2 + 0.1, 2.4, 3.8, steel); // handles
-    fx(fx1, fz1, fx2, fz2, 0, 0.1, mat(0x111111)); colliders.push([fx1, fz1, fx2, fz2]); }
   { const bt = tileBase.clone(); bt.needsUpdate = true; bt.repeat.set(6.1, 1.5); fx(4.2, 23.21, 10.3, 23.24, 3.06, 5.2, new THREE.MeshStandardMaterial({ map: bt, roughness: 0.3 }));
     const bt2 = tileBase.clone(); bt2.needsUpdate = true; bt2.repeat.set(9.6, 1.5); fx(4.2, 30.26, 13.8, 30.29, 3.06, 5.2, new THREE.MeshStandardMaterial({ map: bt2, roughness: 0.3 })); }
 
@@ -506,10 +500,10 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
         fx(x1 - 0.08, z1, x1, z2, 2.5, 7, back);
         for (const y of [2.5, 3.6, 4.7, 5.8, 6.9]) fx(x0, z1, x1, z2, y, y + 0.07, W);
         for (const y of [2.57, 3.67, 4.77, 5.87]) { const h = 0.35 + (i % 3) * 0.12; fx(x0 + 0.3, z1 + 0.15, x1 - 0.2, zm, y, y + h, mat(clothes[i % 6], 0.9)); fx(x0 + 0.35, zm + 0.05, x1 - 0.25, z2 - 0.15, y, y + h * 0.7, mat(clothes[(i + 2) % 6], 0.9)); i++; }
-      } else if (kind === 'dresser') {
+      } else if (kind === 'dresser' || kind === 'niche') { // niche: same open recess, but no mirror (Bedroom 2)
         fx(x0, z1, x1, z2, 0, 2.6, W); fx(x0 - 0.02, z1 + 0.1, x0, z2 - 0.1, 1.9, 1.94, Dk); handle(zm, 2.15, 2.25);
         fx(x0 - 0.05, z1, x1, z2, 2.6, 2.68, W); fx(x1 - 0.1, z1, x1, z2, 2.68, 7, back);
-        fx(x1 - 0.14, z1 + 0.35, x1 - 0.1, z2 - 0.35, 3.3, 6.6, mirrorMat); fx(x0, z1, x1, z2, 6.6, 7, W);
+        if (kind === 'dresser') fx(x1 - 0.14, z1 + 0.35, x1 - 0.1, z2 - 0.35, 3.3, 6.6, mirrorMat); fx(x0, z1, x1, z2, 6.6, 7, W);
       }
     }
     const zs = sections[0][0], ze = sections[sections.length - 1][1];
@@ -521,7 +515,7 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   // My Bedroom (east wall): open shelves | 2-door | dresser with mirror | 2-door | open shelves
   wardrobe(24.1, 25.8, [[8.2, 10.1, 'open'], [10.1, 13.4, 'doors'], [13.4, 15.1, 'dresser'], [15.1, 18.4, 'doors'], [18.4, 19.8, 'open']], 0x9a5a22, 9); // fills the east wall corner to corner (video 95-108 s)
   // Bedroom 2 (passage-side wall): 2-door | mirror niche | 2-door, loft above, from the corner by the small window to the entrance door (video 74-80 s)
-  wardrobe(12.05, 13.8, [[14.2, 16.2, 'doors'], [16.2, 17.7, 'dresser'], [17.7, 19.8, 'doors']], 0xa8622a, 9);
+  wardrobe(12.05, 13.8, [[14.2, 16.2, 'doors'], [16.2, 17.7, 'niche'], [17.7, 19.8, 'doors']], 0xa8622a, 9); // the niche has no mirror (you)
 
   // real wall colours sampled from the video: warm cream everywhere, mustard-yellow separate area, pale yellow balcony
   const WALL_CREAM = 0xf0e8d5, WALL_NOOK = 0xdcc96e, WALL_BALCONY = 0xefe0b4;
@@ -753,6 +747,17 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   };
 
   // desks: local back at -z, facing +z (the chair side)
+  const CM = n => n / 30.48;
+  function fridgeBody(g, o) { // listing W x D x H in cm; back at -z, doors face +z; freezer on top
+    const W = CM(o.W), D = CM(o.D), Hh = CM(o.H), body = pmat(o.glass ? 'paint' : 'metal', o.hex), steelM = pmat('metal', 0xc7ccd0);
+    prbox(g, W, Hh - 0.1, D, 0, (Hh - 0.1) / 2 + 0.1, 0, body, IN(0.6)); prbox(g, W - IN(1), 0.1, D - IN(1), 0, 0.05, 0, pmat('paint', 0x15161a), 0);
+    const sy = Hh * o.split; prbox(g, W - IN(0.2), IN(0.3), IN(0.3), 0, sy, D / 2 + IN(0.05), pmat('paint', 0x0c0e14), 0);
+    for (const [y1, y2] of [[sy + IN(3), sy + IN(13)], [sy - IN(22), sy - IN(4)]]) prbox(g, IN(0.8), y2 - y1, IN(1.2), -W / 2 + IN(2), (y1 + y2) / 2, D / 2 + IN(0.8), steelM, IN(0.2));
+    pblob(g, W, D); return Hh; }
+  function roUnit(g, o) { // wall-mounted RO purifier, listing W x D x H in cm; hung with its bottom about 3.6 ft up
+    const W = CM(o.W), D = CM(o.D), Hh = CM(o.H), y0 = 3.6, white = pmat('paint', 0xf4f4f2);
+    prbox(g, W, Hh, D, 0, y0 + Hh / 2, 0, white, IN(1)); prbox(g, W * 0.7, Hh * 0.35, IN(0.3), 0, y0 + Hh * 0.62, D / 2 + IN(0.1), pmat('paint', o.accent), IN(0.3));
+    prbox(g, IN(1), IN(2.5), IN(1), 0, y0 + Hh * 0.18, D / 2 + IN(0.6), pmat('metal', 0xc7ccd0), 0); return y0 + Hh; }
   const DK = {
     leonard: g => { // listing: 34 x 20 x 31 in; solid wood walnut top with 2 drawers, black metal A-frame legs with a low side stretcher (listing photos)
       const w = pmat('wood', 0x6b3a20), m = pmat('metal', 0x161616), br = pmat('metal', 0x2a2a2a);
@@ -816,6 +821,9 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     bed2: { label: 'Bedroom 2 bed', moody: ['bohoQueen', 'miliDvi'], calm: ['auroraGrey', 'bohoQueen'], boho: ['bohoQueen', 'auroraLow'], japandi: ['mysa', 'kipper'] },
     bedside: { label: 'Bedside tables (3)', moody: ['setWingMinion', 'setFloralMinion'], calm: ['setHugo', 'setWingman'], boho: ['setJasper', 'setRay'], japandi: ['setWatson', 'setStooge'] },
     desk: { label: 'Workstation', moody: ['leonardDesk', 'howardDesk'], calm: ['leonardDesk', 'poiseDesk'], boho: ['poiseDesk', 'leonardDesk'], japandi: ['howardDesk', 'leonardDesk'] }, // the separate area is 4 ft deep: only desks 20 in deep or less leave room for the chair
+    fridge: { label: 'Fridge', all: ['haier270', 'rmFridge240', 'fur328'] }, // in the slot at the kitchen entrance, against the counter end
+    ro: { label: 'Water purifier (RO)', all: ['drinkprimeF', 'drinkprimeRM'] },
+    shoe: { label: 'Shoe cabinet', all: ['saddleShoe', 'flipShoe'] },
     chest: { label: 'Chest of drawers, facing your bed', moody: ['avianChest', 'kipperChest'], calm: ['hugoChest', 'avianChest'], boho: ['kipperChest', 'magnumChest'], japandi: ['filbertChest', 'kipperChest'] }, // the 3 ft wall between your door and the bathroom door
     plantshelf: { label: 'Plant stand (reading nook)', all: ['ladderOak'] }, // a ladder shelf along the big window, south of the glass door's swing
     router: { label: 'Bookshelf + router stand', moody: ['rowlingMW', 'rowlingM'], calm: ['rowlingMW', 'rowlingM'], boho: ['rowlingM', 'rowlingMW'], japandi: ['rowlingMW', 'rowlingM'] }, // 3 ft high, under the dining-wall switchboard, over the internet point
@@ -923,6 +931,15 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
       build: g => bed(g, { W: 36, L: 72, mW: 35, mL: 69, head: 'vslats', hbH: 22, legH: 2, railH: 6, legs: 'block', wood: pmat('wood', 0x5a3420), throwHex: 0x8a9a78 }) },
     atticusSingle: { name: 'Atticus single platform bed, plain walnut-brown, no headboard', site: 'RentoMojo', price: 336, url: RMU + 'furniture/rent-atticus-solid-wood-single-platform-bed/2734', size: '73.4 × 37.4 × 7 in',
       build: g => bed(g, { W: 37.4, L: 73.4, mW: 36, mL: 72, head: 'none', hbT: 0.5, legH: 1, railH: 6, legs: 'block', wood: pmat('wood', 0x6b3f22), throwHex: 0xb9a68a }) },
+    haier270: { name: 'Haier 270 L double door, deep navy glass', site: 'Furlenco', price: 1499, url: FLU + 'refrigerator-double-door-268l-6112-rent', size: '62 × 55 × 169 cm', build: g => fridgeBody(g, { W: 62, D: 55, H: 169, hex: 0x1d2a44, glass: true, split: 0.74 }) },
+    rmFridge240: { name: 'Double door 240 L, steel (brand varies)', site: 'RentoMojo', price: 1040, url: RMU + 'appliances/rent-double-door-fridge-240-litre/95989', size: '76 × 64 × 152 cm', build: g => fridgeBody(g, { W: 76, D: 64, H: 152, hex: 0xb4b9be, split: 0.72 }) },
+    fur328: { name: 'Double door 328 L, graphite black', site: 'Furlenco', price: 2349, url: FLU + 'refrigerator-double-door-328l-5749-rent', size: '62 × 66 × 164 cm', build: g => fridgeBody(g, { W: 62, D: 66, H: 164, hex: 0x2a2b2e, glass: true, split: 0.74 }) },
+    drinkprimeF: { name: 'DrinkPrime RO + UV + Copper, white', site: 'Furlenco', price: 379, url: FLU + 'fur---water-purifier---drinkprime-5451-rent', size: '35 × 21 × 52 cm', build: g => roUnit(g, { W: 35, D: 21, H: 52, accent: 0x2f6fb0 }) },
+    drinkprimeRM: { name: 'DrinkPrime RO+, white', site: 'RentoMojo', price: 423, url: RMU + 'appliances/rent-drinkprime-ro-plus/138385', size: 'about 35 × 21 × 52 cm', build: g => roUnit(g, { W: 35, D: 21, H: 52, accent: 0x1c1d20 }) },
+    saddleShoe: { name: 'Saddle shoe cabinet, large, dark espresso, two doors', site: 'RentoMojo', price: 234, url: RMU + 'furniture/rent-footsie-shoe-rack-large/1970', size: '24 × 15 × 36 in',
+      build: g => bookcase(g, { W: 24, D: 15, H: 36, frame: 0x3b2a1f, shelves: [], doors: [2.5, 35.3], handleHex: 0x8f8574 }) },
+    flipShoe: { name: 'Flip shoe rack, low bench, dark', site: 'RentoMojo', price: 286, url: RMU + 'furniture/rent-feetiesh-shoe-rack-live/1983', size: '32 × 16 × 21 in',
+      build: g => bookcase(g, { W: 32, D: 16, H: 21, frame: 0x2e2420, shelves: [], doors: [2.5, 20.3], handleHex: 0x8f8574 }) },
     leonardDesk: { name: 'Leonard study table, walnut + black A-frame legs', site: 'RentoMojo', price: 275, url: RMU + 'furniture/rent-leonard-study-table/103750', size: '34 × 20 × 31 in', build: DK.leonard },
     poiseDesk: { name: 'Poise study table, walnut-brown top on a black frame', site: 'RentoMojo', price: 214, url: RMU + 'furniture/rent-poise-study-table/5091', size: '37 × 20 × 34 in', build: DK.poise },
     howardDesk: { name: 'Howard study table, wenge with open shelves', site: 'RentoMojo', price: 123, url: RMU + 'furniture/rent-howard-study-table/2018', size: '36 × 18 × 29 in', build: DK.howard },
@@ -1307,7 +1324,7 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     F('plant-door', 'Snake plant by the main door', null, () => { plant(14.25, 41.5, 1.0, null, 'snake'); });
     F('plants-tv', 'Monstera and areca palm either side of the TV', null, () => { plant(13.7, 31.3, 1.3, null, 'monstera'); plant(5, 31.5, 1.5, null, 'areca'); });
     F('living-art', 'Art above the sofa', null, () => { art(9, 42.22, 12.6, 42.3, 4, 6.6); });
-    B(18.6, 41.25, 21.8, 42.3, 0.3, 3, S.wood, true); F('plant-shoe', 'Money plant trailing over the shoe cabinet', null, () => { plant(21.1, 41.75, 0.55, null, 'pothos', 3); });
+    { const sh = place('shoe', 19.9, 0, Math.PI, 42.3, 'maxZ'); F('plant-shoe', 'Money plant trailing over the shoe cabinet', null, () => { plant(sh.bb.max.x - 0.45, (sh.bb.min.z + sh.bb.max.z) / 2, 0.55, null, 'pothos', sh.bb.max.y); }); }
     F('living-pendant', 'Pendant light over the coffee table', 'Decoration to show the lighting. The flat\'s own ceiling lights stay, so this is optional.', () => { pendant(cx, (cof.bb.min.z + cof.bb.max.z) / 2, 8.3, 0.7, 0.5); });
 
     { // router stand: the internet line comes in on the pier just east of the passage opening, 1.5 ft up, with a socket beside it and a switchboard above (about 3.7 ft).
@@ -1434,6 +1451,8 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     addBox(decor, 20.9, 22.6, 22.6, 23.8, 0, 0.04, mat(S.fabric, 1)); });
 
     // Kitchen and passage
+    { const fr = place('fridge', 11.4, 0, 0, 23.25, 'minZ'); nudgeX(fr, 10.36 - fr.bb.min.x); } // fridge slot: against the counter end, the wall the sliding door runs into stays clear
+    place('ro', 11.1, 0, Math.PI, 30.28, 'maxZ'); // on the wall beside the sink, over the counter
     F('kitchen-strips', 'LED strips under the kitchen cabinets', null, () => { strip(7.9, 24.3, 10.25, 24.4, 5.1, 0.4); strip(4.3, 29.0, 13.8, 29.1, 5.1, 0.7); });
     F('passage-art', 'Art in the corridor', null, () => { art(14.22, 28.7, 14.3, 30.2, 4.2, 6.2); art(17.7, 21.4, 17.78, 23.6, 4.2, 6); /* clear of Bedroom 2's door (20-23), the kitchen doorway (25.6-28.4) and the wall its sliding door runs into, and the 2nd bathroom door */ });
     F('passage-pendants', 'Pendant lights in the corridor', null, () => { pendant(16, 22.5, 8.2, 0.55, 0.6); pendant(16, 27.5, 8.2, 0.55, 0.5); });
@@ -1512,7 +1531,8 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     { const t = beside('bedside', b2, 1, 22.78, Math.PI, bset[1]); F('bed2-lamp', 'Bedside lamp, Bedroom 2', null, () => { tableLamp((t.bb.min.x + t.bb.max.x) / 2, (t.bb.min.z + t.bb.max.z) / 2, t.bb.max.y, 0.75); }); }
     F('bed2-strip', 'LED strip above the Bedroom 2 bed', null, () => { strip(b2.bb.min.x + 0.3, 22.74, b2.bb.max.x - 0.3, 22.78, 7.4, 0.4); });
     F('bed2-pendant', 'Pendant light in Bedroom 2', null, () => { pendant(8.0, 17.0, 7.4, 0.8, 0.8); });
-    F('bed2-plant', 'Peace lily in Bedroom 2', null, () => { plant(4.65, 14.65, 0.9, null, 'lily'); });
+    F('bed2-mirror', 'Full-length standing mirror, Bedroom 2', 'Buy: the wardrobe here has no mirror. A floor-standing full-length mirror (about 1.3 × 5.3 ft) in the corner by the window, clear of the bed, the wardrobe doors and the door.', () => {
+      const fr = mat(S.wood2, 0.5); addBox(decor, 4.25, 14.35, 4.33, 15.75, 0.15, 5.5, fr); addBox(decor, 4.33, 14.42, 4.36, 15.68, 0.25, 5.4, mirrorMat); for (const z of [14.45, 15.65]) addBox(decor, 4.25, z - 0.04, 4.75, z + 0.04, 0, 0.08, fr); }, 'Buy');
     F('bed2-floorlamp', 'Floor lamp in Bedroom 2', null, () => { floorLamp(10.0, 14.55, 0.8); });
 
     // Bathrooms: warm mirror lights
@@ -1623,9 +1643,9 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
         <li>The ironing stand needs a new home; to be decided.</li></ul></div>
       <div class="room"><h3>Bedroom 2</h3><ul>
         <li>About 10 × 9 ft wall to wall. The door is in the corner next to your bedroom door; the wall on your left as you walk in starts right at the frame.</li>
-        <li>The built-in wardrobe is on the passage-side wall, from the corner by the small window up to the entrance door: a 2-door section, a mirror niche, another 2-door section, and a loft. About 2 ft deep.</li>
+        <li>The built-in wardrobe is on the passage-side wall, from the corner by the small window up to the entrance door: a 2-door section, an open niche (no mirror), another 2-door section, and a loft. About 2 ft deep. So a full-length standing mirror goes in the corner by the window.</li>
         <li>Queen bed with its headboard on the plain wall on your left as you enter, pushed to the window wall. That keeps the entrance door and the wardrobe doors clear and leaves about 2 ft at the foot of the bed.</li>
-        <li>One bedside table and lamp on the door side (the window wall side has no room), an LED strip above the headboard, a lantern pendant, a peace lily in the window corner and a floor lamp by the small window. A rug at the foot of the bed.</li></ul></div>
+        <li>One bedside table and lamp on the door side (the window wall side has no room), an LED strip above the headboard, a lantern pendant, the standing mirror in the window corner and a floor lamp by the small window. A rug at the foot of the bed.</li></ul></div>
       <div class="room"><h3>Wi-Fi, power and cords</h3><ul>
         <li><b>Internet line:</b> it comes in on the dining-side wall, about 1 ft right of the passage opening and 1.5 ft up, with a socket beside it and a switchboard above at about 3.7 ft.</li>
         <li><b>Router stand:</b> a 3 ft open bookshelf (Rowling Medium, 2 ft wide) right over that point, in every dining layout. The router and fibre box sit on the left end of its top, under the switchboard and clear of it; the cables drop behind the shelf to the socket. Open shelving, no doors or metal around the router, and it stays at chest height, not on the floor.</li>
@@ -1635,7 +1655,7 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
         <li><b>Separate area:</b> it has only loose wires by the window. Ask the owner to fit a proper socket box before you move in; the desk, monitor and lamp (or the daybed lamp) need it. Until then, a cord from your bed-wall socket through the glass door works, but it runs across the doorway.</li>
         <li><b>Cords to buy:</b> a 4-way surge strip for the TV unit, a 3 m strip for the flatmate's desk (from the socket by the south-east corner when the desk is on the east wall, or from the router stand when it is on the north wall), one strip at the router stand, a 3 m cord for the Bedroom 2 lamp, and adhesive cable clips. Battery or solar string lights on the balcony, since it has no socket.</li></ul></div>
       <div class="room"><h3>Mirrors, rugs and the things people forget</h3><ul>
-        <li><b>Mirrors:</b> your bedroom already has the dresser mirror in the wardrobe; Bedroom 2 has the mirror niche in its wardrobe; a round mirror over the shoe cabinet by the main door for a last check before leaving; bathroom mirrors over both basins.</li>
+        <li><b>Mirrors:</b> your bedroom already has the dresser mirror in the wardrobe; Bedroom 2 gets a full-length standing mirror in the corner by the window (its wardrobe has none); a round mirror over the shoe cabinet by the main door for a last check before leaving; bathroom mirrors over both basins.</li>
         <li><b>Rugs:</b> living room (6 × 8 ft, under the front legs of the sofa), your bedroom (under the bed), Bedroom 2 (at the foot of the bed), and the separate area (under the reading corner). No rug in the passage.</li>
         <li><b>Entry:</b> shoe cabinet, mirror, and a row of wall hooks for keys and bags.</li>
         <li><b>Utility:</b> front-load washing machine under the window and a free-standing folding drying stand (a ceiling rack means drilling).</li>
