@@ -169,18 +169,18 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     { name: 'Passage', x: 14, y: 20, w: 4, h: 10.5, floor: 'tile' },
     { name: 'My Bathroom', x: 18, y: 20, w: 7.5, h: 5, floor: 'wet' },
     { name: '2nd Bathroom', x: 18, y: 25, w: 7.5, h: 5.5, floor: 'wet' },
-    { name: 'Utility', x: 2, y: 23, w: 4, h: 7.5, floor: 'out' },
-    { name: 'Kitchen', x: 6, y: 23, w: 8, h: 7.5, floor: 'tile' },
+    { name: 'Utility', x: 0, y: 23, w: 4, h: 7.5, floor: 'out' }, // above the balcony, same 4 ft width
+    { name: 'Kitchen', x: 4, y: 23, w: 10, h: 7.5, floor: 'tile' }, // runs the full stretch from the utility wall to the passage, in line with Bedroom 2 and the living room
     { name: 'Balcony', x: 0, y: 30.5, w: 4, h: 12, floor: 'out' },
     { name: 'Living', x: 4, y: 30.5, w: 23, h: 12, floor: 'tile', label: 'Living + Dining' },
   ];
   const UNKNOWNS = []; // the measured plan has no unseen gaps left
   const OPENINGS = [
     ['h', 20, 14, 17.2, 'door'], ['v', 14, 20, 23, 'door'], ['v', 18, 25.6, 28.4, 'door'],
-    ['h', 20, 20.5, 23, 'door'], ['v', 6, 25, 28, 'door'], ['h', 42.5, 14.5, 18.5, 'door'],
+    ['h', 20, 20.5, 23, 'door'], ['v', 4, 25, 28, 'door'], ['h', 42.5, 14.5, 18.5, 'door'],
     ['h', 30.5, 14, 18, 'open'], ['v', 14, 25.5, 29.5, 'open'], ['v', 4, 32.4, 41.1, 'open'], ['v', 14, 8.3, 10.9, 'iwin'], ['v', 14, 11.0, 13.8, 'door'],
     ['v', 10, 8.7, 13.3, 'window'], ['h', 8, 10.4, 13.6, 'window'], ['v', 4, 16, 21, 'window'], ['h', 14, 11, 13.2, 'window'],
-    ['v', 2, 24.5, 29, 'window'], ['v', 0, 31, 42, 'rail'],
+    ['v', 0, 24.5, 29, 'window'], ['v', 0, 31, 42, 'rail'],
     ['v', 25.5, 21.3, 23.7, 'vent'], ['v', 25.5, 26.2, 28.8, 'vent'],
   ];
   const SPANS = { wall: [[0, H]], iwin: [[0, 3.2], [7, H]], door: [[7, H]], open: [[8, H]], window: [[0, 3], [7, H]], vent: [[0, 4.6], [6.6, H]], rail: [[0, 3.5]] };
@@ -311,9 +311,9 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
   // fixed fittings that stay with the flat
   const fixed = [
-    [6.2, 23.2, 10.3, 25, 0, 2.9, 0xc3c585], [6.2, 23.2, 10.3, 25, 2.9, 3.05, 0x1d1f21], // hob counter (video 47.5 s): stops 3.5 ft short of the entrance wall, leaving the fridge slot
-    [6.2, 28.5, 13.8, 30.3, 0, 2.9, 0xc3c585], [6.2, 28.5, 13.8, 30.3, 2.9, 3.05, 0x1d1f21], // sink counter, full length
-    [9.4, 23.2, 10.3, 24.4, 5.2, 7.2, 0xc3c585], [6.2, 29.1, 13.8, 30.3, 5.2, 8.9, 0xc3c585], // wall units: open shelf unit beside the chimney; a tall run almost to the ceiling over the sink counter
+    [4.2, 23.2, 10.3, 25, 0, 2.9, 0xc3c585], [4.2, 23.2, 10.3, 25, 2.9, 3.05, 0x1d1f21], // hob counter (video 47.5 s): stops 3.5 ft short of the entrance wall, leaving the fridge slot
+    [4.2, 28.5, 13.8, 30.3, 0, 2.9, 0xc3c585], [4.2, 28.5, 13.8, 30.3, 2.9, 3.05, 0x1d1f21], // sink counter, full length
+    [7.8, 23.2, 10.3, 24.4, 5.2, 7.2, 0xc3c585], [4.2, 29.1, 13.8, 30.3, 5.2, 8.9, 0xc3c585], // wall units: open shelf unit beside the chimney; a tall run almost to the ceiling over the sink counter
   ];
   for (const f of fixed) { addBox(scene, f[0], f[1], f[2], f[3], f[4], f[5], mat(f[6])); if (f[5] > 1) colliders.push(f.slice(0, 4)); }
   // ---- doors, frames, windows and bathroom fittings as seen in the video ----
@@ -344,7 +344,7 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   const DOORS = [ // o, line, a, b, hinge at b, swings toward +axis, material
     ['h', 20, 14, 17.2, false, false, doorWood], ['v', 14, 20, 23, true, false, doorWood],
     ['v', 18, 25.6, 28.4, true, true, doorWood], ['h', 20, 20.5, 23, true, true, doorWood],
-    ['v', 6, 25, 28, true, false, null], ['h', 42.5, 14.5, 18.5, true, false, mainWood],
+    ['v', 4, 25, 28, true, false, null], ['h', 42.5, 14.5, 18.5, true, false, mainWood],
   ];
   for (const d of DOORS) { doorFrame(d[0], d[1], d[2], d[3], 7); hingedDoor(d[0], d[1], d[2], d[3], d[4], d[5], d[6], !d[6]); }
   doorFrame('v', 14, 25.5, 29.5, 8);
@@ -463,24 +463,24 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   // kitchen (galley), as in the video from the entrance (47.5 s): sink + RO on the left (living-room side) counter, hob + chimney on the right counter,
   // and the empty fridge slot at the entrance end of the right counter (about 3.5 ft wide, socket at 3.5 ft, open to the ceiling; 50-52.5 s)
   const blackGlass = mat(0x0d0e10, 0.15);
-  fx(7.5, 23.35, 9.4, 24.6, 3.05, 3.1, blackGlass); for (const [x, z] of [[8.0, 23.75], [8.9, 23.75], [8.45, 24.25]]) cyl(x, 3.13, z, 0.24, 0.05, mat(0x2a2c2f));
-  fx(7.3, 23.2, 9.6, 24.35, 5.4, 5.75, mat(0x1b1d20, 0.2)); fx(7.95, 23.2, 8.95, 23.8, 5.75, 9.4, steel); // chimney hood + duct
-  fx(7.1, 28.75, 9.1, 30.0, 2.86, 3.06, steel); fx(7.25, 28.9, 8.95, 29.85, 2.5, 2.87, mat(0x9aa4aa, 0.2)); // sink, towards the utility-door end (video 48 s)
-  cyl(8.1, 3.45, 30.1, 0.05, 0.8, steel); fx(8.05, 29.75, 8.15, 30.15, 3.8, 3.86, steel); // tap
-  for (let x = 9.4; x <= 11.4; x += 0.25) fx(x, 29.9, x + 0.03, 30.25, 3.2, 4.1, steel); fx(9.4, 29.9, 11.4, 30.25, 3.2, 3.24, steel); // dish rack on the counter beside the sink
-  fx(11.8, 29.95, 12.8, 30.29, 3.6, 5.0, mat(0x141618, 0.3)); cyl(12.3, 3.45, 29.9, 0.04, 0.3, steel); // RO purifier on the wall
-  { const perf = mat(0x6b4a3a, 0.55); fx(6.2, 23.2, 7.3, 24.4, 5.2, 7.2, perf); for (const [y, z] of [[5.5, 23.55], [5.6, 24.1], [6.2, 23.8], [6.8, 23.5], [6.85, 24.15]]) { const h = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.11, 0.03, 18), mat(0xf4f1ea, 0.5)); h.rotation.x = Math.PI / 2; h.position.set(6.75, y, 24.42); scene.add(h); } } // brown cabinet with white round cut-outs at the far end (video 46-48 s)
+  fx(5.7, 23.35, 7.6, 24.6, 3.05, 3.1, blackGlass); for (const [x, z] of [[6.2, 23.75], [7.1, 23.75], [6.65, 24.25]]) cyl(x, 3.13, z, 0.24, 0.05, mat(0x2a2c2f));
+  fx(5.5, 23.2, 7.75, 24.35, 5.4, 5.75, mat(0x1b1d20, 0.2)); fx(6.15, 23.2, 7.15, 23.8, 5.75, 9.4, steel); // chimney hood + duct
+  fx(5.9, 28.75, 7.9, 30.0, 2.86, 3.06, steel); fx(6.05, 28.9, 7.75, 29.85, 2.5, 2.87, mat(0x9aa4aa, 0.2)); // sink, towards the utility-door end (video 48 s)
+  cyl(6.9, 3.45, 30.1, 0.05, 0.8, steel); fx(6.85, 29.75, 6.95, 30.15, 3.8, 3.86, steel); // tap
+  for (let x = 8.2; x <= 10.2; x += 0.25) fx(x, 29.9, x + 0.03, 30.25, 3.2, 4.1, steel); fx(8.2, 29.9, 10.2, 30.25, 3.2, 3.24, steel); // dish rack on the counter beside the sink
+  fx(10.6, 29.95, 11.6, 30.29, 3.6, 5.0, mat(0x141618, 0.3)); cyl(11.1, 3.45, 29.9, 0.04, 0.3, steel); // RO purifier on the wall
+  { const perf = mat(0x6b4a3a, 0.55); fx(4.2, 23.2, 5.4, 24.4, 5.2, 7.2, perf); for (const [y, x] of [[5.5, 4.5], [5.6, 5.1], [6.2, 4.8], [6.8, 4.5], [6.85, 5.15]]) { const h = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.11, 0.03, 18), mat(0xf4f1ea, 0.5)); h.rotation.x = Math.PI / 2; h.position.set(x, y, 24.42); scene.add(h); } } // brown cabinet with white round cut-outs at the far end (video 46-48 s)
   { const hdl = (x, z1, z2, y) => fx(x, z1, x + 0.06, z2, y, y + 0.05, steel), line = mat(0x9fa168, 0.6);
-    for (let x = 6.2; x < 10.2; x += 1.35) { fx(x, 24.99, x + 0.02, 25.02, 0.15, 2.85, line); fx(x + 0.55, 25.0, x + 0.8, 25.06, 2.45, 2.52, steel); } // hob counter: door joints + handles
-    for (let x = 6.2; x < 13.7; x += 1.5) { fx(x, 28.48, x + 0.02, 28.51, 0.15, 2.85, line); fx(x + 0.6, 28.44, x + 0.85, 28.5, 2.45, 2.52, steel); } // sink counter
-    for (let x = 6.2; x < 13.7; x += 1.5) { fx(x, 29.08, x + 0.02, 29.1, 5.25, 8.85, line); fx(x + 0.6, 29.03, x + 0.85, 29.08, 5.4, 5.47, steel); } fx(6.2, 29.08, 13.8, 29.1, 7.4, 7.43, line); } // tall wall cabinets with a loft line
-  { // fridge in the slot: Haier 270 L double door, 62 W x 55 D x 169 cm, deep navy glass; about 4 in left free on the wall side so the door hinge side can open fully
-    const fx1 = 11.42, fx2 = 13.45, fz1 = 23.25, fz2 = 25.05, navy = mat(0x1d2a44, 0.22);
+    for (let x = 4.2; x < 10.2; x += 1.35) { fx(x, 24.99, x + 0.02, 25.02, 0.15, 2.85, line); fx(x + 0.55, 25.0, x + 0.8, 25.06, 2.45, 2.52, steel); } // hob counter: door joints + handles
+    for (let x = 4.2; x < 13.7; x += 1.5) { fx(x, 28.48, x + 0.02, 28.51, 0.15, 2.85, line); fx(x + 0.6, 28.44, x + 0.85, 28.5, 2.45, 2.52, steel); } // sink counter
+    for (let x = 4.2; x < 13.7; x += 1.5) { fx(x, 29.08, x + 0.02, 29.1, 5.25, 8.85, line); fx(x + 0.6, 29.03, x + 0.85, 29.08, 5.4, 5.47, steel); } fx(4.2, 29.08, 13.8, 29.1, 7.4, 7.43, line); } // tall wall cabinets with a loft line
+  { // fridge in the slot: Haier 270 L double door, 62 W x 55 D x 169 cm, deep navy glass; pushed against the counter end, so about 1.4 ft stays free on the side of the wall the sliding kitchen door runs into
+    const fx1 = 10.36, fx2 = 12.39, fz1 = 23.25, fz2 = 25.05, navy = mat(0x1d2a44, 0.22);
     fx(fx1, fz1, fx2, fz2, 0.1, 5.55, navy); fx(fx1 + 0.02, fz2, fx2 - 0.02, fz2 + 0.02, 4.05, 4.09, mat(0x0d1220, 0.4));
     fx(fx1 + 0.08, fz2 + 0.02, fx1 + 0.14, fz2 + 0.1, 4.3, 5.2, steel); fx(fx1 + 0.08, fz2 + 0.02, fx1 + 0.14, fz2 + 0.1, 2.4, 3.8, steel); // handles
     fx(fx1, fz1, fx2, fz2, 0, 0.1, mat(0x111111)); colliders.push([fx1, fz1, fx2, fz2]); }
-  { const bt = tileBase.clone(); bt.needsUpdate = true; bt.repeat.set(4.1, 1.5); fx(6.2, 23.21, 10.3, 23.24, 3.06, 5.2, new THREE.MeshStandardMaterial({ map: bt, roughness: 0.3 }));
-    const bt2 = tileBase.clone(); bt2.needsUpdate = true; bt2.repeat.set(7.6, 1.5); fx(6.2, 30.26, 13.8, 30.29, 3.06, 5.2, new THREE.MeshStandardMaterial({ map: bt2, roughness: 0.3 })); }
+  { const bt = tileBase.clone(); bt.needsUpdate = true; bt.repeat.set(6.1, 1.5); fx(4.2, 23.21, 10.3, 23.24, 3.06, 5.2, new THREE.MeshStandardMaterial({ map: bt, roughness: 0.3 }));
+    const bt2 = tileBase.clone(); bt2.needsUpdate = true; bt2.repeat.set(9.6, 1.5); fx(4.2, 30.26, 13.8, 30.29, 3.06, 5.2, new THREE.MeshStandardMaterial({ map: bt2, roughness: 0.3 })); }
 
 
   // built-in wardrobes as seen in the video: closed 2-door sections, open shelf columns, a dresser niche with mirror, lofts above
@@ -1413,14 +1413,14 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     F('entry-hooks', 'Key hooks by the main door', null, () => { for (const x of [13.7, 14.0, 14.3]) C(x, 42.2, 0.05, 5.3, 5.36, S.metal);
     addBox(decor, 13.5, 42.22, 14.5, 42.3, 5.25, 5.45, mat(S.wood)); });
     // utility: front-load washing machine under the window, free-standing drying stand (no drilling)
-    B(2.2, 28.1, 4.4, 30.25, 0, 2.9, 0xf1f1ee, true); { const d = new THREE.Mesh(new THREE.CylinderGeometry(0.6, 0.6, 0.06, 28), mat(0x9aa4aa, 0.3)); d.rotation.z = Math.PI / 2; d.position.set(4.42, 1.5, 29.2); decor.add(d); }
-    F('drying-stand', 'Clothes drying stand', 'Not in the rent list. You will need one for laundry, so buy it separately.', () => { for (const [x, z] of [[2.6, 23.6], [5.4, 23.6], [2.6, 26.4], [5.4, 26.4]]) C(x, z, 0.03, 0, 3.3, 0xc7ccd0);
-    for (let z = 23.7; z <= 26.3; z += 0.43) { const r = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 2.8, 6), steel); r.rotation.z = Math.PI / 2; r.position.set(4, 3.3, z); decor.add(r); } });
+    B(0.25, 28.1, 2.25, 30.25, 0, 2.9, 0xf1f1ee, true); { const d = new THREE.Mesh(new THREE.CylinderGeometry(0.6, 0.6, 0.06, 28), mat(0x9aa4aa, 0.3)); d.rotation.z = Math.PI / 2; d.position.set(2.27, 1.5, 29.2); decor.add(d); }
+    F('drying-stand', 'Clothes drying stand', 'Not in the rent list. You will need one for laundry, so buy it separately.', () => { for (const [x, z] of [[0.6, 23.5], [3.2, 23.5], [0.6, 25.1], [3.2, 25.1]]) C(x, z, 0.03, 0, 3.3, 0xc7ccd0);
+    for (let z = 23.6; z <= 25.05; z += 0.36) { const r = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 2.6, 6), steel); r.rotation.z = Math.PI / 2; r.position.set(1.9, 3.3, z); decor.add(r); } });
     // bathrooms: towel rails and bath mats
     // utility: your kitchen dustbins (wet + dry) in the free corner by the kitchen door
     F('bins', 'Kitchen dustbins, wet and dry', 'Yours, moved out of the kitchen. They sit in the corner by the kitchen door, clear of the door swing and the washing machine.', () => {
-      C(5.25, 29.0, 0.42, 0, 1.9, 0x3f7a4a, 0.46); C(5.25, 29.0, 0.47, 1.9, 2.0, 0x2f5f39);
-      C(5.25, 29.85, 0.4, 0, 1.7, 0x2f5f8f, 0.44); C(5.25, 29.85, 0.45, 1.7, 1.8, 0x234a70);
+      C(3.3, 28.95, 0.42, 0, 1.9, 0x3f7a4a, 0.46); C(3.3, 28.95, 0.47, 1.9, 2.0, 0x2f5f39);
+      C(3.3, 29.8, 0.4, 0, 1.7, 0x2f5f8f, 0.44); C(3.3, 29.8, 0.45, 1.7, 1.8, 0x234a70);
     }, 'Yours · not rented');
     F('bath2-towels', 'Towel and bath mat, 2nd bathroom', null, () => { addBox(decor, 19, 30.2, 21, 30.26, 4.5, 4.56, steel); addBox(decor, 19.2, 30.14, 20.8, 30.2, 2.8, 4.5, mat(S.accent, 1));
     addBox(decor, 18.6, 28.6, 20.4, 29.9, 0, 0.04, mat(S.fabric, 1)); });
@@ -1428,7 +1428,7 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     addBox(decor, 20.9, 22.6, 22.6, 23.8, 0, 0.04, mat(S.fabric, 1)); });
 
     // Kitchen and passage
-    F('kitchen-strips', 'LED strips under the kitchen cabinets', null, () => { strip(9.45, 24.3, 10.25, 24.4, 5.1, 0.3); strip(6.3, 29.0, 13.8, 29.1, 5.1, 0.6); });
+    F('kitchen-strips', 'LED strips under the kitchen cabinets', null, () => { strip(7.9, 24.3, 10.25, 24.4, 5.1, 0.4); strip(4.3, 29.0, 13.8, 29.1, 5.1, 0.7); });
     F('passage-art', 'Art in the corridor', null, () => { art(14.22, 23.4, 14.3, 25.2, 4, 6.4); art(17.7, 21.4, 17.78, 23.6, 4.2, 6); /* clear of Bedroom 2's door (20-23), the kitchen opening (25.5-29.5) and the 2nd bathroom door (25.6-28.4) */ });
     F('passage-pendants', 'Pendant lights in the corridor', null, () => { pendant(16, 22.5, 8.2, 0.55, 0.6); pendant(16, 27.5, 8.2, 0.55, 0.5); });
 
@@ -1637,7 +1637,7 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
       <div class="room"><h3>Passage and kitchen</h3><ul>
         <li>Two small pendants down the passage and a couple of framed prints.</li>
         <li>Kitchen (from the video): the sink is on the living-room-side counter with the RO purifier on the wall beside it; the chimney and hob are on the other counter.</li>
-        <li><b>Fridge slot:</b> the hob counter stops short of the entrance, leaving an empty slot about 3.5 ft (105–110 cm) wide, with a socket on the wall at about 3.5 ft and nothing above it up to the ceiling. Any normal double-door fridge fits: up to about 85 cm wide (so the doorway side keeps a few inches), up to about 70 cm deep (deeper ones start to narrow the walkway at the entrance), any height. A side-by-side (90 cm and wider) does not. Leave 2 to 3 inches behind it and at the sides for air.</li>
+        <li><b>Fridge slot:</b> the hob counter stops short of the entrance, leaving an empty slot about 3.5 ft (100–110 cm, measured against the counter height and the wall tiles) wide, with a socket on the wall at about 3.5 ft and nothing above it up to the ceiling. The kitchen's sliding door runs into the wall on the slot's door side, so push the fridge against the counter end and keep at least 4 in clear of that wall; never drill or hang anything on it. Any normal double-door fridge fits: up to about 85 cm wide (so the doorway side keeps a few inches), up to about 70 cm deep (deeper ones start to narrow the walkway at the entrance), any height. A side-by-side (90 cm and wider) does not. Leave 2 to 3 inches behind it and at the sides for air.</li>
         <li>Stick-on warm LED strips under the kitchen wall cabinets.</li></ul></div>
       <p>Furniture sizes here follow the measured plan, so measure the actual wall before ordering anything that has to fit it.</p>`;
     document.getElementById('notesClose').onclick = () => toggleNotes(false);
