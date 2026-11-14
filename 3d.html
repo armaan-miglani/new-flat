@@ -817,8 +817,8 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     coffee: { label: 'Coffee table', calm: ['josef', 'zen', 'perk'], moody: ['josef', 'zen', 'perk'], boho: ['venti', 'caramel4'], japandi: ['jenson', 'dvita'] },
     corner: { label: 'Corner seat', calm: ['noCorner', 'romaSand'], moody: ['zest', 'leoOttoman'], boho: ['flexRust', 'stretch'], japandi: ['henryOtto', 'romaSand'] },
     tvunit: { label: 'TV unit', all: ['leonard', 'pearl', 'hugoEnt'] },
-    bed1: { label: 'Your bed', all: ['aara', 'aaraStorage', 'miliDvi'] }, // both mattresses are 78 x 60 in: only these Furlenco frames take them (RentoMojo queens are all for 72 x 60)
-    bed2: { label: 'Bedroom 2 bed', all: ['miliDvi', 'aara', 'aaraStorage'] },
+    bed1: { label: 'Your bed', moody: ['aara', 'aaraStorage', 'miliDvi'], calm: ['dune', 'aara', 'miliDvi'], boho: ['aara', 'miliDvi', 'aaraStorage'], japandi: ['dune', 'miliDvi', 'aara'] }, // both mattresses are 78 x 60 in: Furlenco says all its beds take that; RentoMojo queens are all for 72 x 60
+    bed2: { label: 'Bedroom 2 bed', moody: ['miliDvi', 'aara', 'aaraStorage'], calm: ['dune', 'miliDvi', 'aara'], boho: ['miliDvi', 'aara', 'aaraStorage'], japandi: ['dune', 'miliDvi', 'aara'] },
     bedside: { label: 'Bedside tables (3)', moody: ['setWingMinion', 'setFloralMinion'], calm: ['setHugo', 'setWingman'], boho: ['setJasper', 'setRay'], japandi: ['setWatson', 'setStooge'] },
     desk: { label: 'Workstation', moody: ['leonardDesk', 'howardDesk'], calm: ['leonardDesk', 'poiseDesk'], boho: ['poiseDesk', 'leonardDesk'], japandi: ['howardDesk', 'leonardDesk'] }, // the separate area is 4 ft deep: only desks 20 in deep or less leave room for the chair
     fridge: { label: 'Fridge', all: ['fur328', 'haier270', 'rmFridge240'] }, // in the slot at the kitchen entrance, against the counter end
@@ -894,7 +894,7 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
       build: g => bed(g, { W: 65, L: 82, mW: 60, mL: 78, head: 'posts', hbH: 46, legH: 7, railH: 6, foot: 13, wood: pmat('wood', 0x3a2418), panel: pmat('velvetQuilt', 0x2f5a48), throwHex: 0xd9a58f }) },
     aaraStorage: { name: 'Aara with hydraulic storage', site: 'Furlenco', price: 1799, url: FLU + 'aara-solid-wood-upholstered-queen-hydraulic-storage-bed-5424-rent', size: 'queen, mattress up to 78 × 60 in',
       build: g => bed(g, { W: 65, L: 82, mW: 60, mL: 78, head: 'posts', hbH: 46, legH: 2, railH: 12, box: true, wood: pmat('wood', 0x3a2418), panel: pmat('velvetQuilt', 0x2f5a48), throwHex: 0xd9a58f }) },
-    dune: { name: 'Dune, cream quilted headboard on walnut, cot only', site: 'Furlenco', price: 839, url: FLU + 'dune-upholstered-queen-bed-4918-rent', size: '159 × 202 cm',
+    dune: { name: 'Dune, cream quilted headboard on walnut, cot only', site: 'Furlenco', price: 839, url: FLU + 'dune-upholstered-queen-bed-4918-rent', size: '159 × 202 cm, takes a 78 × 60 in mattress (Furlenco)',
       build: g => bed(g, { W: 62.6, L: 79.5, mW: 60, mL: 77, head: 'dune', hbH: 34.6, legH: 1, railH: 11, box: true, wood: pmat('wood', 0x6b4428), panel: pmat('fabric', 0xeee6d6), throwHex: 0xb9ad9c }) },
     auroraGrey: { name: 'Aurora, walnut + greige headboard', site: 'RentoMojo', price: 675, url: RMU + 'furniture/rent-aurora-wooden-queen-bed-with-grey-upholstery/151225', size: 'for a 72 × 60 in mattress',
       build: g => bed(g, { W: 64, L: 76, mW: 60, mL: 72, head: 'panel', hbH: 40, legH: 6, railH: 6, legs: 'block', foot: 9, inset: 8, panelH: 19, wood: pmat('wood', 0x6e4228), panel: pmat('fabric', 0xcfc8bc), throwHex: 0x7d8a70 }) },
