@@ -33,6 +33,7 @@ body { background: var(--bg); color: var(--ink); font-family: var(--sans); font-
 .seg { display: inline-flex; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; flex: none; }
 .seg button { border: 0; background: transparent; color: var(--ink); font: 500 13px var(--sans); padding: 6px 11px; cursor: pointer; white-space: nowrap; }
 .seg button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+.roomsel { border: 1px solid var(--line); border-radius: 6px; background: transparent; color: var(--ink); font: 500 13px var(--sans); padding: 5px 8px; }
 .lbl { font: 500 11px var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
 .grp { display: inline-flex; align-items: center; gap: 6px; flex: none; }
 .chips { display: flex; gap: 6px; overflow-x: auto; min-width: 0; flex: 1 1 300px; scrollbar-width: thin; }
@@ -93,8 +94,12 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
       <button id="mWalk" aria-pressed="true">Walk</button>
       <button id="mHouse" aria-pressed="false">Dollhouse</button>
     </div>
-    <div class="grp"><span class="lbl">Style</span>
-      <div class="seg" role="group" aria-label="Design style" id="styleSeg"></div></div>
+    <div class="grp"><span class="lbl">Living room style</span>
+      <div class="seg" role="group" aria-label="Living room style" id="styleSeg"></div></div>
+    <div class="grp"><span class="lbl">Your bedroom</span>
+      <select id="roomMine" class="roomsel" aria-label="Your bedroom style"></select></div>
+    <div class="grp"><span class="lbl">Bedroom 2</span>
+      <select id="roomB2" class="roomsel" aria-label="Bedroom 2 style"></select></div>
     <div class="grp"><span class="lbl">Dining area</span>
       <div class="seg" role="group" aria-label="Dining area use">
         <button id="dDesk" aria-pressed="true">Workstation · east wall</button>
@@ -1085,6 +1090,8 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     return CATALOG[slot].all || CATALOG[slot][theme];
   };
   const ckey = (slot, theme) => (CATALOG[slot].all ? 'all' : theme) + ':' + slot;
+  const ROOM_OF = { bed1: 'mine', bedside: 'mine', chest: 'mine', plantshelf: 'mine', desk: 'mine', daybed: 'mine', bed2: 'b2' }; // which room's style picks each rented piece
+  const themeFor = slot => ROOM_OF[slot] === 'mine' ? (themeMine || styleKey) : ROOM_OF[slot] === 'b2' ? (themeB2 || styleKey) : styleKey;
   function currentProduct(slot, theme) { const opts = optionsFor(slot, theme); return P[opts[Math.min(choice[ckey(slot, theme)] || 0, opts.length - 1)]]; }
 
   // ---- plants: real species built from leaf shapes, merged per material so the whole flat stays light ----
@@ -1284,7 +1291,7 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
       return b;
     }
     function place(slot, x, z, rotY, wall, side, buildFn) { // wall: anchor one face to this line; side: which face (minZ / maxZ / minX / maxX)
-      const prod = currentProduct(slot, styleKey), g = new THREE.Group(); const ret = (buildFn || prod.build)(g);
+      const prod = currentProduct(slot, themeFor(slot)), g = new THREE.Group(); const ret = (buildFn || prod.build)(g);
       g.rotation.y = rotY; g.updateMatrixWorld(true);
       if (wall != null) { const bb = solidBox(g), sd = side || (rotY ? 'maxZ' : 'minZ');
         if (sd === 'minZ') z = wall - bb.min.z; else if (sd === 'maxZ') z = wall - bb.max.z; else if (sd === 'minX') x = wall - bb.min.x; else x = wall - bb.max.x; }
@@ -1423,18 +1430,17 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     // balcony: outdoor bamboo chick blinds rolled up on the grille (west sun)
     F('balcony-blinds', 'Bamboo blinds on the balcony', CURTAIN_WHY, () => { for (const [a, b] of [[31, 34.6], [34.8, 38.4], [38.6, 42]]) { const r = new THREE.Mesh(new THREE.CylinderGeometry(0.17, 0.17, b - a, 12), mat(0xb68a52, 1)); r.rotation.x = Math.PI / 2; r.position.set(0.3, 7.65, (a + b) / 2); decor.add(r); } });
     // separate area: blinds inside both windows, clear of the desk
-    F('nook-blinds', 'Blinds in the separate area', CURTAIN_WHY, () => { blind('v', 8, 0.33, 1.2, 6.8, 7.1, 6.2, 0xf1ece2, 'roman'); blind('h', 0, 0.33, 9.2, 12.8, 7.1, 5.4, 0xf1ece2, 'roman'); });
+    F('nook-blinds', 'Blinds in the separate area', CURTAIN_WHY, () => { blind('v', 10, 0.33, 8.9, 13.1, 7.1, 6.2, 0xf1ece2, 'roman'); blind('h', 8, 0.33, 10.6, 13.4, 7.1, 5.4, 0xf1ece2, 'roman'); });
     // bedroom 2: blackout pair on the main window, blind on the small one, sheer cafe curtain on the window into the separate area
-    F('bed2-curtains', 'Bedroom 2 curtains', CURTAIN_WHY, () => { rod('v', 4, 0.5, 11, 17, 8.7);
-    drape('v', 4, 0.35, 12.3, 15.7, S.sheer, 8.65, 0.6);
-    drape('v', 4, 0.52, 11.1, 12.3, S.curtain2, 8.65); drape('v', 4, 0.52, 15.7, 16.9, S.curtain2, 8.65); });
-    F('bed2-cafe', 'Cafe curtain on the window into the separate area', CURTAIN_WHY, () => { rod('h', 8, 0.3, 9.4, 11.6, 5.05);
-    { const cm = new THREE.MeshStandardMaterial({ color: S.sheer, transparent: true, opacity: 0.6, roughness: 1, side: THREE.DoubleSide }); for (let x = 9.5, i = 0; x < 11.5; x += 0.2, i++) addBox(decor, x, 8.29 + (i % 2 ? 0.05 : -0.05), x + 0.2, 8.33 + (i % 2 ? 0.05 : -0.05), 3, 5.05, cm); } });
+    { const SB = STYLES[themeFor('bed2')]; // Bedroom 2 curtains follow Bedroom 2's style
+    F('bed2-curtains', 'Bedroom 2 curtains', CURTAIN_WHY, () => { rod('v', 4, 0.5, 15.5, 21.5, 8.7);
+    drape('v', 4, 0.35, 16.8, 20.2, SB.sheer, 8.65, 0.6);
+    drape('v', 4, 0.52, 15.6, 16.8, SB.curtain2, 8.65); drape('v', 4, 0.52, 20.2, 21.4, SB.curtain2, 8.65); });
+    F('bed2-cafe', 'Cafe curtain on the window into the separate area', CURTAIN_WHY, () => { rod('h', 14, 0.3, 10.9, 13.3, 5.05);
+    { const cm = new THREE.MeshStandardMaterial({ color: SB.sheer, transparent: true, opacity: 0.6, roughness: 1, side: THREE.DoubleSide }); for (let x = 11.0, i = 0; x < 13.1; x += 0.2, i++) addBox(decor, x, 14.29 + (i % 2 ? 0.05 : -0.05), x + 0.2, 14.33 + (i % 2 ? 0.05 : -0.05), 3, 5.05, cm); } }); }
 
 
     // Mirrors, utility and the small things
-    // Bedroom 2 has no mirror in its cabinets: a full-length leaning mirror in the free bit of wall by the window
-    F('bed2-mirror', 'Leaning mirror in Bedroom 2', 'Not in the rent list. Bedroom 2 has no mirror, so it is worth buying one.', () => { B(5.0, 8.22, 6.3, 8.38, 0, 5.8, S.wood2); addBox(decor, 5.1, 8.38, 6.2, 8.4, 0.12, 5.68, mirrorMat); });
     // entry: round mirror over the shoe cabinet, wall hooks beside the door
     F('entry-mirror', 'Round mirror by the main door', null, () => { const fr = new THREE.Mesh(new THREE.CylinderGeometry(1.05, 1.05, 0.08, 40), mat(S.metal)); fr.rotation.x = Math.PI / 2; fr.position.set(20.2, 5.2, 42.26); decor.add(fr);
       const mi = new THREE.Mesh(new THREE.CylinderGeometry(0.95, 0.95, 0.04, 40), mirrorMat); mi.rotation.x = Math.PI / 2; mi.position.set(20.2, 5.2, 42.2); decor.add(mi); });
@@ -1462,9 +1468,10 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     F('passage-art', 'Art in the corridor', null, () => { art(14.22, 28.7, 14.3, 30.2, 4.2, 6.2); art(17.7, 21.4, 17.78, 23.6, 4.2, 6); /* clear of Bedroom 2's door (20-23), the kitchen doorway (25.6-28.4) and the wall its sliding door runs into, and the 2nd bathroom door */ });
     F('passage-pendants', 'Pendant lights in the corridor', null, () => { pendant(16, 22.5, 8.2, 0.55, 0.6); pendant(16, 27.5, 8.2, 0.55, 0.5); });
 
+    const S_LIVING = S; S = STYLES[themeFor('bed1')]; // your bedroom (and the separate area off it) take your bedroom's style
     // My Bedroom: bed centred on the back wall, walkway to the cabinets
     F('bed1-rug', 'Rug under your bed', null, () => { rug(16.0, 11.0, 22.1, 17.2); });
-    const b1 = place('bed1', 19.05, 0, 0, 8.22), bset = currentProduct('bedside', styleKey).set;
+    const b1 = place('bed1', 19.05, 0, 0, 8.22), bset = currentProduct('bedside', themeFor('bedside')).set;
     for (const d of [-1, 1]) { const t = beside('bedside', b1, d, 8.22, 0, bset[0]); F('bed1-lamp' + d, 'Bedside lamp', null, () => { tableLamp((t.bb.min.x + t.bb.max.x) / 2, (t.bb.min.z + t.bb.max.z) / 2, t.bb.max.y, 0.75); }); }
     F('bed1-strip', 'LED strip above your bed', null, () => { strip(16.05, 8.22, 22.05, 8.26, 7.6, 0.5); });
     { // chest of drawers on the wall facing the bed, between your door and the bathroom door; the socket for the mesh node is low on this wall
@@ -1530,6 +1537,7 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     }
     if (nookMode !== 'daybed') hingedDoor('v', 14, 11.0, 13.8, true, false, null, true, decor); // the glass door opens into the separate area
 
+    S = STYLES[themeFor('bed2')]; // Bedroom 2 takes its own style
     // Bedroom 2: built-in cabinets on the passage wall, bed headboard on the kitchen-side wall
     const b2 = place('bed2', 7.0, 0, Math.PI, 22.78); nudgeX(b2, 4.3 - b2.bb.min.x); // headboard on the plain wall on your left as you enter, pushed to the window wall so the entrance door and wardrobe doors stay clear
     F('bed2-rug', 'Rug in Bedroom 2', null, () => { rug(b2.bb.min.x + 0.4, 14.45, Math.min(b2.bb.max.x + 0.9, 11.6), b2.bb.min.z + 1.6); });
@@ -1540,6 +1548,7 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
       const fr = mat(S.wood2, 0.5); addBox(decor, 4.25, 14.35, 4.33, 15.75, 0.15, 5.5, fr); addBox(decor, 4.33, 14.42, 4.36, 15.68, 0.25, 5.4, mirrorMat); for (const z of [14.45, 15.65]) addBox(decor, 4.25, z - 0.04, 4.75, z + 0.04, 0, 0.08, fr); }, 'Buy');
     F('bed2-floorlamp', 'Floor lamp in Bedroom 2', null, () => { floorLamp(10.0, 14.55, 0.8); });
 
+    S = S_LIVING;
     // Bathrooms: warm mirror lights
     F('bath-lights', 'Warm lights over the bathroom mirrors', null, () => { strip(20.85, 24.68, 22.65, 24.74, 6.15, 0.5); strip(18.9, 25.26, 20.3, 25.32, 6.15, 0.5); });
   }
@@ -1559,10 +1568,11 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   const notesEl = document.getElementById('notes');
   function renderNotes(key, useDesk) {
     const S = STYLES[key];
-    const m = { japandi: { sofa: 'mushroom-greige linen with sage cushions', table: 'round walnut coffee table', chair: 'sage boucle accent chair', bed: 'low walnut platform bed with a slatted headboard', rug: 'jute rug with a dark border', lampL: 'paper lantern floor lamp and paper table lamps', curt: 'warm taupe ready-made linen panels over off-white sheers', shade: 'white or ecru linen Roman blinds', bed2: 'sand-coloured blackout curtains', desk: 'dark walnut desk with black steel legs' },
+    const MM = { japandi: { sofa: 'mushroom-greige linen with sage cushions', table: 'round walnut coffee table', chair: 'sage boucle accent chair', bed: 'low walnut platform bed with a slatted headboard', rug: 'jute rug with a dark border', lampL: 'paper lantern floor lamp and paper table lamps', curt: 'warm taupe ready-made linen panels over off-white sheers', shade: 'white or ecru linen Roman blinds', bed2: 'sand-coloured blackout curtains', desk: 'dark walnut desk with black steel legs' },
       boho: { sofa: 'oatmeal cotton with rust and mustard cushions', table: 'round mango-wood coffee table', chair: 'rattan or cane armchair', bed: 'cane-panel headboard bed in teak finish', rug: 'kilim or jute braided rug', lampL: 'woven rattan shades (they throw patterned light)', curt: 'natural taupe cotton panels over cream sheers (the rust goes on the cushions)', shade: 'white or ecru linen Roman blinds (not bamboo: yellow on the yellow walls looks muddy)', bed2: 'sand blackout curtains', desk: 'dark-stained sheesham desk' },
       calm: { sofa: 'greige chenille L-lounger with oatmeal and sand cushions', table: 'oval walnut coffee table', chair: 'oatmeal boucle accent chair', bed: 'walnut bed with a cream quilted headboard', rug: 'jute or flat-weave rug in oatmeal', lampL: 'linen drum and paper lamps', curt: 'oatmeal linen panels over ivory sheers', shade: 'ecru linen Roman blinds', bed2: 'warm sand blackout curtains', desk: 'walnut sit-stand desk' },
-      moody: { sofa: 'olive (rented, so the colour can be bold) with oatmeal cushions', table: 'round walnut coffee table', chair: 'cognac leather lounge chair', bed: 'walnut bed with an upholstered fabric headboard', rug: 'low-pile textured rug in warm grey', lampL: 'opal-glass globe lamps with brass bases', curt: 'charcoal-taupe panels over ivory sheers', shade: 'white or ecru linen Roman blinds', bed2: 'warm taupe blackout curtains', desk: 'walnut desk with slim brass-finish legs' } }[key];
+      moody: { sofa: 'olive (rented, so the colour can be bold) with oatmeal cushions', table: 'round walnut coffee table', chair: 'cognac leather lounge chair', bed: 'walnut bed with an upholstered fabric headboard', rug: 'low-pile textured rug in warm grey', lampL: 'opal-glass globe lamps with brass bases', curt: 'charcoal-taupe panels over ivory sheers', shade: 'white or ecru linen Roman blinds', bed2: 'warm taupe blackout curtains', desk: 'walnut desk with slim brass-finish legs' } };
+    const m = MM[key], mMine = MM[themeFor('bed1')], mB2 = MM[themeFor('bed2')];
     notesEl.innerHTML = `
       <button class="close" id="notesClose">Close</button>
       <div><div class="tag">Option · ${S.title}</div><h2>How I'd furnish it</h2></div>
@@ -1609,7 +1619,7 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
         <li><b>Living, balcony door:</b> two layers on one rod, hung near the ceiling (about 8.5 ft) and 8 to 10 inches wider than the door each side: a sheer for daytime and ${m.curt}. The room faces west, so get the main layer lined (dim-out) for the afternoon sun.</li>
         <li><b>Balcony:</b> outdoor bamboo chick blinds on the grille. Roll them up in the morning and drop them in the afternoon to cut the west sun and heat.</li>
         <li><b>Separate area (desk):</b> ${m.shade} inside both windows instead of curtains. They stay clear of the desk and cut screen glare.</li>
-        <li><b>Bedroom 2:</b> ${m.bed2} over a sheer on the main window for sleep, a matching blind on the small window, and a short sheer cafe curtain on the window into the separate area for privacy.</li>
+        <li><b>Bedroom 2:</b> ${mB2.bed2} over a sheer on the main window for sleep, a matching blind on the small window, and a short sheer cafe curtain on the window into the separate area for privacy.</li>
         <li><b>Your bedroom:</b> it has no outside window; light comes in through the separate area, so no curtains needed.</li>
         <li><b>Kitchen, utility, bathrooms:</b> none. Use frosted film on the bathroom windows if you want more privacy.</li>
         <li>Buy ready-made panels in standard 7 ft or 9 ft drops on extendable rods, not curtains stitched to these windows; they will fit the next flat too. Get two panels per window so they hang full.</li></ul></div>
@@ -1633,7 +1643,7 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
       <div class="room"><h3>Balcony</h3><ul><li>No seating: a balcony garden. A long planter trough along the grille, big potted plants in both corners, and hanging planters from the top rail, with a clear path down the middle.</li><li>Warm string lights along the top of the grille. It faces west, so this is the sunset spot.</li></ul></div>
       <div class="room"><h3>My Bedroom</h3><ul>
         <li>The room is 12 × 12 ft wall to wall; the wardrobe takes about 2 ft along the east wall, so the free floor is about 10 × 12 ft.</li>
-        <li>${m.bed} (queen, about 5.3 × 6.6 ft) centred on the back wall. About 5 ft stays clear between the foot of the bed and the door wall, and the wardrobe doors open clear of the bedside table.</li>
+        <li>${mMine.bed} (queen, about 5.3 × 6.6 ft) centred on the back wall. About 5 ft stays clear between the foot of the bed and the door wall, and the wardrobe doors open clear of the bedside table.</li>
         <li>The wardrobe in the video fills the east wall corner to corner (about 12 ft): an open shelf column at each end (closed cupboard below), two 2-door sections, and a dresser niche in the middle with its own mirror and drawer. Lofts run along the top. Use the open shelves for baskets and books, not loose clothes, so it looks tidy.</li>
         <li>${m.rug} under the bottom two-thirds of the bed so your feet land on it.</li>
         <li>Matching bedside tables with table lamps, and a hidden LED strip and one artwork above the headboard.</li>
@@ -1678,11 +1688,15 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   document.getElementById('notesBtn').onclick = () => toggleNotes(notesEl.hidden);
 
   // ---- state + UI ----
-  let styleKey = 'moody', useDesk = true, deskNorth = false, nookMode = 'reading'; // dining area: desk on the east wall, desk on the north wall, or north desk + dining table
+  let styleKey = 'moody', themeMine = null, themeB2 = null, useDesk = true, deskNorth = false, nookMode = 'reading'; // themeMine / themeB2: null = same style as the living room // dining area: desk on the east wall, desk on the north wall, or north desk + dining table
   const styleSeg = document.getElementById('styleSeg');
   for (const k of Object.keys(STYLES)) {
     const b = document.createElement('button'); b.textContent = STYLES[k].name; b.id = 'style-' + k;
     b.onclick = () => { styleKey = k; refresh(); }; styleSeg.appendChild(b);
+  }
+  for (const [id, set] of [['roomMine', v => { themeMine = v; }], ['roomB2', v => { themeB2 = v; }]]) { // each bedroom can follow the living room or take its own style
+    const sel = document.getElementById(id); sel.innerHTML = '<option value="">Same as living room</option>' + Object.keys(STYLES).map(k => `<option value="${k}">${STYLES[k].name}</option>`).join('');
+    sel.onchange = () => { set(sel.value || null); refresh(); };
   }
   // ---- rented pieces: list, tap-to-select, pick vs second choice ----
   let selected = null, selBox = null;
@@ -1692,15 +1706,15 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     let tot = 0;
     for (const slot of Object.keys(CATALOG)) {
       if ((slot === 'desk' && nookMode !== 'office') || (slot === 'daybed' && nookMode !== 'daybed') || (slot === 'plantshelf' && nookMode !== 'reading')) continue;
-      const opts = optionsFor(slot, styleKey), cur = Math.min(choice[ckey(slot, styleKey)] || 0, opts.length - 1);
+      const th = themeFor(slot), opts = optionsFor(slot, th), cur = Math.min(choice[ckey(slot, th)] || 0, opts.length - 1);
       tot += P[opts[cur]].price;
       const row = document.createElement('div'); row.className = 'row' + (selected === slot ? ' sel' : '');
-      row.innerHTML = `<b>${CATALOG[slot].label}${CATALOG[slot].all ? '' : ' · ' + STYLES[styleKey].name.split(' ')[0]}</b><div class="opts"></div>`;
+      row.innerHTML = `<b>${CATALOG[slot].label}${CATALOG[slot].all ? '' : ' · ' + STYLES[th].name.split(' ')[0]}</b><div class="opts"></div>`;
       opts.forEach((id, i) => {
         const pr = P[id], b = document.createElement('button');
         b.setAttribute('aria-pressed', i === cur);
         b.innerHTML = `<span>${i < 2 ? ['Pick', 'Second'][i] : slot === 'coffee' ? 'Guest option' : 'Option ' + (i + 1)}: ${pr.name}</span><span class="pr">${inrF(pr.price)}</span><small>${pr.url ? `${pr.site} · ${pr.size} · <a href="${pr.url}" target="_blank" rel="noopener">listing</a>` : 'Nothing to rent'}</small>`;
-        b.addEventListener('click', e => { if (e.target.closest('a')) return; choice[ckey(slot, styleKey)] = i; saveChoice(); selected = slot; refresh(); });
+        b.addEventListener('click', e => { if (e.target.closest('a')) return; choice[ckey(slot, th)] = i; saveChoice(); selected = slot; refresh(); });
         row.querySelector('.opts').appendChild(b);
       });
       pieceList.appendChild(row);
@@ -2036,7 +2050,7 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   }).catch(() => {});
 
   scene.traverse(o => { if (o.isMesh) o.receiveShadow = true; });
-  window.home3d = { me, orbit, setMode, get placed() { return placed; }, get fillers() { return fillers; }, setGuests: (on, extra) => { guests = on; extraSeat = extra || 'none'; refresh(); }, startTour, get tourOn() { return !!tour; }, tourAdvance: sec => { for (let t = 0; t < sec && tour; t += 0.05) tourStep(0.05); return tour ? tour.i : -1; }, get colliders() { return colliders; }, pick: (slot, i) => { choice[ckey(slot, styleKey)] = i; saveChoice(); refresh(); }, setStyle: k => { styleKey = k; refresh(); }, setLayout: (d, n) => { useDesk = d; deskNorth = n; refresh(); }, setNook: m => { nookMode = m; refresh(); }, options: slot => optionsFor(slot, styleKey), P, CATALOG, ROOMS, segs }; // console hook for screenshots and fit checks
+  window.home3d = { me, orbit, setMode, get placed() { return placed; }, get fillers() { return fillers; }, setGuests: (on, extra) => { guests = on; extraSeat = extra || 'none'; refresh(); }, startTour, get tourOn() { return !!tour; }, tourAdvance: sec => { for (let t = 0; t < sec && tour; t += 0.05) tourStep(0.05); return tour ? tour.i : -1; }, get colliders() { return colliders; }, pick: (slot, i) => { choice[ckey(slot, themeFor(slot))] = i; saveChoice(); refresh(); }, setStyle: k => { styleKey = k; refresh(); }, setLayout: (d, n) => { useDesk = d; deskNorth = n; refresh(); }, setNook: m => { nookMode = m; refresh(); }, options: slot => optionsFor(slot, themeFor(slot)), setRooms: (a, b) => { themeMine = a; themeB2 = b; refresh(); }, P, CATALOG, ROOMS, segs }; // console hook for screenshots and fit checks
   refresh();
   setMode('walk');
   renderer.setAnimationLoop(tick);

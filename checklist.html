@@ -76,6 +76,8 @@ button.reset { justify-self: start; border: 1px solid var(--line); background: v
 .plan h2 { margin-top: 0; }
 .plan table { width: 100%; border-collapse: collapse; font-size: 14px; }
 .plan td, .plan th { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line, #ddd); vertical-align: top; }
+.rooms { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; margin: 10px 0 4px; font-size: 14px; }
+.rooms select { margin-left: 6px; padding: 4px 6px; border-radius: 6px; border: 1px solid var(--line, #ccc); background: transparent; color: inherit; font: inherit; }
 </style>
 
 <div class="wrap">
@@ -111,6 +113,7 @@ button.reset { justify-self: start; border: 1px solid var(--line); background: v
   <section class="glance">
     <h2>Pick a theme</h2>
     <div class="themes" id="themes" role="tablist" aria-label="Theme"></div>
+    <div class="rooms"><label>Your bedroom <select id="roomMine"></select></label><label>Bedroom 2 <select id="roomB2"></select></label><span class="muted">The theme above is the living room; each bedroom can follow it or take its own style.</span></div>
     <p class="muted" id="themeblurb"></p>
     <h2>At a glance: pick vs second choice <small>shaded rows change with the theme; the rest are shared</small></h2>
     <div class="tw"><table><thead><tr><th>Item</th><th>Our pick</th><th class="n">₹/mo</th><th>Second choice</th><th class="n">₹/mo</th></tr></thead><tbody id="glance"></tbody>
@@ -262,7 +265,10 @@ button.reset { justify-self: start; border: 1px solid var(--line); background: v
   const TKEY = 'flat-theme';
   let theme = 'moody';
   try { theme = THEMES[localStorage.getItem(TKEY)] ? localStorage.getItem(TKEY) : 'moody'; } catch (e) {}
-  const rentFor = t => ITEMS.rent.map(it => THEMES[t].items[it.id] ? { ...it, ...THEMES[t].items[it.id], themed: true } : it);
+  const MINE = new Set(['bed1', 'bedside', 'chest']); // pieces that follow your bedroom's style; bed2 follows Bedroom 2's
+  let roomMine = null, roomB2 = null;
+  const rentFor = (t, mi, b2) => ITEMS.rent.map(it => { const src = MINE.has(it.id) ? (mi || t) : it.id === 'bed2' ? (b2 || t) : t, ov = THEMES[src].items[it.id];
+    return ov ? { ...it, ...ov, themed: true, src } : { ...it, src }; });
   const sum = (arr, f) => arr.reduce((s, i) => s + f(i), 0);
   const KEY = 'flat-checklist-v1';
   let state = {};
@@ -292,12 +298,16 @@ button.reset { justify-self: start; border: 1px solid var(--line); background: v
     b.addEventListener('click', () => { theme = k; try { localStorage.setItem(TKEY, k); } catch (e) {} render(); });
     tabs.appendChild(b);
   }
+  for (const [id, set] of [['roomMine', v => { roomMine = v; }], ['roomB2', v => { roomB2 = v; }]]) {
+    const sel = document.getElementById(id); sel.innerHTML = '<option value="">Same as living room</option>' + Object.entries(THEMES).map(([k, th]) => `<option value="${k}">${th.label}</option>`).join('');
+    sel.addEventListener('change', () => { set(sel.value || null); render(); });
+  }
   function render() {
     tabs.querySelectorAll('button').forEach(b => b.setAttribute('aria-selected', b.dataset.k === theme));
     document.getElementById('themeblurb').textContent = THEMES[theme].blurb;
-    const rent = rentFor(theme).slice().sort((a, b) => PHASE1.has(b.id) - PHASE1.has(a.id)), host = document.getElementById('rent'), gl = document.getElementById('glance');
+    const rent = rentFor(theme, roomMine, roomB2).slice().sort((a, b) => PHASE1.has(b.id) - PHASE1.has(a.id)), host = document.getElementById('rent'), gl = document.getElementById('glance');
     host.innerHTML = ''; gl.innerHTML = '';
-    for (const it of rent) { const el = card(it, it.themed ? theme + ':' + it.id : it.id); el.querySelector('.top').insertAdjacentHTML('afterbegin', phaseTag(it)); host.appendChild(el); }
+    for (const it of rent) { const el = card(it, it.themed ? it.src + ':' + it.id : it.id); el.querySelector('.top').insertAdjacentHTML('afterbegin', phaseTag(it)); host.appendChild(el); }
     let g2 = 0;
     for (const it of rent) {
       const sc = it.second || [it.short, it.price, it.url];
@@ -312,11 +322,11 @@ button.reset { justify-self: start; border: 1px solid var(--line); background: v
     tally();
   }
   function tally() {
-    const rent = rentFor(theme);
+    const rent = rentFor(theme, roomMine, roomB2);
     document.getElementById('total').textContent = inr(sum(rent, i => i.price));
     document.getElementById('p1total').textContent = inr(sum(rent.filter(i => PHASE1.has(i.id)), i => i.price));
     document.getElementById('deposit').textContent = inr(sum(rent, i => i.dep));
-    const keys = [...rent.map(i => i.themed ? theme + ':' + i.id : i.id), ...ITEMS.buy.map(i => i.id)];
+    const keys = [...rent.map(i => i.themed ? i.src + ':' + i.id : i.id), ...ITEMS.buy.map(i => i.id)];
     document.getElementById('count').textContent = keys.filter(k => state[k]).length + ' / ' + keys.length;
   }
   document.getElementById('reset').addEventListener('click', () => {
